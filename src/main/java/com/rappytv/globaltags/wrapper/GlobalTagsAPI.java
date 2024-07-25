@@ -33,7 +33,7 @@ public interface GlobalTagsAPI<T> {
      * @return A colored {@link T} representation of the input parameter
      */
     @NotNull
-    T translateColorCodes(String input);
+    T translateColorCodes(@Nullable String input);
 
     /**
      * If this runs on the client side this will return a client UUID
