@@ -210,10 +210,18 @@ public class PlayerInfo<T> {
 
     public static class Cache<T> {
 
+        private final static Timer timer = new Timer();
         private final GlobalTagsAPI<T> api;
 
         public Cache(GlobalTagsAPI<T> api) {
             this.api = api;
+            timer.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    api.getCache().clear();
+                    if(api.getClientUUID() != null) api.getCache().resolveSelf();
+                }
+            }, api.getCacheLiveDuration(), api.getCacheLiveDuration());
         }
 
         private final Map<UUID, PlayerInfo<T>> cache = new HashMap<>();

@@ -43,6 +43,15 @@ public interface GlobalTagsAPI<T> {
     PlayerInfo.Cache<T> getCache();
 
     /**
+     * Get in which interval the cache is being cleared
+     * @return The interval in which the cache is being cleared
+     */
+    default long getCacheLiveDuration() {
+        // Default is 5 minutes
+        return 1000 * 60 * 5;
+    }
+
+    /**
      * Get the api handler
      * @return Returns a static instance of {@link ApiHandler}
      */
