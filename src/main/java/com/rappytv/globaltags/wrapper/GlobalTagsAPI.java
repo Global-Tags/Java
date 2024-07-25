@@ -21,6 +21,13 @@ public interface GlobalTagsAPI<T> {
     String getApiBase();
 
     /**
+     * Get the current user agent and version to be identified by the API. For Example: <code>LabyAddon v{labymod addon version}</code>
+     * @return The current user agent
+     */
+    @NotNull
+    String getAgent();
+
+    /**
      * Get a {@link T} representation in color of the input parameter
      * @param input The text to translate the colors of
      * @return A colored {@link T} representation of the input parameter
