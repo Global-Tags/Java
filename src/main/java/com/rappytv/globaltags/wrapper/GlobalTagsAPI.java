@@ -1,6 +1,7 @@
 package com.rappytv.globaltags.wrapper;
 
 import com.rappytv.globaltags.wrapper.enums.AuthProvider;
+import com.rappytv.globaltags.wrapper.http.ApiHandler;
 import com.rappytv.globaltags.wrapper.model.PlayerInfo;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
