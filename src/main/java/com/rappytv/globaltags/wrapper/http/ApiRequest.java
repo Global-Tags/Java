@@ -1,10 +1,8 @@
 package com.rappytv.globaltags.wrapper.http;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.rappytv.globaltags.wrapper.GlobalTagsAPI;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -22,6 +20,10 @@ public class ApiRequest<T> {
     private final String path;
     private final GlobalTagsAPI<T> api;
     private final Map<String, Object> body;
+
+    public ApiRequest(GlobalTagsAPI<T> api, String method, String path) {
+        this(api, method, path, null);
+    }
 
     public ApiRequest(GlobalTagsAPI<T> api, String method, String path, Map<String, Object> body) {
         this.api = api;
@@ -44,10 +46,14 @@ public class ApiRequest<T> {
                         response.statusCode(),
                         body
                 ));
+            }).exceptionally(throwable -> {
+                throwable.printStackTrace();
+                consumer.accept(new Response(false, -1, getExceptionBody(throwable)));
+                return null;
             });
         } catch (Exception e) {
-            consumer.accept(new Response(false, -1, null));
             e.printStackTrace();
+            consumer.accept(new Response(false, -1, getExceptionBody(e)));
         }
     }
 
@@ -63,5 +69,9 @@ public class ApiRequest<T> {
         return HttpRequest.BodyPublishers.ofString(gson.toJson(body));
     }
 
-    public record Response(boolean successful, int statusCode, @Nullable ResponseBody body) {}
+    private ResponseBody getExceptionBody(Throwable e) {
+        return gson.fromJson("{ \"error\": \"" + e.getLocalizedMessage() + "\" }", ResponseBody.class);
+    }
+
+    public record Response(boolean successful, int statusCode, @NotNull ResponseBody body) {}
 }
