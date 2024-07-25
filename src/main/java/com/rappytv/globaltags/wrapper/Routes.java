@@ -69,6 +69,18 @@ public class Routes {
     /**
      * <pre>
      * Route for
+     * - POST /players/{uuid}/refer
+     * </pre>
+     * @param uuid The {@link UUID} of the player you want to refer to
+     * @return The HTTP route
+     */
+    public static String referPlayer(UUID uuid) {
+        return "/players/" + uuid + "/refer";
+    }
+
+    /**
+     * <pre>
+     * Route for
      * - POST /players/{uuid}/report
      * </pre>
      * @param uuid The {@link UUID} of the player you want to report
