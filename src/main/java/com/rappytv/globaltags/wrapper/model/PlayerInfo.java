@@ -147,14 +147,6 @@ public class PlayerInfo<T> {
     }
 
     /**
-     * Use {@link PlayerInfo#isSuspended()} instead
-     */
-    @Deprecated(forRemoval = true)
-    public boolean isBanned() {
-        return isSuspended();
-    }
-
-    /**
      * Use {@link PlayerInfo#getSuspension()} instead
      */
     @Deprecated(forRemoval = true)
