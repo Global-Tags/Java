@@ -161,6 +161,21 @@ public class PlayerInfo<T> {
         return suspension;
     }
 
+    @Override
+    public String toString() {
+        return String.format(
+                "Playerinfo{uuid=%s, tag='%s', position='%s', icon='%s', referred=%s, referrals=%s, roles=%s, suspension=%s}",
+                uuid,
+                plainTag,
+                getPosition().name().toLowerCase(),
+                getGlobalIcon().name().toLowerCase(),
+                referred,
+                referrals,
+                roles,
+                suspension
+        );
+    }
+
     public static class Suspension {
 
         private final boolean active;
@@ -205,6 +220,16 @@ public class PlayerInfo<T> {
          */
         public boolean isAppealable() {
             return appealable;
+        }
+
+        @Override
+        public String toString() {
+            return String.format(
+                    "Suspension{active=%s, reason='%s', appealable=%s}",
+                    active,
+                    reason,
+                    appealable
+            );
         }
     }
 
