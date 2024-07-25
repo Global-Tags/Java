@@ -147,15 +147,6 @@ public class PlayerInfo<T> {
     }
 
     /**
-     * Use {@link PlayerInfo#getSuspension()} instead
-     */
-    @Deprecated(forRemoval = true)
-    @Nullable
-    public String getBanReason() {
-        return suspension.reason;
-    }
-
-    /**
      * Shortcut to check if the player suspension is active
      */
     public boolean isSuspended() {
