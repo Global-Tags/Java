@@ -265,10 +265,11 @@ public class PlayerInfo<T> {
             if(resolving.contains(uuid)) return;
             resolving.add(uuid);
 
-            // TODO: Resolve info
-            add(uuid, null);
-            resolving.remove(uuid);
-            resolve(uuid, consumer);
+            api.getApiHandler().getInfo((info) -> {
+                add(uuid, info);
+                resolving.remove(uuid);
+                resolve(uuid, consumer);
+            });
         }
         public void clear() {
             cache.clear();
