@@ -23,8 +23,8 @@ public class ApiHandler<T> {
     public void getVersion(Consumer<String> consumer) {
         ApiRequest request = new ApiRequest(
                 Method.GET,
-                "/",
-                null
+                Routes.getVersion(),
+                api.getAuthorizationHeader()
         ) {
             @Override
             public Map<String, Object> getBody() {
@@ -42,7 +42,7 @@ public class ApiHandler<T> {
         ApiRequest request = new ApiRequest(
                 Method.GET,
                 Routes.player(uuid),
-                Util.getSessionToken()
+                api.getAuthorizationHeader()
         ) {
             @Override
             public Map<String, Object> getBody() {
@@ -75,7 +75,7 @@ public class ApiHandler<T> {
         ApiRequest request = new ApiRequest(
                 Method.POST,
                 Routes.player(uuid),
-                Util.getSessionToken()
+                api.getAuthorizationHeader()
         ) {
             @Override
             public Map<String, Object> getBody() {
@@ -100,7 +100,7 @@ public class ApiHandler<T> {
         ApiRequest request = new ApiRequest(
                 Method.POST,
                 Routes.setPosition(uuid),
-                Util.getSessionToken()
+                api.getAuthorizationHeader()
         ) {
             @Override
             public Map<String, Object> getBody() {
@@ -125,7 +125,7 @@ public class ApiHandler<T> {
         ApiRequest request = new ApiRequest(
                 Method.POST,
                 Routes.setIcon(uuid),
-                Util.getSessionToken()
+                api.getAuthorizationHeader()
         ) {
             @Override
             public Map<String, Object> getBody() {
@@ -150,7 +150,7 @@ public class ApiHandler<T> {
         ApiRequest request = new ApiRequest(
                 Method.DELETE,
                 Routes.player(uuid),
-                Util.getSessionToken()
+                api.getAuthorizationHeader()
         ) {
             @Override
             public Map<String, Object> getBody() {
@@ -171,7 +171,7 @@ public class ApiHandler<T> {
         ApiRequest request = new ApiRequest(
                 Method.POST,
                 Routes.referPlayer(uuid),
-                Util.getSessionToken()
+                api.getAuthorizationHeader()
         ) {
             @Override
             public Map<String, Object> getBody() {
@@ -192,7 +192,7 @@ public class ApiHandler<T> {
         ApiRequest request = new ApiRequest(
                 Method.POST,
                 Routes.reportPlayer(uuid),
-                Util.getSessionToken()
+                api.getAuthorizationHeader()
         ) {
             @Override
             public Map<String, Object> getBody() {
@@ -212,7 +212,7 @@ public class ApiHandler<T> {
         ApiRequest request = new ApiRequest(
                 Method.POST,
                 Routes.ban(uuid),
-                Util.getSessionToken()
+                api.getAuthorizationHeader()
         ) {
             @Override
             public Map<String, Object> getBody() {
@@ -233,7 +233,7 @@ public class ApiHandler<T> {
         ApiRequest request = new ApiRequest(
                 Method.DELETE,
                 Routes.ban(uuid),
-                Util.getSessionToken()
+                api.getAuthorizationHeader()
         ) {
             @Override
             public Map<String, Object> getBody() {
@@ -254,7 +254,7 @@ public class ApiHandler<T> {
         ApiRequest request = new ApiRequest(
                 Method.PUT,
                 Routes.ban(uuid),
-                Util.getSessionToken()
+                api.getAuthorizationHeader()
         ) {
             @Override
             public Map<String, Object> getBody() {
@@ -276,7 +276,7 @@ public class ApiHandler<T> {
         ApiRequest request = new ApiRequest(
                 Method.POST,
                 Routes.appealBan(api.getClientUUID()),
-                Util.getSessionToken()
+                api.getAuthorizationHeader()
         ) {
             @Override
             public Map<String, Object> getBody() {
@@ -296,7 +296,7 @@ public class ApiHandler<T> {
         ApiRequest request = new ApiRequest(
                 Method.POST,
                 Routes.discordConnection(api.getClientUUID()),
-                Util.getSessionToken()
+                api.getAuthorizationHeader()
         ) {
             @Override
             public Map<String, Object> getBody() {
@@ -317,7 +317,7 @@ public class ApiHandler<T> {
         ApiRequest request = new ApiRequest(
                 Method.DELETE,
                 Routes.discordConnection(api.getClientUUID()),
-                Util.getSessionToken()
+                api.getAuthorizationHeader()
         ) {
             @Override
             public Map<String, Object> getBody() {
