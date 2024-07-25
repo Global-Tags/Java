@@ -1,4 +1,4 @@
-package com.rappytv.globaltags.wrapper;
+package com.rappytv.globaltags.wrapper.http;
 
 import java.util.UUID;
 

@@ -1,7 +1,6 @@
 package com.rappytv.globaltags.wrapper.http;
 
 import com.rappytv.globaltags.wrapper.GlobalTagsAPI;
-import com.rappytv.globaltags.wrapper.Routes;
 import com.rappytv.globaltags.wrapper.enums.GlobalIcon;
 import com.rappytv.globaltags.wrapper.enums.GlobalPosition;
 import com.rappytv.globaltags.wrapper.model.PlayerInfo;
