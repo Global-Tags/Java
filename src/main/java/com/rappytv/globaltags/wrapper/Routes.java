@@ -7,6 +7,28 @@ public class Routes {
     /**
      * <pre>
      * Route for
+     * - GET /
+     * </pre>
+     * @return The HTTP route
+     */
+    public static String getVersion() {
+        return "/";
+    }
+
+    /**
+     * <pre>
+     * Route for
+     * - GET /metrics
+     * </pre>
+     * @return The HTTP route
+     */
+    public static String getMetrics() {
+        return "/metrics";
+    }
+
+    /**
+     * <pre>
+     * Route for
      * - GET /players/{uuid}
      * - POST /players/{uuid}
      * - DELETE /players/{uuid}
