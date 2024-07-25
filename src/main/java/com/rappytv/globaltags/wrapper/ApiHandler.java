@@ -1,15 +1,14 @@
 package com.rappytv.globaltags.wrapper;
 
-import com.google.gson.JsonElement;
 import com.rappytv.globaltags.wrapper.enums.GlobalIcon;
 import com.rappytv.globaltags.wrapper.enums.GlobalPosition;
 import com.rappytv.globaltags.wrapper.http.ApiRequest;
 import com.rappytv.globaltags.wrapper.model.PlayerInfo;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Consumer;
 
+@SuppressWarnings("unused")
 public class ApiHandler<T> {
 
     // https://github.com/elysiajs/elysia/issues/495
@@ -25,14 +24,11 @@ public class ApiHandler<T> {
         new ApiRequest<>(
                 api,
                 "GET",
-                Routes.getVersion(),
-                null
-        ).sendRequestSync((response) -> {
-            consumer.accept(new ApiResponse<>(
-                    response.successful(),
-                    response.body() != null ? response.body().version : null
-            ));
-        });
+                Routes.getVersion()
+        ).sendRequestSync((response) -> consumer.accept(new ApiResponse<>(
+                response.successful(),
+                response.body().version
+        )));
     }
 
     public void getInfo(Consumer<PlayerInfo<T>> consumer) {
@@ -43,10 +39,9 @@ public class ApiHandler<T> {
         new ApiRequest<>(
                 api,
                 "GET",
-                Routes.player(uuid),
-                null
+                Routes.player(uuid)
         ).sendRequestSync((response) -> {
-            if(!response.successful() || response.body() == null) {
+            if(!response.successful()) {
                 consumer.accept(null);
                 return;
             }
@@ -63,273 +58,234 @@ public class ApiHandler<T> {
             ));
         });
     }
-//
-//    public void setTag(String tag, Consumer<ApiResponse> consumer) {
-//        setTag(api.getClientUUID(), tag, consumer);
-//    }
-//
-//    public void setTag(UUID uuid, String tag, Consumer<ApiResponse> consumer) {
-//        ApiRequest request = new ApiRequest(
-//                Method.POST,
-//                Routes.player(uuid),
-//                api.getAuthorizationHeader()
-//        ) {
-//            @Override
-//            public Map<String, Object> getBody() {
-//                return Map.of("tag", tag);
-//            }
-//        };
-//        request.sendAsyncRequest((response -> {
-//            if(!request.isSuccessful()) {
-//                consumer.accept(new ApiResponse(false, request.getError()));
-//                return;
-//            }
-//            api.getCache().clear();
-//            api.getCache().resolveSelf((info) -> consumer.accept(new ApiResponse(true, request.getMessage())));
-//        }));
-//    }
-//
-//    public void setPosition(GlobalPosition position, Consumer<ApiResponse> consumer) {
-//        setPosition(api.getClientUUID(), position, consumer);
-//    }
-//
-//    public void setPosition(UUID uuid, GlobalPosition position, Consumer<ApiResponse> consumer) {
-//        ApiRequest request = new ApiRequest(
-//                Method.POST,
-//                Routes.setPosition(uuid),
-//                api.getAuthorizationHeader()
-//        ) {
-//            @Override
-//            public Map<String, Object> getBody() {
-//                return Map.of("position", position.name());
-//            }
-//        };
-//        request.sendAsyncRequest((response) -> {
-//            if(!request.isSuccessful()) {
-//                consumer.accept(new ApiResponse(false, request.getError()));
-//                return;
-//            }
-//            api.getCache().clear();
-//            api.getCache().resolveSelf((info) -> consumer.accept(new ApiResponse(true, request.getMessage())));
-//        });
-//    }
-//
-//    public void setIcon(GlobalIcon icon, Consumer<ApiResponse> consumer) {
-//        setIcon(api.getClientUUID(), icon, consumer);
-//    }
-//
-//    public void setIcon(UUID uuid, GlobalIcon icon, Consumer<ApiResponse> consumer) {
-//        ApiRequest request = new ApiRequest(
-//                Method.POST,
-//                Routes.setIcon(uuid),
-//                api.getAuthorizationHeader()
-//        ) {
-//            @Override
-//            public Map<String, Object> getBody() {
-//                return Map.of("icon", icon.name());
-//            }
-//        };
-//        request.sendAsyncRequest((response) -> {
-//            if(!request.isSuccessful()) {
-//                consumer.accept(new ApiResponse(false, request.getError()));
-//                return;
-//            }
-//            api.getCache().clear();
-//            api.getCache().resolveSelf((info) -> consumer.accept(new ApiResponse(true, request.getMessage())));
-//        });
-//    }
-//
-//    public void resetTag(Consumer<ApiResponse> consumer) {
-//        resetTag(api.getClientUUID(), consumer);
-//    }
-//
-//    public void resetTag(UUID uuid, Consumer<ApiResponse> consumer) {
-//        ApiRequest request = new ApiRequest(
-//                Method.DELETE,
-//                Routes.player(uuid),
-//                api.getAuthorizationHeader()
-//        ) {
-//            @Override
-//            public Map<String, Object> getBody() {
-//                return emptyBody;
-//            }
-//        };
-//        request.sendAsyncRequest((response) -> {
-//            if(!request.isSuccessful()) {
-//                consumer.accept(new ApiResponse(false, request.getError()));
-//                return;
-//            }
-//            api.getCache().clear();
-//            api.getCache().resolveSelf((info) -> consumer.accept(new ApiResponse(true, request.getMessage())));
-//        });
-//    }
-//
-//    public void referPlayer(UUID uuid, Consumer<ApiResponse> consumer) {
-//        ApiRequest request = new ApiRequest(
-//                Method.POST,
-//                Routes.referPlayer(uuid),
-//                api.getAuthorizationHeader()
-//        ) {
-//            @Override
-//            public Map<String, Object> getBody() {
-//                return emptyBody;
-//            }
-//        };
-//        request.sendAsyncRequest((response) -> {
-//            if(!request.isSuccessful()) {
-//                consumer.accept(new ApiResponse(false, request.getError()));
-//                return;
-//            }
-//            api.getCache().clear();
-//            api.getCache().resolveSelf((info) -> consumer.accept(new ApiResponse(true, request.getMessage())));
-//        });
-//    }
-//
-//    public void reportPlayer(UUID uuid, String reason, Consumer<ApiResponse> consumer) {
-//        ApiRequest request = new ApiRequest(
-//                Method.POST,
-//                Routes.reportPlayer(uuid),
-//                api.getAuthorizationHeader()
-//        ) {
-//            @Override
-//            public Map<String, Object> getBody() {
-//                return Map.of("reason", reason);
-//            }
-//        };
-//        request.sendAsyncRequest((response) -> {
-//            if(!request.isSuccessful()) {
-//                consumer.accept(new ApiResponse(false, request.getError()));
-//                return;
-//            }
-//            consumer.accept(new ApiResponse(true, request.getMessage()));
-//        });
-//    }
-//
-//    public void banPlayer(UUID uuid, String reason, Consumer<ApiResponse> consumer) {
-//        ApiRequest request = new ApiRequest(
-//                Method.POST,
-//                Routes.ban(uuid),
-//                api.getAuthorizationHeader()
-//        ) {
-//            @Override
-//            public Map<String, Object> getBody() {
-//                return Map.of("reason", reason);
-//            }
-//        };
-//        request.sendAsyncRequest((response) -> {
-//            if(!request.isSuccessful()) {
-//                consumer.accept(new ApiResponse(false, request.getError()));
-//                return;
-//            }
-//            api.getCache().clear();
-//            api.getCache().resolveSelf((info) -> consumer.accept(new ApiResponse(true, request.getMessage())));
-//        });
-//    }
-//
-//    public void unbanPlayer(UUID uuid, Consumer<ApiResponse> consumer) {
-//        ApiRequest request = new ApiRequest(
-//                Method.DELETE,
-//                Routes.ban(uuid),
-//                api.getAuthorizationHeader()
-//        ) {
-//            @Override
-//            public Map<String, Object> getBody() {
-//                return emptyBody;
-//            }
-//        };
-//        request.sendAsyncRequest((response) -> {
-//            if(!request.isSuccessful()) {
-//                consumer.accept(new ApiResponse(false, request.getError()));
-//                return;
-//            }
-//            api.getCache().clear();
-//            api.getCache().resolveSelf((info) -> consumer.accept(new ApiResponse(true, request.getMessage())));
-//        });
-//    }
-//
-//    public void editBan(UUID uuid, Suspension suspension, Consumer<ApiResponse> consumer) {
-//        ApiRequest request = new ApiRequest(
-//                Method.PUT,
-//                Routes.ban(uuid),
-//                api.getAuthorizationHeader()
-//        ) {
-//            @Override
-//            public Map<String, Object> getBody() {
-//                Objects.requireNonNull(suspension.getReason(), "Reason must not be null");
-//                return Map.of("reason", suspension.getReason(), "appealable", suspension.isAppealable());
-//            }
-//        };
-//        request.sendAsyncRequest((response) -> {
-//            if(!request.isSuccessful()) {
-//                consumer.accept(new ApiResponse(false, request.getError()));
-//                return;
-//            }
-//            api.getCache().clear();
-//            api.getCache().resolveSelf((info) -> consumer.accept(new ApiResponse(true, request.getMessage())));
-//        });
-//    }
-//
-//    public void appealBan(String reason, Consumer<ApiResponse> consumer) {
-//        ApiRequest request = new ApiRequest(
-//                Method.POST,
-//                Routes.appealBan(api.getClientUUID()),
-//                api.getAuthorizationHeader()
-//        ) {
-//            @Override
-//            public Map<String, Object> getBody() {
-//                return Map.of("reason", reason);
-//            }
-//        };
-//        request.sendAsyncRequest((response) -> {
-//            if(!request.isSuccessful()) {
-//                consumer.accept(new ApiResponse(false, request.getError()));
-//                return;
-//            }
-//            consumer.accept(new ApiResponse(true, request.getMessage()));
-//        });
-//    }
-//
-//    public void linkDiscord(Consumer<ApiResponse> consumer) {
-//        ApiRequest request = new ApiRequest(
-//                Method.POST,
-//                Routes.discordConnection(api.getClientUUID()),
-//                api.getAuthorizationHeader()
-//        ) {
-//            @Override
-//            public Map<String, Object> getBody() {
-//                return emptyBody;
-//            }
-//        };
-//        request.sendAsyncRequest((response) -> {
-//            if(!request.isSuccessful()) {
-//                consumer.accept(new ApiResponse(false, request.getError()));
-//                return;
-//            }
-//            api.getCache().clear();
-//            api.getCache().resolveSelf((info) -> consumer.accept(new ApiResponse(true, request.responseBody.code)));
-//        });
-//    }
-//
-//    public void unlinkDiscord(Consumer<ApiResponse> consumer) {
-//        ApiRequest request = new ApiRequest(
-//                Method.DELETE,
-//                Routes.discordConnection(api.getClientUUID()),
-//                api.getAuthorizationHeader()
-//        ) {
-//            @Override
-//            public Map<String, Object> getBody() {
-//                return emptyBody;
-//            }
-//        };
-//        request.sendAsyncRequest((response) -> {
-//            if(!request.isSuccessful()) {
-//                consumer.accept(new ApiResponse(false, request.getError()));
-//                return;
-//            }
-//            api.getCache().clear();
-//            api.getCache().resolveSelf((info) -> consumer.accept(new ApiResponse(true, request.getMessage())));
-//        });
-//    }
+
+    public void setTag(String tag, Consumer<ApiResponse<String>> consumer) {
+        setTag(api.getClientUUID(), tag, consumer);
+    }
+
+    public void setTag(UUID uuid, String tag, Consumer<ApiResponse<String>> consumer) {
+        new ApiRequest<>(
+                api,
+                "POST",
+                Routes.player(uuid),
+                Map.of("tag", tag)
+        ).sendRequestSync((response) -> {
+            if(!response.successful()) {
+                consumer.accept(new ApiResponse<>(false, response.body().error));
+                return;
+            }
+            api.getCache().clear();
+            api.getCache().resolveSelf((info) ->
+                    consumer.accept(new ApiResponse<>(true, response.body().message))
+            );
+        });
+    }
+
+    public void setPosition(GlobalPosition position, Consumer<ApiResponse<String>> consumer) {
+        setPosition(api.getClientUUID(), position, consumer);
+    }
+
+    public void setPosition(UUID uuid, GlobalPosition position, Consumer<ApiResponse<String>> consumer) {
+        new ApiRequest<>(
+                api,
+                "POST",
+                Routes.setPosition(uuid),
+                Map.of("position", position.name())
+        ).sendRequestSync((response) -> {
+            if(!response.successful()) {
+                consumer.accept(new ApiResponse<>(false, response.body().error));
+                return;
+            }
+            api.getCache().clear();
+            api.getCache().resolveSelf((info) ->
+                    consumer.accept(new ApiResponse<>(true, response.body().message))
+            );
+        });
+    }
+
+    public void setIcon(GlobalIcon icon, Consumer<ApiResponse<String>> consumer) {
+        setIcon(api.getClientUUID(), icon, consumer);
+    }
+
+    public void setIcon(UUID uuid, GlobalIcon icon, Consumer<ApiResponse<String>> consumer) {
+        new ApiRequest<>(
+                api,
+                "POST",
+                Routes.setIcon(uuid),
+                Map.of("icon", icon.name())
+        ).sendRequestSync((response) -> {
+            if(!response.successful()) {
+                consumer.accept(new ApiResponse<>(false, response.body().error));
+                return;
+            }
+            api.getCache().clear();
+            api.getCache().resolveSelf((info) ->
+                    consumer.accept(new ApiResponse<>(true, response.body().message))
+            );
+        });
+    }
+
+    public void resetTag(Consumer<ApiResponse<String>> consumer) {
+        resetTag(api.getClientUUID(), consumer);
+    }
+
+    public void resetTag(UUID uuid, Consumer<ApiResponse<String>> consumer) {
+        new ApiRequest<>(
+                api,
+                "DELETE",
+                Routes.player(uuid),
+                emptyBody
+        ).sendRequestSync((response) -> {
+            if(!response.successful()) {
+                consumer.accept(new ApiResponse<>(false, response.body().error));
+                return;
+            }
+            api.getCache().clear();
+            api.getCache().resolveSelf((info) ->
+                    consumer.accept(new ApiResponse<>(true, response.body().message))
+            );
+        });
+    }
+
+    public void referPlayer(UUID uuid, Consumer<ApiResponse<String>> consumer) {
+        new ApiRequest<>(
+                api,
+                "POST",
+                Routes.referPlayer(uuid),
+                emptyBody
+        ).sendRequestSync((response) -> {
+            if(!response.successful()) {
+                consumer.accept(new ApiResponse<>(false, response.body().error));
+                return;
+            }
+            api.getCache().clear();
+            api.getCache().resolveSelf((info) ->
+                    consumer.accept(new ApiResponse<>(true, response.body().message))
+            );
+        });
+    }
+
+    public void reportPlayer(UUID uuid, String reason, Consumer<ApiResponse<String>> consumer) {
+        new ApiRequest<>(
+                api,
+                "POST",
+                Routes.reportPlayer(uuid),
+                Map.of("reason", reason)
+        ).sendRequestSync((response) -> {
+            if(!response.successful()) {
+                consumer.accept(new ApiResponse<>(false, response.body().error));
+                return;
+            }
+            api.getCache().clear();
+            api.getCache().resolveSelf((info) ->
+                    consumer.accept(new ApiResponse<>(true, response.body().message))
+            );
+        });
+    }
+
+    public void banPlayer(UUID uuid, String reason, Consumer<ApiResponse<String>> consumer) {
+        new ApiRequest<>(
+                api,
+                "POST",
+                Routes.ban(uuid),
+                Map.of("reason", reason)
+        ).sendRequestSync((response) -> {
+            if(!response.successful()) {
+                consumer.accept(new ApiResponse<>(false, response.body().error));
+                return;
+            }
+            api.getCache().clear();
+            api.getCache().resolveSelf((info) -> {
+                System.out.println("eee");
+                consumer.accept(new ApiResponse<>(true, response.body().message));
+            });
+        });
+    }
+
+    public void unbanPlayer(UUID uuid, Consumer<ApiResponse<String>> consumer) {
+        new ApiRequest<>(
+                api,
+                "DELETE",
+                Routes.ban(uuid),
+                emptyBody
+        ).sendRequestSync((response) -> {
+            if(!response.successful()) {
+                consumer.accept(new ApiResponse<>(false, response.body().error));
+                return;
+            }
+            api.getCache().clear();
+            api.getCache().resolveSelf((info) ->
+                    consumer.accept(new ApiResponse<>(true, response.body().message))
+            );
+        });
+    }
+
+    public void editBan(UUID uuid, PlayerInfo.Suspension suspension, Consumer<ApiResponse<String>> consumer) {
+        Objects.requireNonNull(suspension.getReason(), "Reason must not be null");
+        new ApiRequest<>(
+                api,
+                "PUT",
+                Routes.ban(uuid),
+                Map.of("reason", suspension.getReason(), "appealable", suspension.isAppealable())
+        ).sendRequestSync((response) -> {
+            if(!response.successful()) {
+                consumer.accept(new ApiResponse<>(false, response.body().error));
+                return;
+            }
+            api.getCache().clear();
+            api.getCache().resolveSelf((info) ->
+                    consumer.accept(new ApiResponse<>(true, response.body().message))
+            );
+        });
+    }
+
+    public void appealBan(String reason, Consumer<ApiResponse<String>> consumer) {
+        new ApiRequest<>(
+                api,
+                "POST",
+                Routes.appealBan(api.getClientUUID()),
+                Map.of("reason", reason)
+        ).sendRequestSync((response) -> {
+            if(!response.successful()) {
+                consumer.accept(new ApiResponse<>(false, response.body().error));
+                return;
+            }
+            consumer.accept(new ApiResponse<>(true, response.body().message));
+        });
+    }
+
+    public void linkDiscord(Consumer<ApiResponse<String>> consumer) {
+        new ApiRequest<>(
+                api,
+                "POST",
+                Routes.discordConnection(api.getClientUUID()),
+                emptyBody
+        ).sendRequestSync((response) -> {
+            if(!response.successful()) {
+                consumer.accept(new ApiResponse<>(false, response.body().error));
+                return;
+            }
+            consumer.accept(new ApiResponse<>(true, response.body().code));
+        });
+    }
+
+    public void unlinkDiscord(Consumer<ApiResponse<String>> consumer) {
+        new ApiRequest<>(
+                api,
+                "DELETE",
+                Routes.discordConnection(api.getClientUUID()),
+                emptyBody
+        ).sendRequestSync((response) -> {
+            if(!response.successful()) {
+                consumer.accept(new ApiResponse<>(false, response.body().error));
+                return;
+            }
+            api.getCache().clear();
+            api.getCache().resolveSelf((info) ->
+                    consumer.accept(new ApiResponse<>(true, response.body().message))
+            );
+        });
+    }
 
     public record ApiResponse<T>(boolean successful, T data) {}
 }
