@@ -61,6 +61,7 @@ public class ApiRequest<T> {
         return HttpRequest.newBuilder()
                 .header("Content-Type", "application/json")
                 .header("Authorization", api.getAuthorizationHeader())
+                .header("X-Language", api.getLanguageCode())
                 .header("X-Agent", api.getAgent());
     }
 

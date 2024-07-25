@@ -29,6 +29,15 @@ public interface GlobalTagsAPI<T> {
     String getAgent();
 
     /**
+     * Get the language which is sent to the API on any request
+     * @return The language for any API responses
+     */
+    @NotNull
+    default String getLanguageCode() {
+        return "en_us";
+    }
+
+    /**
      * Get a {@link T} representation in color of the input parameter
      * @param input The text to translate the colors of
      * @return A colored {@link T} representation of the input parameter
