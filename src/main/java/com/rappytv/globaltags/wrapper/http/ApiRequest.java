@@ -38,11 +38,11 @@ public class ApiRequest<T> {
                     .build();
 
             client.sendAsync(request, HttpResponse.BodyHandlers.ofString()).thenAccept(response -> {
-                JsonObject object = gson.fromJson(response.body(), JsonObject.class);
+                ResponseBody body = gson.fromJson(response.body(), ResponseBody.class);
                 consumer.accept(new Response(
                         response.statusCode() >= 200 && response.statusCode() < 300,
                         response.statusCode(),
-                        object
+                        body
                 ));
             });
         } catch (Exception e) {
@@ -63,5 +63,5 @@ public class ApiRequest<T> {
         return HttpRequest.BodyPublishers.ofString(gson.toJson(body));
     }
 
-    public record Response(boolean successful, int statusCode, @Nullable JsonObject body) {}
+    public record Response(boolean successful, int statusCode, @Nullable ResponseBody body) {}
 }

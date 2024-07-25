@@ -1,14 +1,13 @@
 package com.rappytv.globaltags.wrapper;
 
+import com.google.gson.JsonElement;
 import com.rappytv.globaltags.wrapper.enums.GlobalIcon;
 import com.rappytv.globaltags.wrapper.enums.GlobalPosition;
 import com.rappytv.globaltags.wrapper.http.ApiRequest;
 import com.rappytv.globaltags.wrapper.model.PlayerInfo;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class ApiHandler<T> {
@@ -29,14 +28,9 @@ public class ApiHandler<T> {
                 Routes.getVersion(),
                 null
         ).sendRequestSync((response) -> {
-            String version = response.body() != null
-                    ? response.body().has("version")
-                        ? response.body().get("version").getAsString()
-                        : null
-                    : null;
             consumer.accept(new ApiResponse<>(
                     response.successful(),
-                    version
+                    response.body() != null ? response.body().version : null
             ));
         });
     }
@@ -46,34 +40,28 @@ public class ApiHandler<T> {
     }
 
     public void getInfo(UUID uuid, Consumer<PlayerInfo<T>> consumer) {
-        // Temporary
-        consumer.accept(null);
-//        ApiRequest request = new ApiRequest(
-//                Method.GET,
-//                Routes.player(uuid),
-//                api.getAuthorizationHeader()
-//        ) {
-//            @Override
-//            public Map<String, Object> getBody() {
-//                return null;
-//            }
-//        };
-//        request.sendAsyncRequest((response) -> {
-//            if(!request.isSuccessful()) {
-//                consumer.accept(null);
-//                return;
-//            }
-//            consumer.accept(new PlayerInfo<T>(
-//                    uuid,
-//                    request.responseBody.tag,
-//                    request.responseBody.position,
-//                    request.responseBody.icon,
-//                    request.responseBody.referred,
-//                    request.responseBody.referrals,
-//                    request.responseBody.roles,
-//                    request.responseBody.ban
-//            ));
-//        });
+        new ApiRequest<>(
+                api,
+                "GET",
+                Routes.player(uuid),
+                null
+        ).sendRequestSync((response) -> {
+            if(!response.successful() || response.body() == null) {
+                consumer.accept(null);
+                return;
+            }
+            consumer.accept(new PlayerInfo<>(
+                    api,
+                    uuid,
+                    response.body().tag,
+                    response.body().position,
+                    response.body().icon,
+                    response.body().referred,
+                    response.body().referrals,
+                    response.body().roles,
+                    response.body().suspension
+            ));
+        });
     }
 //
 //    public void setTag(String tag, Consumer<ApiResponse> consumer) {
