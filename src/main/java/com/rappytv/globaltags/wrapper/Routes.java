@@ -97,7 +97,7 @@ public class Routes {
      * @return The HTTP route
      */
     public static String referPlayer(UUID uuid) {
-        return "/players/" + uuid + "/refer";
+        return "/players/" + uuid + "/referral";
     }
 
     /**
