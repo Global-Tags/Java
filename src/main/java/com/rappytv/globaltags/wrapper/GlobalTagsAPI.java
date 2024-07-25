@@ -1,6 +1,7 @@
 package com.rappytv.globaltags.wrapper;
 
 import com.rappytv.globaltags.wrapper.enums.AuthProvider;
+import com.rappytv.globaltags.wrapper.model.PlayerInfo;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,6 +34,20 @@ public interface GlobalTagsAPI<T> {
      */
     @Nullable
     UUID getClientUUID();
+
+    /**
+     * Get the tag cache
+     * @return Returns a static instance of {@link PlayerInfo.Cache}
+     */
+    @NotNull
+    PlayerInfo.Cache<T> getCache();
+
+    /**
+     * Get the api handler
+     * @return Returns a static instance of {@link ApiHandler}
+     */
+    @NotNull
+    ApiHandler<T> getApiHandler();
 
     /**
      * Get the authentication type used to authenticate with the api
