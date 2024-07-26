@@ -280,6 +280,13 @@ public class PlayerInfo<T> {
         }
 
         /**
+         * Removes the {@link GlobalTagsAPI#getClientUUID()} from the cache
+         */
+        public void removeSelf() {
+            remove(api.getClientUUID());
+        }
+
+        /**
          * Removes a {@link PlayerInfo} from the cache
          * @param uuid The corresponding {@link UUID}
          */
