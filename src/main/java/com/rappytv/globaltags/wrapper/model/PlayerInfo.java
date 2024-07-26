@@ -347,7 +347,7 @@ public class PlayerInfo<T> {
             if(resolving.contains(uuid)) return;
             resolving.add(uuid);
 
-            api.getApiHandler().getInfo((info) -> {
+            api.getApiHandler().getInfo(uuid, (info) -> {
                 add(uuid, info);
                 resolving.remove(uuid);
                 resolve(uuid, consumer);
