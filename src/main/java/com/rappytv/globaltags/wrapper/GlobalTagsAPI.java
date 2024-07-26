@@ -91,12 +91,12 @@ public interface GlobalTagsAPI<T> {
 
     /**
      * Get the authorization header
-     * @return The authorization header for the API. Returns null if {@link #getAuthorization()} returns null
+     * @return The authorization header for the API.
      */
-    @Nullable
+    @NotNull
     default String getAuthorizationHeader() {
         String auth = getAuthorization();
-        if(auth == null) return null;
+        if(auth == null) return "";
         return String.format("%s %s", getAuthType().getId(), auth);
     }
 }
