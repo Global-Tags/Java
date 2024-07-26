@@ -23,16 +23,28 @@ public class PlayerInfo<T> {
     private final List<GlobalRole> roles;
     private final Suspension suspension;
 
+    /**
+     * Build a new PlayerInfo instance
+     * @param api The {@link GlobalTagsAPI} for the {@link GlobalTagsAPI#translateColorCodes(String)} method
+     * @param uuid The player's {@link UUID}
+     * @param tag The player's plain tag including color codes
+     * @param position The player's global position as a string
+     * @param icon The player's global icon as a string
+     * @param referred If the player has already marked someone as their inviter
+     * @param referrals How many players the player has invited
+     * @param roles The player's roles
+     * @param suspension The player's {@link Suspension}
+     */
     public PlayerInfo(
-            GlobalTagsAPI<T> api,
-            UUID uuid,
-            String tag,
-            String position,
-            String icon,
+            @NotNull GlobalTagsAPI<T> api,
+            @NotNull UUID uuid,
+            @Nullable String tag,
+            @NotNull String position,
+            @NotNull String icon,
             boolean referred,
             int referrals,
-            String[] roles,
-            Suspension suspension
+            @NotNull String[] roles,
+            @Nullable Suspension suspension
     ) {
         this.uuid = uuid;
         this.tag = api.translateColorCodes(tag);
@@ -47,7 +59,7 @@ public class PlayerInfo<T> {
                 this.roles.add(GlobalRole.valueOf(role.toUpperCase()));
             } catch (Exception ignored) {}
         }
-        this.suspension = suspension;
+        this.suspension = suspension != null ? suspension : new Suspension();
     }
 
     /**
@@ -176,6 +188,9 @@ public class PlayerInfo<T> {
         );
     }
 
+    /**
+     * An object representing a player's ban
+     */
     public static class Suspension {
 
         private final boolean active;
@@ -202,6 +217,7 @@ public class PlayerInfo<T> {
 
         /**
          * Returns if the suspension is active or not
+         * @return If the suspension is active or not
          */
         public boolean isActive() {
             return active;
@@ -209,6 +225,7 @@ public class PlayerInfo<T> {
 
         /**
          * Returns the suspension reason
+         * @return Returns the suspension reason
          */
         @Nullable
         public String getReason() {
@@ -217,6 +234,7 @@ public class PlayerInfo<T> {
 
         /**
          * Returns if the suspension can be appealed
+         * @return If the suspension can be appealed
          */
         public boolean isAppealable() {
             return appealable;
@@ -252,28 +270,69 @@ public class PlayerInfo<T> {
         private final Map<UUID, PlayerInfo<T>> cache = new HashMap<>();
         private final Set<UUID> resolving = new HashSet<>();
 
+        /**
+         * Adds a {@link PlayerInfo} to the cache
+         * @param uuid The corresponding {@link UUID}
+         * @param info The {@link PlayerInfo}
+         */
         public void add(UUID uuid, PlayerInfo<T> info) {
             cache.put(uuid, info);
         }
+
+        /**
+         * Removes a {@link PlayerInfo} from the cache
+         * @param uuid The corresponding {@link UUID}
+         */
         public void remove(UUID uuid) {
             cache.remove(uuid);
         }
+
+        /**
+         * Checks if a specific player is in the cache
+         * @param uuid The player's {@link UUID}
+         * @return If the player is in the cache
+         */
         public boolean has(UUID uuid) {
             return cache.containsKey(uuid);
         }
+
+        /**
+         * Gets the cached {@link PlayerInfo} synchronously
+         * @param uuid The player's {@link UUID}
+         * @return The player's cached {@link PlayerInfo} or null if the info is not cached
+         */
+        @Nullable
         public PlayerInfo<T> get(UUID uuid) {
             return cache.get(uuid);
         }
+
+        /**
+         * Resolve the UUID {@link GlobalTagsAPI#getClientUUID()} into the cache
+         */
         public void resolveSelf() {
             resolveSelf((info) -> {});
         }
-        public void resolveSelf(Consumer<PlayerInfo<T>> consumer) {
+
+        /**
+         * Resolve the UUID {@link GlobalTagsAPI#getClientUUID()} into the cache
+         * @param consumer A consumer returning the resolved {@link PlayerInfo}
+         */
+        public void resolveSelf(Consumer<@Nullable PlayerInfo<T>> consumer) {
             resolve(api.getClientUUID(), consumer);
         }
+
+        /**
+         * Resolve a specific {@link UUID} into the cache
+         */
         public void resolve(UUID uuid) {
             resolve(uuid, (info) -> {});
         }
-        public void resolve(UUID uuid, Consumer<PlayerInfo<T>> consumer) {
+
+        /**
+         * Resolve a specific {@link UUID} into the cache
+         * @param consumer A consumer returning the resolved {@link PlayerInfo}
+         */
+        public void resolve(UUID uuid, Consumer<@Nullable PlayerInfo<T>> consumer) {
             if(has(uuid)) {
                 consumer.accept(get(uuid));
                 return;
@@ -287,8 +346,13 @@ public class PlayerInfo<T> {
                 resolve(uuid, consumer);
             });
         }
+
+        /**
+         * Clears the cache
+         */
         public void clear() {
             cache.clear();
+            resolving.clear();
         }
     }
 }
