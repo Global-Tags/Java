@@ -75,7 +75,7 @@ public class PlayerInfo<T> {
      */
     @Nullable
     public T getTag() {
-        return !plainTag.isEmpty() ? tag : null;
+        return !plainTag.isBlank() ? tag : null;
     }
 
     /**
