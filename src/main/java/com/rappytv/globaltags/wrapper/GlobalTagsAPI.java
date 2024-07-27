@@ -22,11 +22,14 @@ public interface GlobalTagsAPI<T> {
     String getApiBase();
 
     /**
-     * Get the current user agent and version to be identified by the API. For Example: <code>LabyAddon v{labymod addon version}</code>
-     * @return The current user agent
+     * Get the current user agent, version and minecraft version to be identified by the API. Example:
+     * <blockquote><pre>
+     * new Agent("LabyAddon", "v1.2.0", "1.21");
+     * </pre></blockquote>
+     * @return The user agent
      */
     @NotNull
-    String getAgent();
+    Agent getAgent();
 
     /**
      * Get the language which is sent to the API on any request
@@ -98,5 +101,73 @@ public interface GlobalTagsAPI<T> {
         String auth = getAuthorization();
         if(auth == null) return "";
         return String.format("%s %s", getAuthType().getId(), auth);
+    }
+
+    /**
+     * A class representing the request agent for better identification on behalf of the API
+     */
+    class Agent {
+
+        private final String agent;
+        private final String agentVersion;
+        private final String minecraftVersion;
+
+        /**
+         * Build a new agent without a minecraft version
+         * @param agent The agent name
+         * @param agentVersion The agent version
+         */
+        public Agent(@NotNull String agent, @NotNull String agentVersion) {
+            this(agent, agentVersion, null);
+        }
+
+        /**
+         * Build a new agent including a minecraft version
+         * @param agent The agent name
+         * @param agentVersion The agent version
+         * @param minecraftVersion The minecraft version
+         */
+        public Agent(@NotNull String agent, @NotNull String agentVersion, @Nullable String minecraftVersion) {
+            this.agent = agent;
+            this.agentVersion = agentVersion;
+            this.minecraftVersion = minecraftVersion;
+        }
+
+        /**
+         * Get the agent name
+         * @return The agent name
+         */
+        @NotNull
+        public String getAgent() {
+            return agent;
+        }
+
+        /**
+         * Get the agent version
+         * @return The agent version
+         */
+        @NotNull
+        public String getAgentVersion() {
+            return agentVersion;
+        }
+
+        /**
+         * Get the Minecraft version
+         * @return The minecraft version
+         */
+        @Nullable
+        public String getMinecraftVersion() {
+            return minecraftVersion;
+        }
+
+        @Override
+        public @NotNull String toString() {
+            return String.format(
+                    "%s v%s%s",
+                    this.agent,
+                    this.agentVersion,
+                    minecraftVersion != null ? " - " + minecraftVersion : ""
+            );
+        }
     }
 }

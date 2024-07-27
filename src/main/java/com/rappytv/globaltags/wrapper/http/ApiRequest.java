@@ -62,7 +62,7 @@ public class ApiRequest<T> {
                 .header("Content-Type", "application/json")
                 .header("Authorization", api.getAuthorizationHeader())
                 .header("X-Language", api.getLanguageCode())
-                .header("X-Agent", api.getAgent());
+                .header("X-Agent", api.getAgent().toString());
     }
 
     private HttpRequest.BodyPublisher getBodyPublisher() {
