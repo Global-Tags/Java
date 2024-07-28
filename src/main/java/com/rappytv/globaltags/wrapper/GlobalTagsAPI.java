@@ -59,13 +59,6 @@ public interface GlobalTagsAPI<T> {
     UUID getClientUUID();
 
     /**
-     * Get the tag cache
-     * @return Returns a static instance of {@link PlayerInfo.Cache}
-     */
-    @NotNull
-    PlayerInfo.Cache<T> getCache();
-
-    /**
      * Get in which interval the cache is being cleared
      * @return The interval in which the cache is being cleared
      */
@@ -75,8 +68,15 @@ public interface GlobalTagsAPI<T> {
     }
 
     /**
+     * Get the tag cache
+     * @return Returns a instance of {@link PlayerInfo.Cache}
+     */
+    @NotNull
+    PlayerInfo.Cache<T> getCache();
+
+    /**
      * Get the api handler
-     * @return Returns a static instance of {@link ApiHandler}
+     * @return Returns a instance of {@link ApiHandler}
      */
     @NotNull
     ApiHandler<T> getApiHandler();
