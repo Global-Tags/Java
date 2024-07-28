@@ -30,12 +30,12 @@ public enum GlobalIcon {
     SOUNDCLOUD,
     SPOTIFY,
     STAR,
+    STATSFM,
     STEAM,
     TELEGRAM,
     THREADS,
     TIKTOK,
     TWITCH,
-    STATSFM,
     X,
     XBOX,
     YOUTUBE;
