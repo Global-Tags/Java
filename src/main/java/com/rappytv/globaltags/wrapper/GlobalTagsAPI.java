@@ -16,10 +16,13 @@ public interface GlobalTagsAPI<T> {
 
     /**
      * Get the API base for the GlobalTags API
+     * @apiNote Please don't add a trailing slash
      * @return The Globaltags API base
      */
     @NotNull
-    String getApiBase();
+    default String getApiBase() {
+        return "https://gt.rappytv.com";
+    }
 
     /**
      * Get the current user agent, version and minecraft version to be identified by the API. Example:
