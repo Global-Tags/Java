@@ -2,6 +2,9 @@ package com.rappytv.globaltags.wrapper.enums;
 
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * This enum represents all valid icons which the official cdn supports.
+ */
 public enum GlobalIcon {
     NONE,
     BEREAL,

@@ -2,6 +2,9 @@ package com.rappytv.globaltags.wrapper.http;
 
 import java.util.UUID;
 
+/**
+ * This class contains all routes which the <a href="https://github.com/Global-Tags/API">GlobalTagAPI</a> supports at the moment.
+ */
 public class Routes {
 
     /**
