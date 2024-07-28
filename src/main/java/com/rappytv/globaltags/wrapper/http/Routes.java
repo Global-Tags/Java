@@ -8,6 +8,11 @@ import java.util.UUID;
 public class Routes {
 
     /**
+     * Cannot be implemented
+     */
+    private Routes() {}
+
+    /**
      * <pre>
      * Route for
      * - GET /

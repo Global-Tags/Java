@@ -20,6 +20,10 @@ public enum GlobalRole {
         );
     }
 
+    /**
+     * Get the staff icon url of the {@link GlobalRole}
+     * @return The staff icon url of the {@link GlobalRole}
+     */
     @NotNull
     public String getIconUrl() {
         return iconUrl;

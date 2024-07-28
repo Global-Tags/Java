@@ -2,12 +2,25 @@ package com.rappytv.globaltags.wrapper.http;
 
 import com.rappytv.globaltags.wrapper.model.PlayerInfo;
 
+import java.util.UUID;
+import java.util.function.Consumer;
+
+/**
+ * This class is for resolving bodies in {@link ApiRequest}
+ */
 public class ResponseBody {
+
+    /**
+     * Default gson constructor
+     */
+    public ResponseBody() {}
 
     // Version
     public String version;
 
-    // GetInfo
+    /**
+     * For {@link ApiHandler#getInfo(UUID, Consumer)}
+     */
     public String tag;
     public String position;
     public String icon;
@@ -16,13 +29,19 @@ public class ResponseBody {
     public String[] roles;
     public PlayerInfo.Suspension suspension;
 
-    // Connections
+    /**
+     * For connection requests which provide an auth code
+     */
     public String code;
 
-    // Success
+    /**
+     * For success messages
+     */
     public String message;
 
-    // Error
+    /**
+     * For error messages
+     */
     public String error;
 
 }

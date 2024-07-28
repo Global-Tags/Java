@@ -11,6 +11,10 @@ import java.net.http.HttpResponse;
 import java.util.Map;
 import java.util.function.Consumer;
 
+/**
+ * A utility request class.
+ * @param <T> The same as the T value of your {@link GlobalTagsAPI} instance.
+ */
 public class ApiRequest<T> {
 
     private final static Gson gson = new Gson();
@@ -21,10 +25,23 @@ public class ApiRequest<T> {
     private final GlobalTagsAPI<T> api;
     private final Map<String, Object> body;
 
+    /**
+     * Builds a new request without body
+     * @param api An api instance
+     * @param method The method
+     * @param path The request path, use {@link Routes}
+     */
     public ApiRequest(GlobalTagsAPI<T> api, String method, String path) {
         this(api, method, path, null);
     }
 
+    /**
+     * Builds a new request
+     * @param api An api instance
+     * @param method The method
+     * @param path The request path, use {@link Routes}
+     * @param body The request body
+     */
     public ApiRequest(GlobalTagsAPI<T> api, String method, String path, Map<String, Object> body) {
         this.api = api;
         this.method = method;
@@ -32,6 +49,10 @@ public class ApiRequest<T> {
         this.body = body;
     }
 
+    /**
+     * Send the request
+     * @param consumer A consumer which gets called when the API responded
+     */
     public void sendRequestSync(Consumer<@NotNull Response> consumer) {
         try {
             HttpRequest request = getBuilder()
@@ -57,6 +78,10 @@ public class ApiRequest<T> {
         }
     }
 
+    /**
+     * Get a builder already containing all needed headers
+     * @return A builder already containing all needed headers
+     */
     private HttpRequest.Builder getBuilder() {
         return HttpRequest.newBuilder()
                 .header("Content-Type", "application/json")
@@ -65,14 +90,29 @@ public class ApiRequest<T> {
                 .header("X-Agent", api.getAgent().toString());
     }
 
+    /**
+     * Get the {@link HttpRequest.BodyPublisher} from the body parameter
+     * @return The {@link HttpRequest.BodyPublisher} from the body parameter
+     */
     private HttpRequest.BodyPublisher getBodyPublisher() {
         if(body == null || body.isEmpty()) return HttpRequest.BodyPublishers.noBody();
         return HttpRequest.BodyPublishers.ofString(gson.toJson(body));
     }
 
-    private ResponseBody getExceptionBody(Throwable e) {
-        return gson.fromJson("{ \"error\": \"" + e.getLocalizedMessage() + "\" }", ResponseBody.class);
+    /**
+     * Get an error body from a throwable
+     * @param throwable The throwable
+     * @return An error body from the throwable
+     */
+    private ResponseBody getExceptionBody(Throwable throwable) {
+        return gson.fromJson("{ \"error\": \"" + throwable.getLocalizedMessage() + "\" }", ResponseBody.class);
     }
 
+    /**
+     * A record which passes a lightweight API response to consumers
+     * @param successful If the request was successful
+     * @param statusCode The response status code
+     * @param body The response body
+     */
     public record Response(boolean successful, int statusCode, @NotNull ResponseBody body) {}
 }

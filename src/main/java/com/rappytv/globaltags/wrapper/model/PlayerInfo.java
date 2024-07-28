@@ -10,6 +10,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
 
+/**
+ * A class which contains the player info of a uuid.
+ * @param <T> The same value as in your {@link GlobalTagsAPI}
+ */
 @SuppressWarnings("unused")
 public class PlayerInfo<T> {
 
@@ -63,7 +67,8 @@ public class PlayerInfo<T> {
     }
 
     /**
-     * Returns the player's uuid
+     * Get the player's uuid
+     * @return The player's uuid
      */
     @NotNull
     public UUID getUUID() {
@@ -71,7 +76,8 @@ public class PlayerInfo<T> {
     }
 
     /**
-     * Returns the player's GlobalTag as a colored component
+     * Get the player's GlobalTag as a colored component
+     * @return The player's GlobalTag as a colored component
      */
     @Nullable
     public T getTag() {
@@ -79,7 +85,8 @@ public class PlayerInfo<T> {
     }
 
     /**
-     * Returns the player's GlobalTag as a plain string - with color codes
+     * Get the player's GlobalTag as a plain string - with color codes
+     * @return The player's GlobalTag as a plain string - with color codes
      */
     @NotNull
     public String getPlainTag() {
@@ -87,7 +94,8 @@ public class PlayerInfo<T> {
     }
 
     /**
-     * Returns the player's GlobalTag position
+     * Get the player's GlobalTag position
+     * @return The player's GlobalTag position
      */
     @NotNull
     public GlobalPosition getPosition() {
@@ -99,7 +107,8 @@ public class PlayerInfo<T> {
     }
 
     /**
-     * Returns the {@link GlobalIcon} enum value which the player has selected
+     * Get the {@link GlobalIcon} enum value which the player has selected
+     * @return The {@link GlobalIcon} enum value which the player has selected
      */
     @NotNull
     public GlobalIcon getGlobalIcon() {
@@ -111,7 +120,8 @@ public class PlayerInfo<T> {
     }
 
     /**
-     * Returns the global icon's url of the player. See {@link GlobalIcon#getIconUrl()}
+     * Get the global icon's url of the player. See {@link GlobalIcon#getIconUrl()}
+     * @return The global icon's url of the player.
      */
     @Nullable
     public String getIconUrl() {
@@ -119,28 +129,32 @@ public class PlayerInfo<T> {
     }
 
     /**
-     * Returns if the player is a GlobalTag admin
+     * Get if the player is a GlobalTag admin
+     * @return If the player is a GlobalTag admin
      */
     public boolean isAdmin() {
         return roles.contains(GlobalRole.ADMIN);
     }
 
     /**
-     * Returns if the player has referred to another player for inviting them
+     * Get if the player has referred to another player for inviting them
+     * @return If the player has referred to another player for inviting them
      */
     public boolean hasReferred() {
         return referred;
     }
 
     /**
-     * Returns how many other players were invited by the player
+     * Get how many other players were invited by the player
+     * @return How many other players were invited by the player
      */
     public int getReferrals() {
         return referrals;
     }
 
     /**
-     * Returns all of the players roles
+     * Get all of the players roles
+     * @return All of the players roles
      */
     @NotNull
     public List<GlobalRole> getRoles() {
@@ -148,7 +162,8 @@ public class PlayerInfo<T> {
     }
 
     /**
-     * Returns the players highest role
+     * Get the players highest role
+     * @return The players highest role
      */
     @Nullable
     public GlobalRole getHighestRole() {
@@ -160,13 +175,15 @@ public class PlayerInfo<T> {
 
     /**
      * Shortcut to check if the player suspension is active
+     * @return If the player suspension is active
      */
     public boolean isSuspended() {
         return suspension.active;
     }
 
     /**
-     * Gets the suspension object from a player
+     * Get the suspension object from a player
+     * @return The suspension object from a player
      */
     @NotNull
     public Suspension getSuspension() {
@@ -189,7 +206,7 @@ public class PlayerInfo<T> {
     }
 
     /**
-     * An object representing a player's ban
+     * A class representing a player's ban
      */
     public static class Suspension {
 
@@ -208,6 +225,8 @@ public class PlayerInfo<T> {
 
         /**
          * Creates an active suspension
+         * @param reason The reason for the suspension
+         * @param appealable If the suspension is appealable or not
          */
         public Suspension(String reason, boolean appealable) {
             this.active = true;
@@ -251,11 +270,19 @@ public class PlayerInfo<T> {
         }
     }
 
+    /**
+     * The class containing the {@link PlayerInfo} cache
+     * @param <T> The same value as in your {@link GlobalTagsAPI}
+     */
     public static class Cache<T> {
 
         private final static Timer timer = new Timer();
         private final GlobalTagsAPI<T> api;
 
+        /**
+         * Creates a new cache
+         * @param api The corresponding api where it's being implemented
+         */
         public Cache(GlobalTagsAPI<T> api) {
             this.api = api;
             timer.scheduleAtFixedRate(new TimerTask() {
@@ -330,6 +357,7 @@ public class PlayerInfo<T> {
 
         /**
          * Resolve a specific {@link UUID} into the cache
+         * @param uuid The uuid which should be resolved
          */
         public void resolve(UUID uuid) {
             resolve(uuid, (info) -> {});
@@ -337,6 +365,7 @@ public class PlayerInfo<T> {
 
         /**
          * Resolve a specific {@link UUID} into the cache
+         * @param uuid The uuid which should be resolved
          * @param consumer A consumer returning the resolved {@link PlayerInfo}
          */
         public void resolve(UUID uuid, Consumer<@Nullable PlayerInfo<T>> consumer) {
