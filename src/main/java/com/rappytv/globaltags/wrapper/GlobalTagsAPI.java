@@ -15,11 +15,13 @@ import java.util.UUID;
 public interface GlobalTagsAPI<T> {
 
     /**
-     * Get the API base for the GlobalTags API
+     * Get the API base for the GlobalTags API. Implementation note: Please don't add a trailing slash
      * @return The Globaltags API base
      */
     @NotNull
-    String getApiBase();
+    default String getApiBase() {
+        return "https://gt.rappytv.com";
+    }
 
     /**
      * Get the current user agent, version and minecraft version to be identified by the API. Example:
@@ -56,13 +58,6 @@ public interface GlobalTagsAPI<T> {
     UUID getClientUUID();
 
     /**
-     * Get the tag cache
-     * @return Returns a static instance of {@link PlayerInfo.Cache}
-     */
-    @NotNull
-    PlayerInfo.Cache<T> getCache();
-
-    /**
      * Get in which interval the cache is being cleared
      * @return The interval in which the cache is being cleared
      */
@@ -72,8 +67,15 @@ public interface GlobalTagsAPI<T> {
     }
 
     /**
+     * Get the tag cache
+     * @return Returns a instance of {@link PlayerInfo.Cache}
+     */
+    @NotNull
+    PlayerInfo.Cache<T> getCache();
+
+    /**
      * Get the api handler
-     * @return Returns a static instance of {@link ApiHandler}
+     * @return Returns a instance of {@link ApiHandler}
      */
     @NotNull
     ApiHandler<T> getApiHandler();
