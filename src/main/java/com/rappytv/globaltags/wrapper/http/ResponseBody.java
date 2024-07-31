@@ -27,6 +27,7 @@ public class ResponseBody {
     public boolean referred;
     public int referrals;
     public String[] roles;
+    public String[] permissions;
     public PlayerInfo.Suspension suspension;
 
     /**
