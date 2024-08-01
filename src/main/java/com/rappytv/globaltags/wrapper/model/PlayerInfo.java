@@ -1,6 +1,7 @@
 package com.rappytv.globaltags.wrapper.model;
 
 import com.rappytv.globaltags.wrapper.enums.GlobalIcon;
+import com.rappytv.globaltags.wrapper.enums.GlobalPermission;
 import com.rappytv.globaltags.wrapper.enums.GlobalPosition;
 import com.rappytv.globaltags.wrapper.enums.GlobalRole;
 import com.rappytv.globaltags.wrapper.GlobalTagsAPI;
@@ -25,6 +26,7 @@ public class PlayerInfo<T> {
     private final boolean referred;
     private final int referrals;
     private final List<GlobalRole> roles;
+    private final Map<GlobalPermission, Boolean> permissions;
     private final Suspension suspension;
 
     /**
@@ -37,6 +39,7 @@ public class PlayerInfo<T> {
      * @param referred If the player has already marked someone as their inviter
      * @param referrals How many players the player has invited
      * @param roles The player's roles
+     * @param permissions The player's permissions
      * @param suspension The player's {@link Suspension}
      */
     public PlayerInfo(
@@ -48,6 +51,7 @@ public class PlayerInfo<T> {
             boolean referred,
             int referrals,
             @NotNull String[] roles,
+            @NotNull String[] permissions,
             @Nullable Suspension suspension
     ) {
         this.uuid = uuid;
@@ -62,6 +66,17 @@ public class PlayerInfo<T> {
             try {
                 this.roles.add(GlobalRole.valueOf(role.toUpperCase()));
             } catch (Exception ignored) {}
+        }
+        this.permissions = new HashMap<>();
+        List<GlobalPermission> playerPermissions = new ArrayList<>();
+        for(String permission : permissions) {
+            GlobalPermission globalPermission;
+            try {
+                playerPermissions.add(GlobalPermission.valueOf(permission.toUpperCase()));
+            } catch (Exception ignored) {}
+        }
+        for(GlobalPermission permission : GlobalPermission.values()) {
+            this.permissions.put(permission, playerPermissions.contains(permission));
         }
         this.suspension = suspension != null ? suspension : new Suspension();
     }
@@ -130,10 +145,21 @@ public class PlayerInfo<T> {
 
     /**
      * Get if the player is a GlobalTag admin
+     * @deprecated Use {@link PlayerInfo#hasPermission} instead
      * @return If the player is a GlobalTag admin
      */
+    @Deprecated(forRemoval = true, since = "1.0.7")
     public boolean isAdmin() {
         return roles.contains(GlobalRole.ADMIN);
+    }
+
+    /**
+     * Check if the player has a specific permission
+     * @param permission The permission you want to check for
+     * @return If the player has the permission
+     */
+    public boolean hasPermission(GlobalPermission permission) {
+        return permissions.containsKey(permission) && permissions.get(permission);
     }
 
     /**
@@ -193,7 +219,7 @@ public class PlayerInfo<T> {
     @Override
     public String toString() {
         return String.format(
-                "Playerinfo{uuid=%s, tag='%s', position='%s', icon='%s', referred=%s, referrals=%s, roles=%s, suspension=%s}",
+                "Playerinfo{uuid=%s, tag='%s', position='%s', icon='%s', referred=%s, referrals=%s, roles=%s, permissions=%s, suspension=%s}",
                 uuid,
                 plainTag,
                 getPosition().name().toLowerCase(),
@@ -201,6 +227,7 @@ public class PlayerInfo<T> {
                 referred,
                 referrals,
                 roles,
+                permissions,
                 suspension
         );
     }
