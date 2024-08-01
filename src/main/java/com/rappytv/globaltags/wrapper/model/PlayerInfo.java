@@ -219,7 +219,7 @@ public class PlayerInfo<T> {
     @Override
     public String toString() {
         return String.format(
-                "Playerinfo{uuid=%s, tag='%s', position='%s', icon='%s', referred=%s, referrals=%s, roles=%s, suspension=%s}",
+                "Playerinfo{uuid=%s, tag='%s', position='%s', icon='%s', referred=%s, referrals=%s, roles=%s, permissions=%s, suspension=%s}",
                 uuid,
                 plainTag,
                 getPosition().name().toLowerCase(),
@@ -227,6 +227,7 @@ public class PlayerInfo<T> {
                 referred,
                 referrals,
                 roles,
+                permissions,
                 suspension
         );
     }
