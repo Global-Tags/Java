@@ -28,7 +28,7 @@ public class ResponseBody {
     public int referrals;
     public String[] roles;
     public String[] permissions;
-    public PlayerInfo.Suspension suspension;
+    public PlayerInfo.Suspension ban;
 
     /**
      * For connection requests which provide an auth code

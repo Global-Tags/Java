@@ -78,7 +78,7 @@ public class ApiHandler<T> {
                     response.body().referrals,
                     response.body().roles,
                     response.body().permissions,
-                    response.body().suspension
+                    response.body().ban
             ));
         });
     }
