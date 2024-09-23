@@ -10,7 +10,7 @@ import java.util.function.Consumer;
 
 /**
  * A class containing all requests to the <a href="https://github.com/Global-Tags/API">GlobalTagAPI</a>
- * @param <T>
+ * @param <T> The same as the T value of your {@link GlobalTagsAPI} instance.
  */
 @SuppressWarnings("unused")
 public class ApiHandler<T> {
