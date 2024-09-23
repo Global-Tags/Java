@@ -20,7 +20,7 @@ public interface GlobalTagsAPI<T> {
      */
     @NotNull
     default String getApiBase() {
-        return "https://gt.rappytv.com";
+        return "https://api.globaltags.xyz";
     }
 
     /**
