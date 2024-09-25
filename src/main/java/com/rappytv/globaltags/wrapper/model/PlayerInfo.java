@@ -144,16 +144,6 @@ public class PlayerInfo<T> {
     }
 
     /**
-     * Get if the player is a GlobalTag admin
-     * @deprecated Use {@link PlayerInfo#hasPermission} instead
-     * @return If the player is a GlobalTag admin
-     */
-    @Deprecated(forRemoval = true, since = "1.0.7")
-    public boolean isAdmin() {
-        return roles.contains(GlobalRole.ADMIN);
-    }
-
-    /**
      * Check if the player has a specific permission
      * @param permission The permission you want to check for
      * @return If the player has the permission
