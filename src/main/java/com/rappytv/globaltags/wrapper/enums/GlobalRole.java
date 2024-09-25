@@ -9,13 +9,14 @@ public enum GlobalRole {
     ADMIN("purple"),
     DEVELOPER("aqua"),
     MODERATOR("orange"),
+    PARTNER("blue"),
     SUPPORTER("green");
 
     private final String iconUrl;
 
     GlobalRole(String color) {
         this.iconUrl = String.format(
-                "https://cdn.rappytv.com/globaltags/icons/staff/%s.png",
+                "https://cdn.rappytv.com/globaltags/icons/role/%s.png",
                 color
         );
     }
