@@ -6,10 +6,10 @@
 
     <groupId>com.rappytv.globaltags</groupId>
     <artifactId>GlobalTagsJava</artifactId>
-    <version>1.0.12</version>
+    <version>1.1.0</version>
 
     <name>GlobalTagsJava</name>
-    <description>A wrapper for the GlobalTagAPI (https://api.globaltags.xyz/docs)</description>
+    <description>A wrapper for the GlobalTagsAPI</description>
     <url>https://www.globaltags.xyz</url>
 
     <licenses>
