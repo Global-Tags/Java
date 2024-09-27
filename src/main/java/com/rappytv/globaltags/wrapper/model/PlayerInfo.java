@@ -296,6 +296,10 @@ public class PlayerInfo<T> {
         private final static Timer timer = new Timer();
         private final GlobalTagsAPI<T> api;
 
+        /**
+         * Creates a new cache
+         * @param api The corresponding api where it's being implemented
+         */
         public Cache(GlobalTagsAPI<T> api) {
             this(api, new Options() {
                 @Override
@@ -313,7 +317,7 @@ public class PlayerInfo<T> {
         }
 
         /**
-         * Creates a new cache
+         * Creates a new cache with custom options
          * @param api The corresponding api where it's being implemented
          * @param options The cache cleanup options
          */
@@ -447,6 +451,9 @@ public class PlayerInfo<T> {
             resolving.clear();
         }
 
+        /**
+         * An interface which is used for custom cache intervals
+         */
         public interface Options {
 
             /**
