@@ -450,13 +450,13 @@ public class PlayerInfo<T> {
         public interface Options {
 
             /**
-             * The interval in which the cache should be cleared automatically. If you want to disable automatic cache cleanup, pass -1.
+             * The interval in which the cache should be cleared automatically in milliseconds. If you want to disable automatic cache cleanup, pass -1.
              * @return The interval in which the cache is being cleared.
              */
             long getCacheClearInterval();
 
             /**
-             * The interval in which the cache should be renewed automatically. If you want to disable the automatic renewal of cache, pass -1.
+             * The interval in which the cache should be renewed automatically in milliseconds. If you want to disable the automatic renewal of cache, pass -1.
              * @return The interval in which the cache is being renewed.
              */
             long getCacheRenewInterval();
