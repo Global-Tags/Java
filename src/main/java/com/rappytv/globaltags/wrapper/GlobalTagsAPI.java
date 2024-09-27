@@ -58,15 +58,6 @@ public interface GlobalTagsAPI<T> {
     UUID getClientUUID();
 
     /**
-     * Get in which interval the cache is being cleared
-     * @return The interval in which the cache is being cleared
-     */
-    default long getCacheLiveDuration() {
-        // Default is 5 minutes
-        return 1000 * 60 * 5;
-    }
-
-    /**
      * Get the tag cache
      * @return Returns a instance of {@link PlayerInfo.Cache}
      */
