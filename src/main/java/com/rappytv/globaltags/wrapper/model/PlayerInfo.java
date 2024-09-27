@@ -339,7 +339,7 @@ public class PlayerInfo<T> {
                 timer.scheduleAtFixedRate(new TimerTask() {
                     @Override
                     public void run() {
-                        api.getCache().renew();
+                        api.getCache().renewAll();
                     }
                 }, options.getCacheRenewInterval(), options.getCacheRenewInterval());
             }
@@ -424,6 +424,15 @@ public class PlayerInfo<T> {
                 consumer.accept(get(uuid));
                 return;
             }
+            fetch(uuid, consumer);
+        }
+
+        /**
+         * Fetches a specific {@link UUID}
+         * @param uuid The uuid which should be fetched
+         * @param consumer A consumer returning the resolved {@link PlayerInfo}
+         */
+        private void fetch(UUID uuid, Consumer<@Nullable PlayerInfo<T>> consumer) {
             if(resolving.contains(uuid)) return;
             resolving.add(uuid);
 
@@ -435,11 +444,46 @@ public class PlayerInfo<T> {
         }
 
         /**
+         * Renews tag data of {@link GlobalTagsAPI#getClientUUID()}
+         */
+        public void renewSelf() {
+            renewSelf((info) -> {});
+        }
+
+        /**
+         * Renews tag data of {@link GlobalTagsAPI#getClientUUID()}
+         * @param consumer A consumer returning the renewed {@link PlayerInfo}
+         */
+        public void renewSelf(Consumer<@Nullable PlayerInfo<T>> consumer) {
+            renew(api.getClientUUID(), consumer);
+        }
+
+        /**
+         * Renews tag data of a specific uuid
+         * @param uuid The uuid which should be renewed
+         */
+        public void renew(UUID uuid) {
+            renew(uuid, (info) -> {});
+        }
+
+        /**
+         * Renews tag data of a specific uuid
+         * @param uuid The uuid which should be renewed
+         * @param consumer A consumer returning the renewed {@link PlayerInfo}
+         */
+        public void renew(UUID uuid, Consumer<@Nullable PlayerInfo<T>> consumer) {
+            fetch(uuid, (info) -> {
+                cache.put(uuid, info);
+                consumer.accept(info);
+            });
+        }
+
+        /**
          * Renews tag data of all cached uuids
          */
-        public void renew() {
+        public void renewAll() {
             for(UUID uuid : cache.keySet()) {
-                resolve(uuid, (info) -> cache.put(uuid, info));
+                renew(uuid);
             }
         }
 
