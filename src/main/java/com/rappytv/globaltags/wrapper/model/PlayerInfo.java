@@ -301,14 +301,48 @@ public class PlayerInfo<T> {
          * @param api The corresponding api where it's being implemented
          */
         public Cache(GlobalTagsAPI<T> api) {
-            this.api = api;
-            timer.scheduleAtFixedRate(new TimerTask() {
+            this(api, new Options() {
                 @Override
-                public void run() {
-                    api.getCache().clear();
-                    if(api.getClientUUID() != null) api.getCache().resolveSelf();
+                public long getCacheClearInterval() {
+                    // Default is 30 minutes
+                    return 1000 * 60 * 30;
                 }
-            }, api.getCacheLiveDuration(), api.getCacheLiveDuration());
+
+                @Override
+                public long getCacheRenewInterval() {
+                    // Default is 5 minutes
+                    return 1000 * 60 * 30;
+                }
+            });
+        }
+
+        /**
+         * Creates a new cache with custom options
+         * @param api The corresponding api where it's being implemented
+         * @param options The cache cleanup options
+         */
+        public Cache(@NotNull GlobalTagsAPI<T> api, @NotNull Options options) {
+            Objects.requireNonNull(api, "api must not be null");
+            Objects.requireNonNull(options, "options may not be null");
+            this.api = api;
+            if(options.getCacheClearInterval() > -1) {
+                timer.scheduleAtFixedRate(new TimerTask() {
+                    @Override
+                    public void run() {
+                        api.getCache().clear();
+                        if(api.getClientUUID() != null) api.getCache().resolveSelf();
+                    }
+                }, options.getCacheClearInterval(), options.getCacheClearInterval());
+            }
+
+            if(options.getCacheRenewInterval() > -1) {
+                timer.scheduleAtFixedRate(new TimerTask() {
+                    @Override
+                    public void run() {
+                        api.getCache().renew();
+                    }
+                }, options.getCacheRenewInterval(), options.getCacheRenewInterval());
+            }
         }
 
         private final Map<UUID, PlayerInfo<T>> cache = new HashMap<>();
@@ -401,11 +435,38 @@ public class PlayerInfo<T> {
         }
 
         /**
+         * Renews tag data of all cached uuids
+         */
+        public void renew() {
+            for(UUID uuid : cache.keySet()) {
+                resolve(uuid, (info) -> cache.put(uuid, info));
+            }
+        }
+
+        /**
          * Clears the cache
          */
         public void clear() {
             cache.clear();
             resolving.clear();
+        }
+
+        /**
+         * An interface which is used for custom cache intervals
+         */
+        public interface Options {
+
+            /**
+             * The interval in which the cache should be cleared automatically in milliseconds. If you want to disable automatic cache cleanup, pass -1.
+             * @return The interval in which the cache is being cleared.
+             */
+            long getCacheClearInterval();
+
+            /**
+             * The interval in which the cache should be renewed automatically in milliseconds. If you want to disable the automatic renewal of cache, pass -1.
+             * @return The interval in which the cache is being renewed.
+             */
+            long getCacheRenewInterval();
         }
     }
 }
