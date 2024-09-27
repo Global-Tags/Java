@@ -424,6 +424,10 @@ public class PlayerInfo<T> {
                 consumer.accept(get(uuid));
                 return;
             }
+            fetch(uuid, consumer);
+        }
+
+        private void fetch(UUID uuid, Consumer<@Nullable PlayerInfo<T>> consumer) {
             if(resolving.contains(uuid)) return;
             resolving.add(uuid);
 
@@ -439,7 +443,7 @@ public class PlayerInfo<T> {
          */
         public void renew() {
             for(UUID uuid : cache.keySet()) {
-                resolve(uuid, (info) -> cache.put(uuid, info));
+                fetch(uuid, (info) -> cache.put(uuid, info));
             }
         }
 
