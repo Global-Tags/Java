@@ -401,6 +401,15 @@ public class PlayerInfo<T> {
         }
 
         /**
+         * Renews tag data of all cached uuids
+         */
+        public void renew() {
+            for(UUID uuid : cache.keySet()) {
+                resolve(uuid, (info) -> cache.put(uuid, info));
+            }
+        }
+
+        /**
          * Clears the cache
          */
         public void clear() {
