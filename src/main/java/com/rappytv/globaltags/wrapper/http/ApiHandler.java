@@ -1,6 +1,7 @@
 package com.rappytv.globaltags.wrapper.http;
 
 import com.rappytv.globaltags.wrapper.GlobalTagsAPI;
+import com.rappytv.globaltags.wrapper.enums.ConnectionType;
 import com.rappytv.globaltags.wrapper.enums.GlobalIcon;
 import com.rappytv.globaltags.wrapper.enums.GlobalPosition;
 import com.rappytv.globaltags.wrapper.model.PlayerInfo;
@@ -109,8 +110,7 @@ public class ApiHandler<T> {
                 consumer.accept(new ApiResponse<>(false, response.body().error));
                 return;
             }
-            api.getCache().clear();
-            api.getCache().resolveSelf((info) ->
+            api.getCache().renewSelf((info) ->
                     consumer.accept(new ApiResponse<>(true, response.body().message))
             );
         });
@@ -142,8 +142,7 @@ public class ApiHandler<T> {
                 consumer.accept(new ApiResponse<>(false, response.body().error));
                 return;
             }
-            api.getCache().clear();
-            api.getCache().resolveSelf((info) ->
+            api.getCache().renewSelf((info) ->
                     consumer.accept(new ApiResponse<>(true, response.body().message))
             );
         });
@@ -175,8 +174,7 @@ public class ApiHandler<T> {
                 consumer.accept(new ApiResponse<>(false, response.body().error));
                 return;
             }
-            api.getCache().clear();
-            api.getCache().resolveSelf((info) ->
+            api.getCache().renewSelf((info) ->
                     consumer.accept(new ApiResponse<>(true, response.body().message))
             );
         });
@@ -206,8 +204,7 @@ public class ApiHandler<T> {
                 consumer.accept(new ApiResponse<>(false, response.body().error));
                 return;
             }
-            api.getCache().clear();
-            api.getCache().resolveSelf((info) ->
+            api.getCache().renewSelf((info) ->
                     consumer.accept(new ApiResponse<>(true, response.body().message))
             );
         });
@@ -229,8 +226,7 @@ public class ApiHandler<T> {
                 consumer.accept(new ApiResponse<>(false, response.body().error));
                 return;
             }
-            api.getCache().clear();
-            api.getCache().resolveSelf((info) ->
+            api.getCache().renewSelf((info) ->
                     consumer.accept(new ApiResponse<>(true, response.body().message))
             );
         });
@@ -253,8 +249,7 @@ public class ApiHandler<T> {
                 consumer.accept(new ApiResponse<>(false, response.body().error));
                 return;
             }
-            api.getCache().clear();
-            api.getCache().resolveSelf((info) ->
+            api.getCache().renewSelf((info) ->
                     consumer.accept(new ApiResponse<>(true, response.body().message))
             );
         });
@@ -277,11 +272,9 @@ public class ApiHandler<T> {
                 consumer.accept(new ApiResponse<>(false, response.body().error));
                 return;
             }
-            api.getCache().clear();
-            api.getCache().resolveSelf((info) -> {
-                System.out.println("eee");
-                consumer.accept(new ApiResponse<>(true, response.body().message));
-            });
+            api.getCache().renewSelf((info) ->
+                    consumer.accept(new ApiResponse<>(true, response.body().message))
+            );
         });
     }
 
@@ -301,8 +294,7 @@ public class ApiHandler<T> {
                 consumer.accept(new ApiResponse<>(false, response.body().error));
                 return;
             }
-            api.getCache().clear();
-            api.getCache().resolveSelf((info) ->
+            api.getCache().renewSelf((info) ->
                     consumer.accept(new ApiResponse<>(true, response.body().message))
             );
         });
@@ -326,8 +318,7 @@ public class ApiHandler<T> {
                 consumer.accept(new ApiResponse<>(false, response.body().error));
                 return;
             }
-            api.getCache().clear();
-            api.getCache().resolveSelf((info) ->
+            api.getCache().renewSelf((info) ->
                     consumer.accept(new ApiResponse<>(true, response.body().message))
             );
         });
@@ -361,7 +352,7 @@ public class ApiHandler<T> {
         new ApiRequest<>(
                 api,
                 "POST",
-                Routes.discordConnection(api.getClientUUID()),
+                Routes.connection(api.getClientUUID(), ConnectionType.DISCORD),
                 emptyBody
         ).sendRequestSync((response) -> {
             if(!response.successful()) {
@@ -380,15 +371,14 @@ public class ApiHandler<T> {
         new ApiRequest<>(
                 api,
                 "DELETE",
-                Routes.discordConnection(api.getClientUUID()),
+                Routes.connection(api.getClientUUID(), ConnectionType.DISCORD),
                 emptyBody
         ).sendRequestSync((response) -> {
             if(!response.successful()) {
                 consumer.accept(new ApiResponse<>(false, response.body().error));
                 return;
             }
-            api.getCache().clear();
-            api.getCache().resolveSelf((info) ->
+            api.getCache().renewSelf((info) ->
                     consumer.accept(new ApiResponse<>(true, response.body().message))
             );
         });
