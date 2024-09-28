@@ -211,6 +211,46 @@ public class ApiHandler<T> {
     }
 
     /**
+     * A request to add a player to the watchlist
+     * @param uuid The uuid you want to add to the watchlist
+     * @param consumer The action to be executed on response.
+     */
+    public void watchPlayer(UUID uuid, Consumer<ApiResponse<String>> consumer) {
+        new ApiRequest<>(
+                api,
+                "POST",
+                Routes.watchPlayer(uuid),
+                emptyBody
+        ).sendRequestSync((response) -> {
+            if(!response.successful()) {
+                consumer.accept(new ApiResponse<>(false, response.body().error));
+                return;
+            }
+            consumer.accept(new ApiResponse<>(true, response.body().message));
+        });
+    }
+
+    /**
+     * A request to remove a player from the watchlist
+     * @param uuid The uuid you want to remove from the watchlist
+     * @param consumer The action to be executed on response.
+     */
+    public void unwatchPlayer(UUID uuid, Consumer<ApiResponse<String>> consumer) {
+        new ApiRequest<>(
+                api,
+                "POST",
+                Routes.unwatchPlayer(uuid),
+                emptyBody
+        ).sendRequestSync((response) -> {
+            if(!response.successful()) {
+                consumer.accept(new ApiResponse<>(false, response.body().error));
+                return;
+            }
+            consumer.accept(new ApiResponse<>(true, response.body().message));
+        });
+    }
+
+    /**
      * A request to mark a specific uuid as the inviter of {@link GlobalTagsAPI#getClientUUID()}
      * @param uuid The uuid you want to mark as the inviter
      * @param consumer The action to be executed on response.
