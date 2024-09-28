@@ -1,6 +1,7 @@
 package com.rappytv.globaltags.wrapper.http;
 
 import com.rappytv.globaltags.wrapper.GlobalTagsAPI;
+import com.rappytv.globaltags.wrapper.enums.ConnectionType;
 import com.rappytv.globaltags.wrapper.enums.GlobalIcon;
 import com.rappytv.globaltags.wrapper.enums.GlobalPosition;
 import com.rappytv.globaltags.wrapper.model.PlayerInfo;
@@ -109,8 +110,7 @@ public class ApiHandler<T> {
                 consumer.accept(new ApiResponse<>(false, response.body().error));
                 return;
             }
-            api.getCache().clear();
-            api.getCache().resolveSelf((info) ->
+            api.getCache().renewSelf((info) ->
                     consumer.accept(new ApiResponse<>(true, response.body().message))
             );
         });
@@ -142,8 +142,7 @@ public class ApiHandler<T> {
                 consumer.accept(new ApiResponse<>(false, response.body().error));
                 return;
             }
-            api.getCache().clear();
-            api.getCache().resolveSelf((info) ->
+            api.getCache().renewSelf((info) ->
                     consumer.accept(new ApiResponse<>(true, response.body().message))
             );
         });
@@ -175,8 +174,7 @@ public class ApiHandler<T> {
                 consumer.accept(new ApiResponse<>(false, response.body().error));
                 return;
             }
-            api.getCache().clear();
-            api.getCache().resolveSelf((info) ->
+            api.getCache().renewSelf((info) ->
                     consumer.accept(new ApiResponse<>(true, response.body().message))
             );
         });
@@ -206,10 +204,49 @@ public class ApiHandler<T> {
                 consumer.accept(new ApiResponse<>(false, response.body().error));
                 return;
             }
-            api.getCache().clear();
-            api.getCache().resolveSelf((info) ->
+            api.getCache().renewSelf((info) ->
                     consumer.accept(new ApiResponse<>(true, response.body().message))
             );
+        });
+    }
+
+    /**
+     * A request to add a player to the watchlist
+     * @param uuid The uuid you want to add to the watchlist
+     * @param consumer The action to be executed on response.
+     */
+    public void watchPlayer(UUID uuid, Consumer<ApiResponse<String>> consumer) {
+        new ApiRequest<>(
+                api,
+                "POST",
+                Routes.watchPlayer(uuid),
+                emptyBody
+        ).sendRequestSync((response) -> {
+            if(!response.successful()) {
+                consumer.accept(new ApiResponse<>(false, response.body().error));
+                return;
+            }
+            consumer.accept(new ApiResponse<>(true, response.body().message));
+        });
+    }
+
+    /**
+     * A request to remove a player from the watchlist
+     * @param uuid The uuid you want to remove from the watchlist
+     * @param consumer The action to be executed on response.
+     */
+    public void unwatchPlayer(UUID uuid, Consumer<ApiResponse<String>> consumer) {
+        new ApiRequest<>(
+                api,
+                "POST",
+                Routes.unwatchPlayer(uuid),
+                emptyBody
+        ).sendRequestSync((response) -> {
+            if(!response.successful()) {
+                consumer.accept(new ApiResponse<>(false, response.body().error));
+                return;
+            }
+            consumer.accept(new ApiResponse<>(true, response.body().message));
         });
     }
 
@@ -229,8 +266,7 @@ public class ApiHandler<T> {
                 consumer.accept(new ApiResponse<>(false, response.body().error));
                 return;
             }
-            api.getCache().clear();
-            api.getCache().resolveSelf((info) ->
+            api.getCache().renewSelf((info) ->
                     consumer.accept(new ApiResponse<>(true, response.body().message))
             );
         });
@@ -253,8 +289,7 @@ public class ApiHandler<T> {
                 consumer.accept(new ApiResponse<>(false, response.body().error));
                 return;
             }
-            api.getCache().clear();
-            api.getCache().resolveSelf((info) ->
+            api.getCache().renewSelf((info) ->
                     consumer.accept(new ApiResponse<>(true, response.body().message))
             );
         });
@@ -277,11 +312,9 @@ public class ApiHandler<T> {
                 consumer.accept(new ApiResponse<>(false, response.body().error));
                 return;
             }
-            api.getCache().clear();
-            api.getCache().resolveSelf((info) -> {
-                System.out.println("eee");
-                consumer.accept(new ApiResponse<>(true, response.body().message));
-            });
+            api.getCache().renewSelf((info) ->
+                    consumer.accept(new ApiResponse<>(true, response.body().message))
+            );
         });
     }
 
@@ -301,8 +334,7 @@ public class ApiHandler<T> {
                 consumer.accept(new ApiResponse<>(false, response.body().error));
                 return;
             }
-            api.getCache().clear();
-            api.getCache().resolveSelf((info) ->
+            api.getCache().renewSelf((info) ->
                     consumer.accept(new ApiResponse<>(true, response.body().message))
             );
         });
@@ -326,8 +358,7 @@ public class ApiHandler<T> {
                 consumer.accept(new ApiResponse<>(false, response.body().error));
                 return;
             }
-            api.getCache().clear();
-            api.getCache().resolveSelf((info) ->
+            api.getCache().renewSelf((info) ->
                     consumer.accept(new ApiResponse<>(true, response.body().message))
             );
         });
@@ -361,7 +392,7 @@ public class ApiHandler<T> {
         new ApiRequest<>(
                 api,
                 "POST",
-                Routes.discordConnection(api.getClientUUID()),
+                Routes.connection(api.getClientUUID(), ConnectionType.DISCORD),
                 emptyBody
         ).sendRequestSync((response) -> {
             if(!response.successful()) {
@@ -380,17 +411,75 @@ public class ApiHandler<T> {
         new ApiRequest<>(
                 api,
                 "DELETE",
-                Routes.discordConnection(api.getClientUUID()),
+                Routes.connection(api.getClientUUID(), ConnectionType.DISCORD),
                 emptyBody
         ).sendRequestSync((response) -> {
             if(!response.successful()) {
                 consumer.accept(new ApiResponse<>(false, response.body().error));
                 return;
             }
-            api.getCache().clear();
-            api.getCache().resolveSelf((info) ->
+            api.getCache().renewSelf((info) ->
                     consumer.accept(new ApiResponse<>(true, response.body().message))
             );
+        });
+    }
+
+    /**
+     * A request to send an email verification to of {@link GlobalTagsAPI#getClientUUID()}.
+     * @param email The email which should be linked
+     * @param consumer The action to be executed on response.
+     */
+    public void linkEmail(String email, Consumer<ApiResponse<String>> consumer) {
+        new ApiRequest<>(
+                api,
+                "POST",
+                Routes.connection(api.getClientUUID(), ConnectionType.EMAIL),
+                Map.of("email", email)
+        ).sendRequestSync((response) -> {
+            if(!response.successful()) {
+                consumer.accept(new ApiResponse<>(false, response.body().error));
+                return;
+            }
+            consumer.accept(new ApiResponse<>(true, response.body().message));
+        });
+    }
+
+    /**
+     * A request to unlink the email address of {@link GlobalTagsAPI#getClientUUID()}
+     * @param consumer The action to be executed on response.
+     */
+    public void unlinkEmail(Consumer<ApiResponse<String>> consumer) {
+        new ApiRequest<>(
+                api,
+                "DELETE",
+                Routes.connection(api.getClientUUID(), ConnectionType.EMAIL),
+                emptyBody
+        ).sendRequestSync((response) -> {
+            if(!response.successful()) {
+                consumer.accept(new ApiResponse<>(false, response.body().error));
+                return;
+            }
+            consumer.accept(new ApiResponse<>(true, response.body().message));
+        });
+    }
+
+    /**
+     * A request to verify the email with the received verification code.
+     * @param code The verification code which was received via email
+     * @param consumer The action to be executed on response.
+     */
+    public void verifyEmail(String code, Consumer<ApiResponse<String>> consumer) {
+        new ApiRequest<>(
+                api,
+                "POST",
+                Routes.verifyEmail(api.getClientUUID(), code),
+                emptyBody
+        ).sendRequestSync((response) -> {
+            if(!response.successful()) {
+                consumer.accept(new ApiResponse<>(false, response.body().error));
+                return;
+            }
+            consumer.accept(new ApiResponse<>(true, response.body().message));
         });
     }
 

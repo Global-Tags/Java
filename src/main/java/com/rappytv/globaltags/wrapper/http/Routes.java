@@ -1,5 +1,7 @@
 package com.rappytv.globaltags.wrapper.http;
 
+import com.rappytv.globaltags.wrapper.enums.ConnectionType;
+
 import java.util.UUID;
 
 /**
@@ -126,11 +128,25 @@ public class Routes {
      * - POST /players/{uuid}/connections/discord
      * - DELETE /players/{uuid}/connections/discord
      * </pre>
-     * @param uuid The {@link UUID} of the player you want to set/delete the discord connection of
+     * @param uuid The {@link UUID} of the player you want to set/delete the connection of
+     * @param type The connection type
      * @return The HTTP route
      */
-    public static String discordConnection(UUID uuid) {
-        return "/players/" + uuid + "/connections/discord";
+    public static String connection(UUID uuid, ConnectionType type) {
+        return "/players/" + uuid + "/connections/" + type.name().toLowerCase();
+    }
+
+    /**
+     * <pre>
+     * Route for
+     * - POST /players/{uuid}/connections/email/{code}
+     * </pre>
+     * @param uuid The {@link UUID} of the player you want to verify the email of
+     * @param code The verification code which was received via email
+     * @return The HTTP route
+     */
+    public static String verifyEmail(UUID uuid, String code) {
+        return "/players/" + uuid + "/connections/email/" + code;
     }
 
     /**
