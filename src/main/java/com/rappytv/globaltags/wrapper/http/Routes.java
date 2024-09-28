@@ -142,6 +142,7 @@ public class Routes {
      * - POST /players/{uuid}/connections/email/{code}
      * </pre>
      * @param uuid The {@link UUID} of the player you want to verify the email of
+     * @param code The verification code which was received via email
      * @return The HTTP route
      */
     public static String verifyEmail(UUID uuid, String code) {
