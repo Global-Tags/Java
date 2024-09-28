@@ -385,6 +385,65 @@ public class ApiHandler<T> {
     }
 
     /**
+     * A request to send an email verification to of {@link GlobalTagsAPI#getClientUUID()}.
+     * @param email The email which should be linked
+     * @param consumer The action to be executed on response.
+     */
+    public void linkEmail(String email, Consumer<ApiResponse<String>> consumer) {
+        new ApiRequest<>(
+                api,
+                "POST",
+                Routes.connection(api.getClientUUID(), ConnectionType.EMAIL),
+                Map.of("email", email)
+        ).sendRequestSync((response) -> {
+            if(!response.successful()) {
+                consumer.accept(new ApiResponse<>(false, response.body().error));
+                return;
+            }
+            consumer.accept(new ApiResponse<>(true, response.body().message));
+        });
+    }
+
+    /**
+     * A request to unlink the email address of {@link GlobalTagsAPI#getClientUUID()}
+     * @param consumer The action to be executed on response.
+     */
+    public void unlinkEmail(Consumer<ApiResponse<String>> consumer) {
+        new ApiRequest<>(
+                api,
+                "DELETE",
+                Routes.connection(api.getClientUUID(), ConnectionType.EMAIL),
+                emptyBody
+        ).sendRequestSync((response) -> {
+            if(!response.successful()) {
+                consumer.accept(new ApiResponse<>(false, response.body().error));
+                return;
+            }
+            consumer.accept(new ApiResponse<>(true, response.body().message));
+        });
+    }
+
+    /**
+     * A request to verify the email with the received verification code.
+     * @param code The verification code which was received via email
+     * @param consumer The action to be executed on response.
+     */
+    public void verifyEmail(String code, Consumer<ApiResponse<String>> consumer) {
+        new ApiRequest<>(
+                api,
+                "POST",
+                Routes.verifyEmail(api.getClientUUID(), code),
+                emptyBody
+        ).sendRequestSync((response) -> {
+            if(!response.successful()) {
+                consumer.accept(new ApiResponse<>(false, response.body().error));
+                return;
+            }
+            consumer.accept(new ApiResponse<>(true, response.body().message));
+        });
+    }
+
+    /**
      * An inline class containing response data for these requests
      * @param successful If the request was successful
      * @param data The data returned
