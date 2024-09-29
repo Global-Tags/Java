@@ -110,7 +110,7 @@ public class ApiHandler<T> {
                 consumer.accept(new ApiResponse<>(false, response.body().error));
                 return;
             }
-            api.getCache().renewSelf((info) ->
+            api.getCache().renew(uuid, (info) ->
                     consumer.accept(new ApiResponse<>(true, response.body().message))
             );
         });
@@ -142,7 +142,7 @@ public class ApiHandler<T> {
                 consumer.accept(new ApiResponse<>(false, response.body().error));
                 return;
             }
-            api.getCache().renewSelf((info) ->
+            api.getCache().renew(uuid, (info) ->
                     consumer.accept(new ApiResponse<>(true, response.body().message))
             );
         });
@@ -174,7 +174,7 @@ public class ApiHandler<T> {
                 consumer.accept(new ApiResponse<>(false, response.body().error));
                 return;
             }
-            api.getCache().renewSelf((info) ->
+            api.getCache().renew(uuid, (info) ->
                     consumer.accept(new ApiResponse<>(true, response.body().message))
             );
         });
@@ -204,7 +204,7 @@ public class ApiHandler<T> {
                 consumer.accept(new ApiResponse<>(false, response.body().error));
                 return;
             }
-            api.getCache().renewSelf((info) ->
+            api.getCache().renew(uuid, (info) ->
                     consumer.accept(new ApiResponse<>(true, response.body().message))
             );
         });
@@ -266,9 +266,7 @@ public class ApiHandler<T> {
                 consumer.accept(new ApiResponse<>(false, response.body().error));
                 return;
             }
-            api.getCache().renewSelf((info) ->
-                    consumer.accept(new ApiResponse<>(true, response.body().message))
-            );
+            consumer.accept(new ApiResponse<>(true, response.body().message));
         });
     }
 
@@ -289,9 +287,7 @@ public class ApiHandler<T> {
                 consumer.accept(new ApiResponse<>(false, response.body().error));
                 return;
             }
-            api.getCache().renewSelf((info) ->
-                    consumer.accept(new ApiResponse<>(true, response.body().message))
-            );
+            consumer.accept(new ApiResponse<>(true, response.body().message));
         });
     }
 
@@ -312,7 +308,7 @@ public class ApiHandler<T> {
                 consumer.accept(new ApiResponse<>(false, response.body().error));
                 return;
             }
-            api.getCache().renewSelf((info) ->
+            api.getCache().renew(uuid, (info) ->
                     consumer.accept(new ApiResponse<>(true, response.body().message))
             );
         });
@@ -334,7 +330,7 @@ public class ApiHandler<T> {
                 consumer.accept(new ApiResponse<>(false, response.body().error));
                 return;
             }
-            api.getCache().renewSelf((info) ->
+            api.getCache().renew(uuid, (info) ->
                     consumer.accept(new ApiResponse<>(true, response.body().message))
             );
         });
@@ -358,7 +354,7 @@ public class ApiHandler<T> {
                 consumer.accept(new ApiResponse<>(false, response.body().error));
                 return;
             }
-            api.getCache().renewSelf((info) ->
+            api.getCache().renew(uuid, (info) ->
                     consumer.accept(new ApiResponse<>(true, response.body().message))
             );
         });
