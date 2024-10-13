@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.Timer;
 import java.util.function.Consumer;
 
 /**
@@ -22,7 +23,7 @@ public class PlayerInfo<T> {
     private final T tag;
     private final String plainTag;
     private final String position;
-    private final String icon;
+    private final Icon icon;
     private final boolean referred;
     private final int referrals;
     private final List<GlobalRole> roles;
@@ -47,7 +48,7 @@ public class PlayerInfo<T> {
             @NotNull UUID uuid,
             @Nullable String tag,
             @NotNull String position,
-            @NotNull String icon,
+            @NotNull Icon icon,
             boolean referred,
             int referrals,
             @NotNull String[] roles,
@@ -128,7 +129,7 @@ public class PlayerInfo<T> {
     @NotNull
     public GlobalIcon getGlobalIcon() {
         try {
-            return GlobalIcon.valueOf(icon);
+            return GlobalIcon.valueOf(icon.type);
         } catch (Exception ignored) {
             return GlobalIcon.NONE;
         }
@@ -140,7 +141,10 @@ public class PlayerInfo<T> {
      */
     @Nullable
     public String getIconUrl() {
-        return getGlobalIcon().getIconUrl();
+        GlobalIcon globalIcon = getGlobalIcon();
+        if(globalIcon == GlobalIcon.CUSTOM) return GlobalIcon.getCustomIconUrl(uuid, icon.hash);
+
+        return globalIcon.getIconUrl();
     }
 
     /**
@@ -213,7 +217,7 @@ public class PlayerInfo<T> {
                 uuid,
                 plainTag,
                 getPosition().name().toLowerCase(),
-                getGlobalIcon().name().toLowerCase(),
+                icon,
                 referred,
                 referrals,
                 roles,
@@ -221,6 +225,13 @@ public class PlayerInfo<T> {
                 suspension
         );
     }
+
+    /**
+     * A class representing the player's in the response body
+     * @param type The {@link GlobalIcon} type
+     * @param hash The custom icon hash
+     */
+    public record Icon(String type, String hash) {}
 
     /**
      * A class representing a player's ban

@@ -23,7 +23,7 @@ public class ResponseBody {
      */
     public String tag;
     public String position;
-    public Icon icon;
+    public PlayerInfo.Icon icon;
     public boolean referred;
     public int referrals;
     public String[] roles;
@@ -44,10 +44,4 @@ public class ResponseBody {
      * For error messages
      */
     public String error;
-
-    public static class Icon {
-        String type;
-        String hash;
-    }
-
 }
