@@ -14,6 +14,7 @@ import java.util.UUID;
  */
 public abstract class GlobalTagsAPI<T> {
 
+    private final Urls urls = new Urls();
     /**
      * Default cache options
      */
@@ -24,12 +25,12 @@ public abstract class GlobalTagsAPI<T> {
     private final ApiHandler<T> apiHandler = new ApiHandler<>(this);
 
     /**
-     * Get the API base for the GlobalTags API. Implementation note: Please don't add a trailing slash
-     * @return The Globaltags API base
+     * Get the holder of the important API URLs
+     * @return The URL holder
      */
     @NotNull
-    public String getApiBase() {
-        return "https://api.globaltags.xyz";
+    public Urls getUrls() {
+        return urls;
     }
 
     /**
@@ -173,6 +174,62 @@ public abstract class GlobalTagsAPI<T> {
                     this.agent,
                     this.agentVersion,
                     minecraftVersion != null ? " - " + minecraftVersion : ""
+            );
+        }
+    }
+
+    /**
+     * This class contains all important base urls the API uses.
+     */
+    public static class Urls {
+
+        /**
+         * Get the API base for the GlobalTags API. Implementation note: Please omit the trailing slash
+         * @return The Globaltags API base
+         */
+        @NotNull
+        public String getApiBase() {
+            return "https://api.globaltags.xyz";
+        }
+
+        /**
+         * Get the url of a default pre-defined icon
+         * @param icon The icon name
+         * @return The url of the icon
+         */
+        @NotNull
+        public String getDefaultIcon(String icon) {
+            return String.format(
+                    "https://cdn.rappytv.com/globaltags/icons/%s.png",
+                    icon.toLowerCase()
+            );
+        }
+
+        /**
+         * Get the icon url of a player role
+         * @param role The role name
+         * @return The url of the icon
+         */
+        @NotNull
+        public String getRoleIcon(String role) {
+            return String.format(
+                    "https://cdn.rappytv.com/globaltags/icons/role/%s.png",
+                    role.toLowerCase()
+            );
+        }
+
+        /**
+         * Get the icon url of a custom player-uploaded icon
+         * @param uuid The player's uuid
+         * @param hash The icon's hash
+         * @return The icon url of a custom player-uploaded icon
+         */
+        @NotNull
+        public String getCustomIcon(UUID uuid, String hash) {
+            return String.format(
+                    "https://api.globaltags.xyz/players/%s/icon/%s",
+                    uuid,
+                    hash
             );
         }
     }

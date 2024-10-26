@@ -19,6 +19,7 @@ import java.util.function.Consumer;
 @SuppressWarnings("unused")
 public class PlayerInfo<T> {
 
+    private final GlobalTagsAPI.Urls urls;
     private final UUID uuid;
     private final T tag;
     private final String plainTag;
@@ -55,6 +56,7 @@ public class PlayerInfo<T> {
             @NotNull String[] permissions,
             @Nullable Suspension suspension
     ) {
+        this.urls = api.getUrls();
         this.uuid = uuid;
         this.tag = api.translateColorCodes(tag);
         this.plainTag = tag != null ? tag : "";
@@ -136,15 +138,21 @@ public class PlayerInfo<T> {
     }
 
     /**
-     * Get the global icon's url of the player. See {@link GlobalIcon#getIconUrl()}
-     * @return The global icon's url of the player.
+     * Check if the player has a custom global icon
+     * @return If the player has a custom global icon
      */
-    @Nullable
-    public String getIconUrl() {
-        GlobalIcon globalIcon = getGlobalIcon();
-        if(globalIcon == GlobalIcon.CUSTOM) return GlobalIcon.getCustomIconUrl(uuid, icon.hash);
+    public boolean hasCustomGlobalIcon() {
+        return getGlobalIcon() == GlobalIcon.CUSTOM;
+    }
 
-        return globalIcon.getIconUrl();
+    /**
+     * Get the url of the player's global icon.
+     * @return The player's global icon url.
+     */
+    @NotNull
+    public String getIconUrl() {
+        if(hasCustomGlobalIcon() && icon.hash != null) return urls.getCustomIcon(uuid, icon.hash);
+        return urls.getDefaultIcon(getGlobalIcon().name());
     }
 
     /**
@@ -191,6 +199,17 @@ public class PlayerInfo<T> {
             if(roles.contains(role)) return role;
         }
         return null;
+    }
+
+    /**
+     * Get the role icon of the players highest role
+     * @return The role icon of the players highest role
+     */
+    @Nullable
+    public String getHighestRoleIcon() {
+        GlobalRole role = getHighestRole();
+        if(role == null) return null;
+        return urls.getRoleIcon(role.name());
     }
 
     /**
