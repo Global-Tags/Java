@@ -152,7 +152,7 @@ public class PlayerInfo<T> {
     @NotNull
     public String getIconUrl() {
         if(hasCustomGlobalIcon() && icon.hash != null) return urls.getCustomIcon(uuid, icon.hash);
-        return urls.getDefaultIcon(getGlobalIcon().name());
+        return urls.getDefaultIcon(getGlobalIcon());
     }
 
     /**
@@ -209,7 +209,7 @@ public class PlayerInfo<T> {
     public String getHighestRoleIcon() {
         GlobalRole role = getHighestRole();
         if(role == null) return null;
-        return urls.getRoleIcon(role.name());
+        return urls.getRoleIcon(role);
     }
 
     /**

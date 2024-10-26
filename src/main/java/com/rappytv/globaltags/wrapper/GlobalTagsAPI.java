@@ -1,6 +1,8 @@
 package com.rappytv.globaltags.wrapper;
 
 import com.rappytv.globaltags.wrapper.enums.AuthProvider;
+import com.rappytv.globaltags.wrapper.enums.GlobalIcon;
+import com.rappytv.globaltags.wrapper.enums.GlobalRole;
 import com.rappytv.globaltags.wrapper.http.ApiHandler;
 import com.rappytv.globaltags.wrapper.model.PlayerInfo;
 import org.jetbrains.annotations.NotNull;
@@ -194,27 +196,27 @@ public abstract class GlobalTagsAPI<T> {
 
         /**
          * Get the url of a default pre-defined icon
-         * @param icon The icon name
+         * @param icon The icon
          * @return The url of the icon
          */
         @NotNull
-        public String getDefaultIcon(String icon) {
+        public String getDefaultIcon(GlobalIcon icon) {
             return String.format(
                     "https://cdn.rappytv.com/globaltags/icons/%s.png",
-                    icon.toLowerCase()
+                    icon.name().toLowerCase()
             );
         }
 
         /**
          * Get the icon url of a player role
-         * @param role The role name
+         * @param role The role
          * @return The url of the icon
          */
         @NotNull
-        public String getRoleIcon(String role) {
+        public String getRoleIcon(GlobalRole role) {
             return String.format(
                     "https://cdn.rappytv.com/globaltags/icons/role/%s.png",
-                    role.toLowerCase()
+                    role.name().toLowerCase()
             );
         }
 
