@@ -138,11 +138,20 @@ public class PlayerInfo<T> {
     }
 
     /**
+     * Get the player's global icon hash
+     * @return The player's global icon hash
+     */
+    @Nullable
+    public String getGlobalIconHash() {
+        return icon.hash;
+    }
+
+    /**
      * Check if the player has a custom global icon
      * @return If the player has a custom global icon
      */
     public boolean hasCustomGlobalIcon() {
-        return getGlobalIcon() == GlobalIcon.CUSTOM;
+        return getGlobalIcon() == GlobalIcon.CUSTOM && icon.hash != null;
     }
 
     /**
@@ -151,7 +160,7 @@ public class PlayerInfo<T> {
      */
     @NotNull
     public String getIconUrl() {
-        if(hasCustomGlobalIcon() && icon.hash != null) return urls.getCustomIcon(uuid, icon.hash);
+        if(hasCustomGlobalIcon()) return urls.getCustomIcon(uuid, icon.hash);
         return urls.getDefaultIcon(getGlobalIcon());
     }
 
