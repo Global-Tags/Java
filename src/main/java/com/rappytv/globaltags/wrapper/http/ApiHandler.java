@@ -69,17 +69,18 @@ public class ApiHandler<T> {
                 consumer.accept(null);
                 return;
             }
+            ResponseBody body = response.body();
             consumer.accept(new PlayerInfo<>(
                     api,
                     uuid,
-                    response.body().tag,
-                    response.body().position,
-                    response.body().icon,
-                    response.body().referred,
-                    response.body().referrals,
-                    response.body().roles,
-                    response.body().permissions,
-                    response.body().ban
+                    body.tag,
+                    body.position,
+                    body.icon,
+                    body.referred,
+                    body.referrals,
+                    body.roles,
+                    body.permissions,
+                    body.ban
             ));
         });
     }
