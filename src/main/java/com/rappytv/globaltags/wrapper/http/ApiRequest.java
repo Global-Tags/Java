@@ -56,7 +56,7 @@ public class ApiRequest<T> {
     public void sendRequestSync(Consumer<@NotNull Response> consumer) {
         try {
             HttpRequest request = getBuilder()
-                    .uri(new URI(api.getApiBase() + path))
+                    .uri(new URI(api.getUrls().getApiBase() + path))
                     .method(method, getBodyPublisher())
                     .build();
 
