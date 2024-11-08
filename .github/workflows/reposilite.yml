@@ -31,4 +31,4 @@ jobs:
               "password": "${{ secrets.MAVEN_SECRET }}"
             }]
       - name: Publish with Maven
-        run: mvn deployg
+        run: mvn deploy
