@@ -6,7 +6,7 @@
 
     <groupId>com.rappytv.globaltags</groupId>
     <artifactId>GlobalTagsJava</artifactId>
-    <version>1.1.7</version>
+    <version>1.1.8</version>
 
     <name>GlobalTagsJava</name>
     <description>A wrapper for the GlobalTagsAPI</description>
@@ -111,11 +111,13 @@
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
             <version>24.1.0</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.10.1</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>
