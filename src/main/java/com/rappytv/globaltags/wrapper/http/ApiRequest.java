@@ -14,6 +14,8 @@ import java.util.function.Consumer;
 
 /**
  * A utility request class with generic response parsing.
+ *
+ * @param <T> The return type
  */
 public class ApiRequest<T> {
 

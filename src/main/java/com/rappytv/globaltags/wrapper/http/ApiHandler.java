@@ -15,6 +15,7 @@ import java.util.function.Consumer;
 
 /**
  * A class containing all requests to the <a href="https://github.com/Global-Tags/API">GlobalTagAPI</a>
+ *
  * @param <T> The same as the T value of your {@link GlobalTagsAPI} instance.
  */
 @SuppressWarnings("unused")
@@ -29,6 +30,7 @@ public class ApiHandler<T> {
 
     /**
      * Instantiates a new ApiHandler
+     *
      * @param api The corresponding api where it's being implemented
      */
     public ApiHandler(GlobalTagsAPI<T> api) {
@@ -37,6 +39,7 @@ public class ApiHandler<T> {
 
     /**
      * A request to get the api version
+     *
      * @param consumer The action to be executed on response.
      */
     public void getApiInfo(Consumer<ApiResponse<ApiInfo>> consumer) {
@@ -56,6 +59,7 @@ public class ApiHandler<T> {
 
     /**
      * A request to get the player info of {@link GlobalTagsAPI#getClientUUID()}
+     *
      * @param consumer The action to be executed on response.
      */
     public void getInfo(Consumer<ApiResponse<PlayerInfo<T>>> consumer) {
@@ -64,6 +68,7 @@ public class ApiHandler<T> {
 
     /**
      * A request to get the player info of a specific uuid
+     *
      * @param uuid The uuid to get the info of
      * @param consumer The action to be executed on response.
      */
@@ -98,10 +103,21 @@ public class ApiHandler<T> {
         });
     }
 
+    /**
+     * A request to get the tag history of {@link GlobalTagsAPI#getClientUUID()}
+     *
+     * @param consumer The action to be executed on response.
+     */
     public void getTagHistory(Consumer<ApiResponse<List<TagHistoryEntry>>> consumer) {
         getTagHistory(api.getClientUUID(), consumer);
     }
 
+    /**
+     * A request to get the tag history of a specific uuid
+     *
+     * @param uuid The uuid to get the tag history of
+     * @param consumer The action to be executed on response.
+     */
     public void getTagHistory(UUID uuid, Consumer<ApiResponse<List<TagHistoryEntry>>> consumer) {
         new ApiRequest<>(
                 api,
@@ -123,6 +139,7 @@ public class ApiHandler<T> {
 
     /**
      * A request to update the tag of {@link GlobalTagsAPI#getClientUUID()}
+     *
      * @param tag The new tag you want to set
      * @param consumer The action to be executed on response.
      */
@@ -132,6 +149,7 @@ public class ApiHandler<T> {
 
     /**
      * A request to update the tag of a specific uuid
+     *
      * @param uuid The uuid you want to update the tag of
      * @param tag The new tag you want to set
      * @param consumer The action to be executed on response.
@@ -156,6 +174,7 @@ public class ApiHandler<T> {
 
     /**
      * A request to update the {@link GlobalPosition} of {@link GlobalTagsAPI#getClientUUID()}
+     *
      * @param position The new position you want to set
      * @param consumer The action to be executed on response.
      */
@@ -165,6 +184,7 @@ public class ApiHandler<T> {
 
     /**
      * A request to update the {@link GlobalPosition} of a specific uuid
+     *
      * @param uuid The uuid you want to update the position of
      * @param position The new position you want to set
      * @param consumer The action to be executed on response.
@@ -189,6 +209,7 @@ public class ApiHandler<T> {
 
     /**
      * A request to update the global icon of {@link GlobalTagsAPI#getClientUUID()}
+     *
      * @param icon The new icon you want to set
      * @param consumer The action to be executed on response.
      */
@@ -198,6 +219,7 @@ public class ApiHandler<T> {
 
     /**
      * A request to update the global icon of a specific uuid
+     *
      * @param uuid The uuid you want to update the icon of
      * @param icon The new icon you want to set
      * @param consumer The action to be executed on response.
@@ -222,6 +244,7 @@ public class ApiHandler<T> {
 
     /**
      * A request to clear the tag of {@link GlobalTagsAPI#getClientUUID()}
+     *
      * @param consumer The action to be executed on response.
      */
     public void resetTag(Consumer<ApiResponse<String>> consumer) {
@@ -230,6 +253,7 @@ public class ApiHandler<T> {
 
     /**
      * A request to clear the tag of a specific uuid
+     *
      * @param uuid The uuid you want to clear the tag of
      * @param consumer The action to be executed on response.
      */
@@ -253,6 +277,7 @@ public class ApiHandler<T> {
 
     /**
      * A request to add a player to the watchlist
+     *
      * @param uuid The uuid you want to add to the watchlist
      * @param consumer The action to be executed on response.
      */
@@ -274,6 +299,7 @@ public class ApiHandler<T> {
 
     /**
      * A request to remove a player from the watchlist
+     *
      * @param uuid The uuid you want to remove from the watchlist
      * @param consumer The action to be executed on response.
      */
@@ -295,6 +321,7 @@ public class ApiHandler<T> {
 
     /**
      * A request to mark a specific uuid as the inviter of {@link GlobalTagsAPI#getClientUUID()}
+     *
      * @param uuid The uuid you want to mark as the inviter
      * @param consumer The action to be executed on response.
      */
@@ -316,6 +343,7 @@ public class ApiHandler<T> {
 
     /**
      * A request to report a specific uuid
+     *
      * @param uuid The uuid you want to report
      * @param reason The reason why you want to report the uuid
      * @param consumer The action to be executed on response.
@@ -338,6 +366,7 @@ public class ApiHandler<T> {
 
     /**
      * A request to ban a specific uuid
+     *
      * @param uuid The uuid you want to ban
      * @param reason The reason for the ban
      * @param consumer The action to be executed on response.
@@ -362,6 +391,7 @@ public class ApiHandler<T> {
 
     /**
      * A request to unban a specific uuid
+     *
      * @param uuid The uuid you want to unban
      * @param consumer The action to be executed on response.
      */
@@ -385,6 +415,7 @@ public class ApiHandler<T> {
 
     /**
      * A request to edit the ban of a specific uuid
+     *
      * @param uuid The uuid you want to edit the ban of
      * @param suspension The new {@link PlayerInfo.Suspension} object
      * @param consumer The action to be executed on response.
@@ -410,6 +441,7 @@ public class ApiHandler<T> {
 
     /**
      * A request to appeal the ban of {@link GlobalTagsAPI#getClientUUID()}
+     *
      * @param reason The reason why {@link GlobalTagsAPI#getClientUUID()} should be unbanned
      * @param consumer The action to be executed on response.
      */
@@ -431,6 +463,7 @@ public class ApiHandler<T> {
 
     /**
      * A request to get the discord linking code of {@link GlobalTagsAPI#getClientUUID()}. Implementation Note: Please don't show the code; Only copy it to the clipboard
+     *
      * @param consumer The action to be executed on response.
      */
     public void linkDiscord(Consumer<ApiResponse<String>> consumer) {
@@ -451,6 +484,7 @@ public class ApiHandler<T> {
 
     /**
      * A request to unlink the discord account of {@link GlobalTagsAPI#getClientUUID()}
+     *
      * @param consumer The action to be executed on response.
      */
     public void unlinkDiscord(Consumer<ApiResponse<String>> consumer) {
@@ -473,6 +507,7 @@ public class ApiHandler<T> {
 
     /**
      * A request to send an email verification to of {@link GlobalTagsAPI#getClientUUID()}.
+     *
      * @param email The email which should be linked
      * @param consumer The action to be executed on response.
      */
@@ -494,6 +529,7 @@ public class ApiHandler<T> {
 
     /**
      * A request to unlink the email address of {@link GlobalTagsAPI#getClientUUID()}
+     *
      * @param consumer The action to be executed on response.
      */
     public void unlinkEmail(Consumer<ApiResponse<String>> consumer) {
@@ -514,6 +550,7 @@ public class ApiHandler<T> {
 
     /**
      * A request to verify the email with the received verification code.
+     *
      * @param code The verification code which was received via email
      * @param consumer The action to be executed on response.
      */
@@ -533,6 +570,21 @@ public class ApiHandler<T> {
         });
     }
 
+    /**
+     * A request to get all notes of {@link GlobalTagsAPI#getClientUUID()}
+     *
+     * @param consumer The action to be executed on response.
+     */
+    public void getNotes(Consumer<ApiResponse<List<PlayerNote>>> consumer) {
+        getNotes(api.getClientUUID(), consumer);
+    }
+
+    /**
+     * A request to get all notes of a specific uuid
+     *
+     * @param uuid The uuid of the player
+     * @param consumer The action to be executed on response.
+     */
     public void getNotes(UUID uuid, Consumer<ApiResponse<List<PlayerNote>>> consumer) {
         new ApiRequest<>(
                 api,
@@ -558,6 +610,23 @@ public class ApiHandler<T> {
         });
     }
 
+    /**
+     * A request to create a note for {@link GlobalTagsAPI#getClientUUID()}
+     *
+     * @param note The note which should be created
+     * @param consumer The action to be executed on response.
+     */
+    public void createNote(String note, Consumer<ApiResponse<String>> consumer) {
+        createNote(api.getClientUUID(), note, consumer);
+    }
+
+    /**
+     * A request to create a note for a specific uuid
+     *
+     * @param uuid The uuid of the player
+     * @param note The note which should be created
+     * @param consumer The action to be executed on response.
+     */
     public void createNote(UUID uuid, String note, Consumer<ApiResponse<String>> consumer) {
         new ApiRequest<>(
                 api,
@@ -574,6 +643,23 @@ public class ApiHandler<T> {
         });
     }
 
+    /**
+     * A request to get a specific note of {@link GlobalTagsAPI#getClientUUID()}
+     *
+     * @param noteId The ID of the note to get
+     * @param consumer The action to be executed on response.
+     */
+    public void getNote(String noteId, Consumer<ApiResponse<PlayerNote>> consumer) {
+        getNote(api.getClientUUID(), noteId, consumer);
+    }
+
+    /**
+     * A request to get a specific note of {@link GlobalTagsAPI#getClientUUID()}
+     *
+     * @param uuid The uuid of the player
+     * @param noteId The ID of the note to get
+     * @param consumer The action to be executed on response.
+     */
     public void getNote(UUID uuid, String noteId, Consumer<ApiResponse<PlayerNote>> consumer) {
         new ApiRequest<>(
                 api,
@@ -600,6 +686,23 @@ public class ApiHandler<T> {
         });
     }
 
+    /**
+     * Deletes a note of {@link GlobalTagsAPI#getClientUUID()}.
+     *
+     * @param noteId The ID of the note to delete.
+     * @param consumer The action to be executed on response.
+     */
+    public void deleteNote(String noteId, Consumer<ApiResponse<String>> consumer) {
+        deleteNote(api.getClientUUID(), noteId, consumer);
+    }
+
+    /**
+     * Deletes a note of a specific uuid.
+     *
+     * @param uuid The UUID of the player whose note you want to delete.
+     * @param noteId The ID of the note to delete.
+     * @param consumer The action to be executed on response.
+     */
     public void deleteNote(UUID uuid, String noteId, Consumer<ApiResponse<String>> consumer) {
         new ApiRequest<>(
                 api,
@@ -619,7 +722,8 @@ public class ApiHandler<T> {
     /**
      * An inline class containing response data for these requests
      * @param successful If the request was successful
-     * @param data The data returned
+     * @param data The data returned if available
+     * @param error The error returned if available
      * @param <T> The type of the returned data
      */
     public record ApiResponse<T>(boolean successful, T data, String error) {}

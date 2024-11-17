@@ -12,6 +12,7 @@ import java.util.UUID;
 
 /**
  * A util class for the GlobalTags API
+ *
  * @param <T> The result type of the {@link #translateColorCodes(String)} method
  */
 public abstract class GlobalTagsAPI<T> {
