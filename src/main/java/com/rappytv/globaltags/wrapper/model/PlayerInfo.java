@@ -13,8 +13,9 @@ import java.util.Timer;
 import java.util.function.Consumer;
 
 /**
- * A class which contains the player info of a uuid.
- * @param <T> The same value as in your {@link GlobalTagsAPI}
+ * Represents player information associated with a UUID, including tags, roles, permissions, and suspension details.
+ *
+ * @param <T> The type used by {@link GlobalTagsAPI} to represent colored tags (e.g., formatted strings or components).
  */
 @SuppressWarnings("unused")
 public class PlayerInfo<T> {
@@ -85,8 +86,9 @@ public class PlayerInfo<T> {
     }
 
     /**
-     * Get the player's uuid
-     * @return The player's uuid
+     * Gets the player's UUID.
+     *
+     * @return The player's unique identifier (UUID).
      */
     @NotNull
     public UUID getUUID() {
@@ -94,8 +96,9 @@ public class PlayerInfo<T> {
     }
 
     /**
-     * Get the player's GlobalTag as a colored component
-     * @return The player's GlobalTag as a colored component
+     * Gets the player's translated tag, including formatting (e.g., color codes).
+     *
+     * @return The translated tag as a component, or {@code null} if no tag is set.
      */
     @Nullable
     public T getTag() {
@@ -103,8 +106,9 @@ public class PlayerInfo<T> {
     }
 
     /**
-     * Get the player's GlobalTag as a plain string - with color codes
-     * @return The player's GlobalTag as a plain string - with color codes
+     * Gets the player's tag as a plain string, including raw color codes.
+     *
+     * @return The player's tag as a plain string.
      */
     @NotNull
     public String getPlainTag() {
@@ -112,8 +116,9 @@ public class PlayerInfo<T> {
     }
 
     /**
-     * Get the player's GlobalTag position
-     * @return The player's GlobalTag position
+     * Gets the player's tag position as a {@link GlobalPosition} enum.
+     *
+     * @return The player's tag position. Defaults to {@link GlobalPosition#ABOVE} if invalid.
      */
     @NotNull
     public GlobalPosition getPosition() {
@@ -125,8 +130,9 @@ public class PlayerInfo<T> {
     }
 
     /**
-     * Get the {@link GlobalIcon} enum value which the player has selected
-     * @return The {@link GlobalIcon} enum value which the player has selected
+     * Gets the player's selected {@link GlobalIcon}.
+     *
+     * @return The selected global icon. Defaults to {@link GlobalIcon#NONE} if invalid.
      */
     @NotNull
     public GlobalIcon getGlobalIcon() {
@@ -138,8 +144,9 @@ public class PlayerInfo<T> {
     }
 
     /**
-     * Get the player's global icon hash
-     * @return The player's global icon hash
+     * Gets the hash of the player's custom global icon, if available.
+     *
+     * @return The custom global icon hash, or {@code null} if none exists.
      */
     @Nullable
     public String getGlobalIconHash() {
@@ -147,16 +154,18 @@ public class PlayerInfo<T> {
     }
 
     /**
-     * Check if the player has a custom global icon
-     * @return If the player has a custom global icon
+     * Checks if the player has a custom global icon.
+     *
+     * @return {@code true} if the player has a custom global icon; otherwise {@code false}.
      */
     public boolean hasCustomGlobalIcon() {
         return getGlobalIcon() == GlobalIcon.CUSTOM && icon.hash != null;
     }
 
     /**
-     * Get the url of the player's global icon.
-     * @return The player's global icon url.
+     * Gets the URL for the player's global icon.
+     *
+     * @return The URL of the player's global icon, either custom or default.
      */
     @NotNull
     public String getIconUrl() {
@@ -165,33 +174,37 @@ public class PlayerInfo<T> {
     }
 
     /**
-     * Check if the player has a specific permission
-     * @param permission The permission you want to check for
-     * @return If the player has the permission
+     * Checks if the player has a specific permission.
+     *
+     * @param permission The permission to check.
+     * @return {@code true} if the player has the specified permission; otherwise {@code false}.
      */
     public boolean hasPermission(GlobalPermission permission) {
         return permissions.containsKey(permission) && permissions.get(permission);
     }
 
     /**
-     * Get if the player has referred to another player for inviting them
-     * @return If the player has referred to another player for inviting them
+     * Checks if the player has referred another player as their inviter.
+     *
+     * @return {@code true} if the player has referred another player; otherwise {@code false}.
      */
     public boolean hasReferred() {
         return referred;
     }
 
     /**
-     * Get how many other players were invited by the player
-     * @return How many other players were invited by the player
+     * Gets the number of players this player has invited.
+     *
+     * @return The number of players invited by this player.
      */
     public int getReferrals() {
         return referrals;
     }
 
     /**
-     * Get all of the players roles
-     * @return All of the players roles
+     * Gets all roles assigned to the player.
+     *
+     * @return A list of the player's roles.
      */
     @NotNull
     public List<GlobalRole> getRoles() {
@@ -199,8 +212,9 @@ public class PlayerInfo<T> {
     }
 
     /**
-     * Get the players highest role
-     * @return The players highest role
+     * Gets the player's highest role based on hierarchy.
+     *
+     * @return The player's highest role, or {@code null} if no roles are assigned.
      */
     @Nullable
     public GlobalRole getHighestRole() {
@@ -211,8 +225,9 @@ public class PlayerInfo<T> {
     }
 
     /**
-     * Get the role icon of the players highest role
-     * @return The role icon of the players highest role
+     * Gets the icon URL for the player's highest role.
+     *
+     * @return The role icon URL, or {@code null} if no roles are assigned.
      */
     @Nullable
     public String getHighestRoleIcon() {
@@ -222,16 +237,18 @@ public class PlayerInfo<T> {
     }
 
     /**
-     * Shortcut to check if the player suspension is active
-     * @return If the player suspension is active
+     * Checks if the player is currently suspended.
+     *
+     * @return {@code true} if the player is suspended; otherwise {@code false}.
      */
     public boolean isSuspended() {
         return suspension.active;
     }
 
     /**
-     * Get the suspension object from a player
-     * @return The suspension object from a player
+     * Gets the player's suspension details.
+     *
+     * @return The player's {@link Suspension} object.
      */
     @NotNull
     public Suspension getSuspension() {
@@ -255,14 +272,15 @@ public class PlayerInfo<T> {
     }
 
     /**
-     * A class representing the player's in the response body
-     * @param type The {@link GlobalIcon} type
-     * @param hash The custom icon hash
+     * Represents an icon for a player in the response body.
+     *
+     * @param type The {@link GlobalIcon} type.
+     * @param hash The custom icon hash.
      */
     public record Icon(String type, String hash) {}
 
     /**
-     * A class representing a player's ban
+     * Represents a player's ban or suspension status.
      */
     public static class Suspension {
 
@@ -280,9 +298,10 @@ public class PlayerInfo<T> {
         }
 
         /**
-         * Creates an active suspension
-         * @param reason The reason for the suspension
-         * @param appealable If the suspension is appealable or not
+         * Creates an active suspension.
+         *
+         * @param reason The reason for the suspension.
+         * @param appealable Whether the suspension is appealable.
          */
         public Suspension(String reason, boolean appealable) {
             this.active = true;
@@ -317,18 +336,18 @@ public class PlayerInfo<T> {
 
         @Override
         public String toString() {
-            return String.format(
-                    "Suspension{active=%s, reason='%s', appealable=%s}",
-                    active,
-                    reason,
-                    appealable
-            );
+            return "Suspension{" +
+                    "active=" + active +
+                    ", reason='" + reason + '\'' +
+                    ", appealable=" + appealable +
+                    '}';
         }
     }
 
     /**
-     * The class containing the {@link PlayerInfo} cache
-     * @param <T> The same value as in your {@link GlobalTagsAPI}
+     * Manages caching of {@link PlayerInfo} instances.
+     *
+     * @param <T> The data type managed by the associated {@link GlobalTagsAPI}.
      */
     public static class Cache<T> {
 
@@ -336,8 +355,9 @@ public class PlayerInfo<T> {
         private final GlobalTagsAPI<T> api;
 
         /**
-         * Creates a new cache
-         * @param api The corresponding api where it's being implemented
+         * Initializes a cache with default cleanup intervals.
+         *
+         * @param api The associated {@link GlobalTagsAPI} instance.
          */
         public Cache(GlobalTagsAPI<T> api) {
             this(api, new Options() {
@@ -356,9 +376,10 @@ public class PlayerInfo<T> {
         }
 
         /**
-         * Creates a new cache with custom options
-         * @param api The corresponding api where it's being implemented
-         * @param options The cache cleanup options
+         * Initializes a cache with custom cleanup intervals.
+         *
+         * @param api     The associated {@link GlobalTagsAPI} instance.
+         * @param options Custom cache interval options.
          */
         public Cache(@NotNull GlobalTagsAPI<T> api, @NotNull Options options) {
             Objects.requireNonNull(api, "api must not be null");
@@ -389,6 +410,7 @@ public class PlayerInfo<T> {
 
         /**
          * Adds a {@link PlayerInfo} to the cache
+         *
          * @param uuid The corresponding {@link UUID}
          * @param info The {@link PlayerInfo}
          */
@@ -405,6 +427,7 @@ public class PlayerInfo<T> {
 
         /**
          * Removes a {@link PlayerInfo} from the cache
+         *
          * @param uuid The corresponding {@link UUID}
          */
         public void remove(UUID uuid) {
@@ -413,6 +436,7 @@ public class PlayerInfo<T> {
 
         /**
          * Checks if a specific player is in the cache
+         *
          * @param uuid The player's {@link UUID}
          * @return If the player is in the cache
          */
@@ -422,6 +446,7 @@ public class PlayerInfo<T> {
 
         /**
          * Gets the cached {@link PlayerInfo} synchronously
+         *
          * @param uuid The player's {@link UUID}
          * @return The player's cached {@link PlayerInfo} or null if the info is not cached
          */
@@ -439,6 +464,7 @@ public class PlayerInfo<T> {
 
         /**
          * Resolve the UUID {@link GlobalTagsAPI#getClientUUID()} into the cache
+         *
          * @param consumer A consumer returning the resolved {@link PlayerInfo}
          */
         public void resolveSelf(Consumer<@Nullable PlayerInfo<T>> consumer) {
@@ -447,6 +473,7 @@ public class PlayerInfo<T> {
 
         /**
          * Resolve a specific {@link UUID} into the cache
+         *
          * @param uuid The uuid which should be resolved
          */
         public void resolve(UUID uuid) {
@@ -455,6 +482,7 @@ public class PlayerInfo<T> {
 
         /**
          * Resolve a specific {@link UUID} into the cache
+         *
          * @param uuid The uuid which should be resolved
          * @param consumer A consumer returning the resolved {@link PlayerInfo}
          */
@@ -468,6 +496,7 @@ public class PlayerInfo<T> {
 
         /**
          * Fetches a specific {@link UUID}
+         *
          * @param uuid The uuid which should be fetched
          * @param consumer A consumer returning the resolved {@link PlayerInfo}
          */
@@ -491,6 +520,7 @@ public class PlayerInfo<T> {
 
         /**
          * Renews tag data of {@link GlobalTagsAPI#getClientUUID()}
+         *
          * @param consumer A consumer returning the renewed {@link PlayerInfo}
          */
         public void renewSelf(Consumer<@Nullable PlayerInfo<T>> consumer) {
@@ -499,6 +529,7 @@ public class PlayerInfo<T> {
 
         /**
          * Renews tag data of a specific uuid
+         *
          * @param uuid The uuid which should be renewed
          */
         public void renew(UUID uuid) {
@@ -507,6 +538,7 @@ public class PlayerInfo<T> {
 
         /**
          * Renews tag data of a specific uuid
+         *
          * @param uuid The uuid which should be renewed
          * @param consumer A consumer returning the renewed {@link PlayerInfo}
          */
@@ -535,18 +567,20 @@ public class PlayerInfo<T> {
         }
 
         /**
-         * An interface which is used for custom cache intervals
+         * Interface for custom cache interval options.
          */
         public interface Options {
 
             /**
              * The interval in which the cache should be cleared automatically in milliseconds. If you want to disable automatic cache cleanup, pass -1.
+             *
              * @return The interval in which the cache is being cleared.
              */
             long getCacheClearInterval();
 
             /**
              * The interval in which the cache should be renewed automatically in milliseconds. If you want to disable the automatic renewal of cache, pass -1.
+             *
              * @return The interval in which the cache is being renewed.
              */
             long getCacheRenewInterval();
