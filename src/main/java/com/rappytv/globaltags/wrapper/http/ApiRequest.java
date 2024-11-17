@@ -2,6 +2,7 @@ package com.rappytv.globaltags.wrapper.http;
 
 import com.google.gson.Gson;
 import com.rappytv.globaltags.wrapper.GlobalTagsAPI;
+import com.rappytv.globaltags.wrapper.http.schemas.ErrorSchema;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.URI;
@@ -12,47 +13,54 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 /**
- * A utility request class.
+ * A utility request class with generic response parsing.
  */
-public class ApiRequest {
+public class ApiRequest<T> {
 
-    private final static Gson gson = new Gson();
-    private final static HttpClient client = HttpClient.newHttpClient();
+    private static final Gson gson = new Gson();
+    private static final HttpClient client = HttpClient.newHttpClient();
 
     private final String method;
     private final String path;
     private final GlobalTagsAPI<?> api;
     private final Map<String, Object> body;
+    private final Class<T> responseType;
 
     /**
-     * Builds a new request without body
-     * @param api An api instance
-     * @param method The method
-     * @param path The request path, use {@link Routes}
+     * Builds a new request without data.
+     *
+     * @param api          An API instance
+     * @param method       The method
+     * @param path         The request path, use {@link Routes}
+     * @param responseType The class type for parsing the response
      */
-    public ApiRequest(GlobalTagsAPI<?> api, String method, String path) {
-        this(api, method, path, null);
+    public ApiRequest(GlobalTagsAPI<?> api, String method, String path, Class<T> responseType) {
+        this(api, method, path, null, responseType);
     }
 
     /**
-     * Builds a new request
-     * @param api An api instance
-     * @param method The method
-     * @param path The request path, use {@link Routes}
-     * @param body The request body
+     * Builds a new request.
+     *
+     * @param api          An API instance
+     * @param method       The method
+     * @param path         The request path, use {@link Routes}
+     * @param body         The request data
+     * @param responseType The class type for parsing the response
      */
-    public ApiRequest(GlobalTagsAPI<?> api, String method, String path, Map<String, Object> body) {
+    public ApiRequest(GlobalTagsAPI<?> api, String method, String path, Map<String, Object> body, Class<T> responseType) {
         this.api = api;
         this.method = method;
         this.path = path;
         this.body = body;
+        this.responseType = responseType;
     }
 
     /**
-     * Send the request
-     * @param consumer A consumer which gets called when the API responded
+     * Send the request.
+     *
+     * @param consumer A consumer which gets called when the API responds
      */
-    public void sendRequestSync(Consumer<@NotNull Response> consumer) {
+    public void sendRequestAsync(Consumer<@NotNull ResponseBody<T>> consumer) {
         try {
             HttpRequest request = getBuilder()
                     .uri(new URI(api.getUrls().getApiBase() + path))
@@ -60,25 +68,32 @@ public class ApiRequest {
                     .build();
 
             client.sendAsync(request, HttpResponse.BodyHandlers.ofString()).thenAccept(response -> {
-                ResponseBody body = gson.fromJson(response.body(), ResponseBody.class);
-                consumer.accept(new Response(
+                boolean success = response.statusCode() >= 200 && response.statusCode() < 300;
+                if(!success) {
+                    ErrorSchema body = gson.fromJson(response.body(), ErrorSchema.class);
+                    consumer.accept(new ResponseBody<>(false, null, body.error));
+                    return;
+                }
+                T parsedBody = gson.fromJson(response.body(), responseType);
+                consumer.accept(new ResponseBody<>(
                         response.statusCode() >= 200 && response.statusCode() < 300,
-                        response.statusCode(),
-                        body
+                        parsedBody,
+                        null
                 ));
             }).exceptionally(throwable -> {
                 throwable.printStackTrace();
-                consumer.accept(new Response(false, -1, getExceptionBody(throwable)));
+                consumer.accept(new ResponseBody<>(false, null, throwable.getLocalizedMessage()));
                 return null;
             });
         } catch (Exception e) {
             e.printStackTrace();
-            consumer.accept(new Response(false, -1, getExceptionBody(e)));
+            consumer.accept(new ResponseBody<>(false, null, e.getLocalizedMessage()));
         }
     }
 
     /**
-     * Get a builder already containing all needed headers
+     * Get a builder already containing all needed headers.
+     *
      * @return A builder already containing all needed headers
      */
     private HttpRequest.Builder getBuilder() {
@@ -90,28 +105,22 @@ public class ApiRequest {
     }
 
     /**
-     * Get the {@link HttpRequest.BodyPublisher} from the body parameter
-     * @return The {@link HttpRequest.BodyPublisher} from the body parameter
+     * Get the {@link HttpRequest.BodyPublisher} from the data parameter.
+     *
+     * @return The {@link HttpRequest.BodyPublisher} from the data parameter
      */
     private HttpRequest.BodyPublisher getBodyPublisher() {
-        if(body == null || body.isEmpty()) return HttpRequest.BodyPublishers.noBody();
+        if (body == null || body.isEmpty()) return HttpRequest.BodyPublishers.noBody();
         return HttpRequest.BodyPublishers.ofString(gson.toJson(body));
     }
 
     /**
-     * Get an error body from a throwable
-     * @param throwable The throwable
-     * @return An error body from the throwable
-     */
-    private ResponseBody getExceptionBody(Throwable throwable) {
-        return gson.fromJson("{ \"error\": \"" + throwable.getLocalizedMessage() + "\" }", ResponseBody.class);
-    }
-
-    /**
-     * A record which passes a lightweight API response to consumers
+     * A record which passes a lightweight API response to consumers.
+     *
      * @param successful If the request was successful
-     * @param statusCode The response status code
-     * @param body The response body
+     * @param data       The response data
+     * @param error      An error message
+     * @param <T>        The type of the response data
      */
-    public record Response(boolean successful, int statusCode, @NotNull ResponseBody body) {}
+    public record ResponseBody<T>(boolean successful, T data, String error) {}
 }
