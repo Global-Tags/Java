@@ -1,6 +1,6 @@
 package com.rappytv.globaltags.wrapper.http.schemas;
 
-public class VersionSchema extends BaseSchema {
+public class VersionSchema {
 
     public String version;
 }

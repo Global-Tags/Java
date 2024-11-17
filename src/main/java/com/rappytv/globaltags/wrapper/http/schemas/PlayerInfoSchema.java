@@ -2,7 +2,7 @@ package com.rappytv.globaltags.wrapper.http.schemas;
 
 import com.rappytv.globaltags.wrapper.model.PlayerInfo;
 
-public class PlayerInfoSchema extends BaseSchema {
+public class PlayerInfoSchema {
 
     public String tag;
     public String position;

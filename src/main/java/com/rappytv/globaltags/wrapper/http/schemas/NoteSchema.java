@@ -1,6 +1,6 @@
 package com.rappytv.globaltags.wrapper.http.schemas;
 
-public class NoteSchema extends BaseSchema {
+public class NoteSchema {
 
     public String id;
     public String text;
