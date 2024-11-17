@@ -5,6 +5,7 @@ import com.rappytv.globaltags.wrapper.enums.ConnectionType;
 import com.rappytv.globaltags.wrapper.enums.GlobalIcon;
 import com.rappytv.globaltags.wrapper.enums.GlobalPosition;
 import com.rappytv.globaltags.wrapper.http.schemas.*;
+import com.rappytv.globaltags.wrapper.model.ApiInfo;
 import com.rappytv.globaltags.wrapper.model.PlayerInfo;
 import com.rappytv.globaltags.wrapper.model.PlayerNote;
 
@@ -37,18 +38,18 @@ public class ApiHandler<T> {
      * A request to get the api version
      * @param consumer The action to be executed on response.
      */
-    public void getVersion(Consumer<ApiResponse<String>> consumer) {
+    public void getApiInfo(Consumer<ApiResponse<ApiInfo>> consumer) {
         new ApiRequest<>(
                 api,
                 "GET",
-                Routes.getVersion(),
-                VersionSchema.class
+                Routes.getApiInfo(),
+                ApiInfo.class
         ).sendRequestAsync((response) -> {
             if(!response.successful()) {
                 consumer.accept(new ApiResponse<>(false, null, response.error()));
                 return;
             }
-            consumer.accept(new ApiResponse<>(true, response.data().version, null));
+            consumer.accept(new ApiResponse<>(true, response.data(), null));
         });
     }
 
