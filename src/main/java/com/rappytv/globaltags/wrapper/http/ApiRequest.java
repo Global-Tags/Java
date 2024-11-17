@@ -13,16 +13,15 @@ import java.util.function.Consumer;
 
 /**
  * A utility request class.
- * @param <T> The same as the T value of your {@link GlobalTagsAPI} instance.
  */
-public class ApiRequest<T> {
+public class ApiRequest {
 
     private final static Gson gson = new Gson();
     private final static HttpClient client = HttpClient.newHttpClient();
 
     private final String method;
     private final String path;
-    private final GlobalTagsAPI<T> api;
+    private final GlobalTagsAPI<?> api;
     private final Map<String, Object> body;
 
     /**
@@ -31,7 +30,7 @@ public class ApiRequest<T> {
      * @param method The method
      * @param path The request path, use {@link Routes}
      */
-    public ApiRequest(GlobalTagsAPI<T> api, String method, String path) {
+    public ApiRequest(GlobalTagsAPI<?> api, String method, String path) {
         this(api, method, path, null);
     }
 
@@ -42,7 +41,7 @@ public class ApiRequest<T> {
      * @param path The request path, use {@link Routes}
      * @param body The request body
      */
-    public ApiRequest(GlobalTagsAPI<T> api, String method, String path, Map<String, Object> body) {
+    public ApiRequest(GlobalTagsAPI<?> api, String method, String path, Map<String, Object> body) {
         this.api = api;
         this.method = method;
         this.path = path;
