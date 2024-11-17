@@ -7,6 +7,7 @@ public enum GlobalPermission {
     BYPASS_VALIDATION,
     CUSTOM_ICON,
     MANAGE_BANS,
+    MANAGE_NOTES,
     MANAGE_ROLES,
     MANAGE_TAGS,
     MANAGE_WATCHLIST,
