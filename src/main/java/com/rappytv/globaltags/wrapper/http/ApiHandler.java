@@ -8,6 +8,7 @@ import com.rappytv.globaltags.wrapper.http.schemas.*;
 import com.rappytv.globaltags.wrapper.model.ApiInfo;
 import com.rappytv.globaltags.wrapper.model.PlayerInfo;
 import com.rappytv.globaltags.wrapper.model.PlayerNote;
+import com.rappytv.globaltags.wrapper.model.TagHistoryEntry;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -92,6 +93,29 @@ public class ApiHandler<T> {
                             body.permissions,
                             body.ban
                     ),
+                    null
+            ));
+        });
+    }
+
+    public void getTagHistory(Consumer<ApiResponse<List<TagHistoryEntry>>> consumer) {
+        getTagHistory(api.getClientUUID(), consumer);
+    }
+
+    public void getTagHistory(UUID uuid, Consumer<ApiResponse<List<TagHistoryEntry>>> consumer) {
+        new ApiRequest<>(
+                api,
+                "GET",
+                Routes.tagHistory(uuid),
+                TagHistoryEntry[].class
+        ).sendRequestAsync((response) -> {
+            if(!response.successful()) {
+                consumer.accept(new ApiResponse<>(false, null, response.error()));
+                return;
+            }
+            consumer.accept(new ApiResponse<>(
+                    true,
+                    Arrays.asList(response.data()),
                     null
             ));
         });

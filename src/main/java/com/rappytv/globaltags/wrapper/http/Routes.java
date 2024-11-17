@@ -70,6 +70,19 @@ public class Routes {
     /**
      * <pre>
      * Route for
+     * - GET /players/{uuid}/history
+     * </pre>
+     *
+     * @param uuid The {@link UUID} of the player you the tag history of
+     * @return The HTTP route
+     */
+    public static String tagHistory(UUID uuid) {
+        return "/players/" + uuid + "/history";
+    }
+
+    /**
+     * <pre>
+     * Route for
      * - POST /players/{uuid}/position
      * </pre>
      *
