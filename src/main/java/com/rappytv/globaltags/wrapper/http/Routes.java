@@ -175,4 +175,31 @@ public class Routes {
     public static String appealBan(UUID uuid) {
         return "/players/" + uuid + "/ban/appeal";
     }
+
+    /**
+     * <pre>
+     * Route for
+     * - GET /players/{uuid}/notes
+     * - POST /players/{uuid}/notes
+     * </pre>
+     * @param uuid The player you want to get or create notes for
+     * @return The HTTP route
+     */
+    public static String notes(UUID uuid) {
+        return "/players/" + uuid + "/notes";
+    }
+
+    /**
+     * <pre>
+     * Route for
+     * - GET /players/{uuid}/notes/{id}
+     * - DELETE /players/{uuid}/notes/{id}
+     * </pre>
+     * @param uuid The player you want to get or delete a note for
+     * @param id The note ID
+     * @return The HTTP route
+     */
+    public static String note(UUID uuid, String id) {
+        return "/players/" + uuid + "/notes/" + id;
+    }
 }
