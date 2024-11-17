@@ -21,8 +21,22 @@ public class Routes {
      * </pre>
      *
      * @return The HTTP route
+     * @deprecated Use {@link #getApiInfo()} instead.
      */
+    @Deprecated(forRemoval = true)
     public static String getVersion() {
+        return "/";
+    }
+
+    /**
+     * <pre>
+     * Route for
+     * - GET /
+     * </pre>
+     *
+     * @return The HTTP route
+     */
+    public static String getApiInfo() {
         return "/";
     }
 
