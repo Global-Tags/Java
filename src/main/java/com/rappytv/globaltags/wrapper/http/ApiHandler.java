@@ -4,7 +4,9 @@ import com.rappytv.globaltags.wrapper.GlobalTagsAPI;
 import com.rappytv.globaltags.wrapper.enums.ConnectionType;
 import com.rappytv.globaltags.wrapper.enums.GlobalIcon;
 import com.rappytv.globaltags.wrapper.enums.GlobalPosition;
+import com.rappytv.globaltags.wrapper.http.schemas.*;
 import com.rappytv.globaltags.wrapper.model.PlayerInfo;
+import com.rappytv.globaltags.wrapper.model.PlayerNote;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -19,7 +21,7 @@ public class ApiHandler<T> {
     /**
      * See <a href="https://github.com/elysiajs/elysia/issues/495">elysiajs/elysia#495</a> for more info.
      */
-    private static final Map<String, Object> emptyBody = Map.of("body", "placeholder body");
+    private static final Map<String, Object> emptyBody = Map.of("data", "placeholder data");
 
     private final GlobalTagsAPI<T> api;
 
@@ -39,18 +41,22 @@ public class ApiHandler<T> {
         new ApiRequest<>(
                 api,
                 "GET",
-                Routes.getVersion()
-        ).sendRequestSync((response) -> consumer.accept(new ApiResponse<>(
-                response.successful(),
-                response.body().version
-        )));
+                Routes.getVersion(),
+                VersionSchema.class
+        ).sendRequestAsync((response) -> {
+            if(!response.successful()) {
+                consumer.accept(new ApiResponse<>(false, null, response.error()));
+                return;
+            }
+            consumer.accept(new ApiResponse<>(true, response.data().version, null));
+        });
     }
 
     /**
      * A request to get the player info of {@link GlobalTagsAPI#getClientUUID()}
      * @param consumer The action to be executed on response.
      */
-    public void getInfo(Consumer<PlayerInfo<T>> consumer) {
+    public void getInfo(Consumer<ApiResponse<PlayerInfo<T>>> consumer) {
         getInfo(api.getClientUUID(), consumer);
     }
 
@@ -59,28 +65,33 @@ public class ApiHandler<T> {
      * @param uuid The uuid to get the info of
      * @param consumer The action to be executed on response.
      */
-    public void getInfo(UUID uuid, Consumer<PlayerInfo<T>> consumer) {
+    public void getInfo(UUID uuid, Consumer<ApiResponse<PlayerInfo<T>>> consumer) {
         new ApiRequest<>(
                 api,
                 "GET",
-                Routes.player(uuid)
-        ).sendRequestSync((response) -> {
+                Routes.player(uuid),
+                PlayerInfoSchema.class
+        ).sendRequestAsync((response) -> {
             if(!response.successful()) {
-                consumer.accept(null);
+                consumer.accept(new ApiResponse<>(false, null, response.error()));
                 return;
             }
-            ResponseBody body = response.body();
-            consumer.accept(new PlayerInfo<>(
-                    api,
-                    uuid,
-                    body.tag,
-                    body.position,
-                    body.icon,
-                    body.referred,
-                    body.referrals,
-                    body.roles,
-                    body.permissions,
-                    body.ban
+            PlayerInfoSchema body = response.data();
+            consumer.accept(new ApiResponse<>(
+                    true,
+                    new PlayerInfo<>(
+                            api,
+                            uuid,
+                            body.tag,
+                            body.position,
+                            body.icon,
+                            body.referred,
+                            body.referrals,
+                            body.roles,
+                            body.permissions,
+                            body.ban
+                    ),
+                    null
             ));
         });
     }
@@ -105,14 +116,15 @@ public class ApiHandler<T> {
                 api,
                 "POST",
                 Routes.player(uuid),
-                Map.of("tag", tag)
-        ).sendRequestSync((response) -> {
+                Map.of("tag", tag),
+                MessageSchema.class
+        ).sendRequestAsync((response) -> {
             if(!response.successful()) {
-                consumer.accept(new ApiResponse<>(false, response.body().error));
+                consumer.accept(new ApiResponse<>(false, null, response.error()));
                 return;
             }
             api.getCache().renew(uuid, (info) ->
-                    consumer.accept(new ApiResponse<>(true, response.body().message))
+                    consumer.accept(new ApiResponse<>(true, response.data().message, null))
             );
         });
     }
@@ -137,14 +149,15 @@ public class ApiHandler<T> {
                 api,
                 "POST",
                 Routes.setPosition(uuid),
-                Map.of("position", position.name())
-        ).sendRequestSync((response) -> {
+                Map.of("position", position.name()),
+                MessageSchema.class
+        ).sendRequestAsync((response) -> {
             if(!response.successful()) {
-                consumer.accept(new ApiResponse<>(false, response.body().error));
+                consumer.accept(new ApiResponse<>(false, null, response.error()));
                 return;
             }
             api.getCache().renew(uuid, (info) ->
-                    consumer.accept(new ApiResponse<>(true, response.body().message))
+                    consumer.accept(new ApiResponse<>(true, response.data().message, null))
             );
         });
     }
@@ -169,14 +182,15 @@ public class ApiHandler<T> {
                 api,
                 "POST",
                 Routes.setIcon(uuid),
-                Map.of("icon", icon.name())
-        ).sendRequestSync((response) -> {
+                Map.of("icon", icon.name()),
+                MessageSchema.class
+        ).sendRequestAsync((response) -> {
             if(!response.successful()) {
-                consumer.accept(new ApiResponse<>(false, response.body().error));
+                consumer.accept(new ApiResponse<>(false, null, response.error()));
                 return;
             }
             api.getCache().renew(uuid, (info) ->
-                    consumer.accept(new ApiResponse<>(true, response.body().message))
+                    consumer.accept(new ApiResponse<>(true, response.data().message, null))
             );
         });
     }
@@ -199,14 +213,15 @@ public class ApiHandler<T> {
                 api,
                 "DELETE",
                 Routes.player(uuid),
-                emptyBody
-        ).sendRequestSync((response) -> {
+                emptyBody,
+                MessageSchema.class
+        ).sendRequestAsync((response) -> {
             if(!response.successful()) {
-                consumer.accept(new ApiResponse<>(false, response.body().error));
+                consumer.accept(new ApiResponse<>(false, null, response.error()));
                 return;
             }
             api.getCache().renew(uuid, (info) ->
-                    consumer.accept(new ApiResponse<>(true, response.body().message))
+                    consumer.accept(new ApiResponse<>(true, response.data().message, null))
             );
         });
     }
@@ -221,13 +236,14 @@ public class ApiHandler<T> {
                 api,
                 "POST",
                 Routes.watchPlayer(uuid),
-                emptyBody
-        ).sendRequestSync((response) -> {
+                emptyBody,
+                MessageSchema.class
+        ).sendRequestAsync((response) -> {
             if(!response.successful()) {
-                consumer.accept(new ApiResponse<>(false, response.body().error));
+                consumer.accept(new ApiResponse<>(false, null, response.error()));
                 return;
             }
-            consumer.accept(new ApiResponse<>(true, response.body().message));
+            consumer.accept(new ApiResponse<>(true, response.data().message, null));
         });
     }
 
@@ -241,13 +257,14 @@ public class ApiHandler<T> {
                 api,
                 "POST",
                 Routes.unwatchPlayer(uuid),
-                emptyBody
-        ).sendRequestSync((response) -> {
+                emptyBody,
+                MessageSchema.class
+        ).sendRequestAsync((response) -> {
             if(!response.successful()) {
-                consumer.accept(new ApiResponse<>(false, response.body().error));
+                consumer.accept(new ApiResponse<>(false, null, response.error()));
                 return;
             }
-            consumer.accept(new ApiResponse<>(true, response.body().message));
+            consumer.accept(new ApiResponse<>(true, response.data().message, null));
         });
     }
 
@@ -261,13 +278,14 @@ public class ApiHandler<T> {
                 api,
                 "POST",
                 Routes.referPlayer(uuid),
-                emptyBody
-        ).sendRequestSync((response) -> {
+                emptyBody,
+                MessageSchema.class
+        ).sendRequestAsync((response) -> {
             if(!response.successful()) {
-                consumer.accept(new ApiResponse<>(false, response.body().error));
+                consumer.accept(new ApiResponse<>(false, null, response.error()));
                 return;
             }
-            consumer.accept(new ApiResponse<>(true, response.body().message));
+            consumer.accept(new ApiResponse<>(true, response.data().message, null));
         });
     }
 
@@ -282,13 +300,14 @@ public class ApiHandler<T> {
                 api,
                 "POST",
                 Routes.reportPlayer(uuid),
-                Map.of("reason", reason)
-        ).sendRequestSync((response) -> {
+                Map.of("reason", reason),
+                MessageSchema.class
+        ).sendRequestAsync((response) -> {
             if(!response.successful()) {
-                consumer.accept(new ApiResponse<>(false, response.body().error));
+                consumer.accept(new ApiResponse<>(false, null, response.error()));
                 return;
             }
-            consumer.accept(new ApiResponse<>(true, response.body().message));
+            consumer.accept(new ApiResponse<>(true, response.data().message, null));
         });
     }
 
@@ -303,14 +322,15 @@ public class ApiHandler<T> {
                 api,
                 "POST",
                 Routes.ban(uuid),
-                Map.of("reason", reason)
-        ).sendRequestSync((response) -> {
+                Map.of("reason", reason),
+                MessageSchema.class
+        ).sendRequestAsync((response) -> {
             if(!response.successful()) {
-                consumer.accept(new ApiResponse<>(false, response.body().error));
+                consumer.accept(new ApiResponse<>(false, null, response.error()));
                 return;
             }
             api.getCache().renew(uuid, (info) ->
-                    consumer.accept(new ApiResponse<>(true, response.body().message))
+                    consumer.accept(new ApiResponse<>(true, response.data().message, null))
             );
         });
     }
@@ -325,14 +345,15 @@ public class ApiHandler<T> {
                 api,
                 "DELETE",
                 Routes.ban(uuid),
-                emptyBody
-        ).sendRequestSync((response) -> {
+                emptyBody,
+                MessageSchema.class
+        ).sendRequestAsync((response) -> {
             if(!response.successful()) {
-                consumer.accept(new ApiResponse<>(false, response.body().error));
+                consumer.accept(new ApiResponse<>(false, null, response.error()));
                 return;
             }
             api.getCache().renew(uuid, (info) ->
-                    consumer.accept(new ApiResponse<>(true, response.body().message))
+                    consumer.accept(new ApiResponse<>(true, response.data().message, null))
             );
         });
     }
@@ -349,14 +370,15 @@ public class ApiHandler<T> {
                 api,
                 "PUT",
                 Routes.ban(uuid),
-                Map.of("reason", suspension.getReason(), "appealable", suspension.isAppealable())
-        ).sendRequestSync((response) -> {
+                Map.of("reason", suspension.getReason(), "appealable", suspension.isAppealable()),
+                MessageSchema.class
+        ).sendRequestAsync((response) -> {
             if(!response.successful()) {
-                consumer.accept(new ApiResponse<>(false, response.body().error));
+                consumer.accept(new ApiResponse<>(false, null, response.error()));
                 return;
             }
             api.getCache().renew(uuid, (info) ->
-                    consumer.accept(new ApiResponse<>(true, response.body().message))
+                    consumer.accept(new ApiResponse<>(true, response.data().message, null))
             );
         });
     }
@@ -371,13 +393,14 @@ public class ApiHandler<T> {
                 api,
                 "POST",
                 Routes.appealBan(api.getClientUUID()),
-                Map.of("reason", reason)
-        ).sendRequestSync((response) -> {
+                Map.of("reason", reason),
+                MessageSchema.class
+        ).sendRequestAsync((response) -> {
             if(!response.successful()) {
-                consumer.accept(new ApiResponse<>(false, response.body().error));
+                consumer.accept(new ApiResponse<>(false, null, response.error()));
                 return;
             }
-            consumer.accept(new ApiResponse<>(true, response.body().message));
+            consumer.accept(new ApiResponse<>(true, response.data().message, null));
         });
     }
 
@@ -390,13 +413,14 @@ public class ApiHandler<T> {
                 api,
                 "POST",
                 Routes.connection(api.getClientUUID(), ConnectionType.DISCORD),
-                emptyBody
-        ).sendRequestSync((response) -> {
+                emptyBody,
+                VerificationCodeSchema.class
+        ).sendRequestAsync((response) -> {
             if(!response.successful()) {
-                consumer.accept(new ApiResponse<>(false, response.body().error));
+                consumer.accept(new ApiResponse<>(false, null, response.error()));
                 return;
             }
-            consumer.accept(new ApiResponse<>(true, response.body().code));
+            consumer.accept(new ApiResponse<>(true, response.data().code, null));
         });
     }
 
@@ -409,14 +433,15 @@ public class ApiHandler<T> {
                 api,
                 "DELETE",
                 Routes.connection(api.getClientUUID(), ConnectionType.DISCORD),
-                emptyBody
-        ).sendRequestSync((response) -> {
+                emptyBody,
+                MessageSchema.class
+        ).sendRequestAsync((response) -> {
             if(!response.successful()) {
-                consumer.accept(new ApiResponse<>(false, response.body().error));
+                consumer.accept(new ApiResponse<>(false, null, response.error()));
                 return;
             }
             api.getCache().renewSelf((info) ->
-                    consumer.accept(new ApiResponse<>(true, response.body().message))
+                    consumer.accept(new ApiResponse<>(true, response.data().message, null))
             );
         });
     }
@@ -431,13 +456,14 @@ public class ApiHandler<T> {
                 api,
                 "POST",
                 Routes.connection(api.getClientUUID(), ConnectionType.EMAIL),
-                Map.of("email", email)
-        ).sendRequestSync((response) -> {
+                Map.of("email", email),
+                MessageSchema.class
+        ).sendRequestAsync((response) -> {
             if(!response.successful()) {
-                consumer.accept(new ApiResponse<>(false, response.body().error));
+                consumer.accept(new ApiResponse<>(false, null, response.error()));
                 return;
             }
-            consumer.accept(new ApiResponse<>(true, response.body().message));
+            consumer.accept(new ApiResponse<>(true, response.data().message, null));
         });
     }
 
@@ -450,13 +476,14 @@ public class ApiHandler<T> {
                 api,
                 "DELETE",
                 Routes.connection(api.getClientUUID(), ConnectionType.EMAIL),
-                emptyBody
-        ).sendRequestSync((response) -> {
+                emptyBody,
+                MessageSchema.class
+        ).sendRequestAsync((response) -> {
             if(!response.successful()) {
-                consumer.accept(new ApiResponse<>(false, response.body().error));
+                consumer.accept(new ApiResponse<>(false, null, response.error()));
                 return;
             }
-            consumer.accept(new ApiResponse<>(true, response.body().message));
+            consumer.accept(new ApiResponse<>(true, response.data().message, null));
         });
     }
 
@@ -470,13 +497,97 @@ public class ApiHandler<T> {
                 api,
                 "POST",
                 Routes.verifyEmail(api.getClientUUID(), code),
-                emptyBody
-        ).sendRequestSync((response) -> {
+                emptyBody,
+                MessageSchema.class
+        ).sendRequestAsync((response) -> {
             if(!response.successful()) {
-                consumer.accept(new ApiResponse<>(false, response.body().error));
+                consumer.accept(new ApiResponse<>(false, null, response.error()));
                 return;
             }
-            consumer.accept(new ApiResponse<>(true, response.body().message));
+            consumer.accept(new ApiResponse<>(true, response.data().message, null));
+        });
+    }
+
+    public void getNotes(UUID uuid, Consumer<ApiResponse<List<PlayerNote>>> consumer) {
+        new ApiRequest<>(
+                api,
+                "GET",
+                Routes.notes(api.getClientUUID()),
+                emptyBody,
+                NoteSchema[].class
+        ).sendRequestAsync((response) -> {
+            if(!response.successful()) {
+                consumer.accept(new ApiResponse<>(false, null, response.error()));
+                return;
+            }
+            List<PlayerNote> notes = new ArrayList<>();
+            for(NoteSchema note : response.data()) {
+                notes.add(new PlayerNote(
+                        note.id,
+                        note.text,
+                        note.author,
+                        note.createdAt
+                ));
+            }
+            consumer.accept(new ApiResponse<>(true, notes, null));
+        });
+    }
+
+    public void createNote(UUID uuid, String note, Consumer<ApiResponse<String>> consumer) {
+        new ApiRequest<>(
+                api,
+                "POST",
+                Routes.notes(api.getClientUUID()),
+                Map.of("note", note),
+                MessageSchema.class
+        ).sendRequestAsync((response) -> {
+            if(!response.successful()) {
+                consumer.accept(new ApiResponse<>(false, null, response.error()));
+                return;
+            }
+            consumer.accept(new ApiResponse<>(true, response.data().message, null));
+        });
+    }
+
+    public void getNote(UUID uuid, String noteId, Consumer<ApiResponse<PlayerNote>> consumer) {
+        new ApiRequest<>(
+                api,
+                "GET",
+                Routes.note(api.getClientUUID(), noteId),
+                emptyBody,
+                NoteSchema.class
+        ).sendRequestAsync((response) -> {
+            if(!response.successful()) {
+                consumer.accept(new ApiResponse<>(false, null, response.error()));
+                return;
+            }
+            NoteSchema body = response.data();
+            consumer.accept(new ApiResponse<>(
+                    false,
+                    new PlayerNote(
+                        body.id,
+                        body.text,
+                        body.author,
+                        body.createdAt
+                    ),
+                    null
+            ));
+        });
+    }
+
+    public void deleteNote(UUID uuid, String noteId, Consumer<ApiResponse<String>> consumer) {
+        new ApiRequest<>(
+                api,
+                "DELETE",
+                Routes.note(api.getClientUUID(), noteId),
+                emptyBody,
+                MessageSchema.class
+        ).sendRequestAsync((response) -> {
+            if(!response.successful()) {
+                consumer.accept(new ApiResponse<>(false, null, response.error()));
+                return;
+            }
+            consumer.accept(new ApiResponse<>(true, response.data().message, null));
         });
     }
 
@@ -486,5 +597,5 @@ public class ApiHandler<T> {
      * @param data The data returned
      * @param <T> The type of the returned data
      */
-    public record ApiResponse<T>(boolean successful, T data) {}
+    public record ApiResponse<T>(boolean successful, T data, String error) {}
 }

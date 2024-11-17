@@ -505,7 +505,7 @@ public class PlayerInfo<T> {
             resolving.add(uuid);
 
             api.getApiHandler().getInfo(uuid, (info) -> {
-                add(uuid, info);
+                add(uuid, info.data());
                 resolving.remove(uuid);
                 resolve(uuid, consumer);
             });
