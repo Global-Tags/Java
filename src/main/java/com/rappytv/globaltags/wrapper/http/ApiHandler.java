@@ -589,7 +589,7 @@ public class ApiHandler<T> {
         new ApiRequest<>(
                 api,
                 "GET",
-                Routes.notes(api.getClientUUID()),
+                Routes.notes(uuid),
                 emptyBody,
                 NoteSchema[].class
         ).sendRequestAsync((response) -> {
@@ -631,7 +631,7 @@ public class ApiHandler<T> {
         new ApiRequest<>(
                 api,
                 "POST",
-                Routes.notes(api.getClientUUID()),
+                Routes.notes(uuid),
                 Map.of("note", note),
                 MessageSchema.class
         ).sendRequestAsync((response) -> {
@@ -664,7 +664,7 @@ public class ApiHandler<T> {
         new ApiRequest<>(
                 api,
                 "GET",
-                Routes.note(api.getClientUUID(), noteId),
+                Routes.note(uuid, noteId),
                 emptyBody,
                 NoteSchema.class
         ).sendRequestAsync((response) -> {
@@ -707,7 +707,7 @@ public class ApiHandler<T> {
         new ApiRequest<>(
                 api,
                 "DELETE",
-                Routes.note(api.getClientUUID(), noteId),
+                Routes.note(uuid, noteId),
                 emptyBody,
                 MessageSchema.class
         ).sendRequestAsync((response) -> {
