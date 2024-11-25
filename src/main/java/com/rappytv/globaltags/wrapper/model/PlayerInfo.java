@@ -273,11 +273,23 @@ public class PlayerInfo<T> {
 
     /**
      * Represents an icon for a player in the response body.
-     *
-     * @param type The {@link GlobalIcon} type.
-     * @param hash The custom icon hash.
      */
-    public record Icon(String type, String hash) {}
+    public static class Icon {
+
+        private final String type;
+        private final String hash;
+
+        /**
+         * Creates a new icon.
+         *
+         * @param type The {@link GlobalIcon} type.
+         * @param hash The custom icon hash.
+         */
+        public Icon(String type, String hash) {
+            this.type = type;
+            this.hash = hash;
+        }
+    }
 
     /**
      * Represents a player's ban or suspension status.
@@ -505,7 +517,7 @@ public class PlayerInfo<T> {
             resolving.add(uuid);
 
             api.getApiHandler().getInfo(uuid, (info) -> {
-                add(uuid, info.data());
+                add(uuid, info.getData());
                 resolving.remove(uuid);
                 resolve(uuid, consumer);
             });

@@ -49,11 +49,11 @@ public class ApiHandler<T> {
                 Routes.getApiInfo(),
                 ApiInfo.class
         ).sendRequestAsync((response) -> {
-            if(!response.isSuccessful()) {
-                consumer.accept(new ApiResponse<>(false, null, response.getError()));
+            if(!response.successful()) {
+                consumer.accept(new ApiResponse<>(false, null, response.error()));
                 return;
             }
-            consumer.accept(new ApiResponse<>(true, response.getData(), null));
+            consumer.accept(new ApiResponse<>(true, response.data(), null));
         });
     }
 
@@ -79,11 +79,11 @@ public class ApiHandler<T> {
                 Routes.player(uuid),
                 PlayerInfoSchema.class
         ).sendRequestAsync((response) -> {
-            if(!response.isSuccessful()) {
-                consumer.accept(new ApiResponse<>(false, null, response.getError()));
+            if(!response.successful()) {
+                consumer.accept(new ApiResponse<>(false, null, response.error()));
                 return;
             }
-            PlayerInfoSchema body = response.getData();
+            PlayerInfoSchema body = response.data();
             consumer.accept(new ApiResponse<>(
                     true,
                     new PlayerInfo<>(
@@ -125,13 +125,13 @@ public class ApiHandler<T> {
                 Routes.tagHistory(uuid),
                 TagHistoryEntry[].class
         ).sendRequestAsync((response) -> {
-            if(!response.isSuccessful()) {
-                consumer.accept(new ApiResponse<>(false, null, response.getError()));
+            if(!response.successful()) {
+                consumer.accept(new ApiResponse<>(false, null, response.error()));
                 return;
             }
             consumer.accept(new ApiResponse<>(
                     true,
-                    Arrays.asList(response.getData()),
+                    Arrays.asList(response.data()),
                     null
             ));
         });
@@ -162,12 +162,12 @@ public class ApiHandler<T> {
                 Map.of("tag", tag),
                 MessageSchema.class
         ).sendRequestAsync((response) -> {
-            if(!response.isSuccessful()) {
-                consumer.accept(new ApiResponse<>(false, null, response.getError()));
+            if(!response.successful()) {
+                consumer.accept(new ApiResponse<>(false, null, response.error()));
                 return;
             }
             api.getCache().renew(uuid, (info) ->
-                    consumer.accept(new ApiResponse<>(true, response.getData().message, null))
+                    consumer.accept(new ApiResponse<>(true, response.data().message, null))
             );
         });
     }
@@ -197,12 +197,12 @@ public class ApiHandler<T> {
                 Map.of("position", position.name()),
                 MessageSchema.class
         ).sendRequestAsync((response) -> {
-            if(!response.isSuccessful()) {
-                consumer.accept(new ApiResponse<>(false, null, response.getError()));
+            if(!response.successful()) {
+                consumer.accept(new ApiResponse<>(false, null, response.error()));
                 return;
             }
             api.getCache().renew(uuid, (info) ->
-                    consumer.accept(new ApiResponse<>(true, response.getData().message, null))
+                    consumer.accept(new ApiResponse<>(true, response.data().message, null))
             );
         });
     }
@@ -232,12 +232,12 @@ public class ApiHandler<T> {
                 Map.of("icon", icon.name()),
                 MessageSchema.class
         ).sendRequestAsync((response) -> {
-            if(!response.isSuccessful()) {
-                consumer.accept(new ApiResponse<>(false, null, response.getError()));
+            if(!response.successful()) {
+                consumer.accept(new ApiResponse<>(false, null, response.error()));
                 return;
             }
             api.getCache().renew(uuid, (info) ->
-                    consumer.accept(new ApiResponse<>(true, response.getData().message, null))
+                    consumer.accept(new ApiResponse<>(true, response.data().message, null))
             );
         });
     }
@@ -265,12 +265,12 @@ public class ApiHandler<T> {
                 emptyBody,
                 MessageSchema.class
         ).sendRequestAsync((response) -> {
-            if(!response.isSuccessful()) {
-                consumer.accept(new ApiResponse<>(false, null, response.getError()));
+            if(!response.successful()) {
+                consumer.accept(new ApiResponse<>(false, null, response.error()));
                 return;
             }
             api.getCache().renew(uuid, (info) ->
-                    consumer.accept(new ApiResponse<>(true, response.getData().message, null))
+                    consumer.accept(new ApiResponse<>(true, response.data().message, null))
             );
         });
     }
@@ -289,11 +289,11 @@ public class ApiHandler<T> {
                 emptyBody,
                 MessageSchema.class
         ).sendRequestAsync((response) -> {
-            if(!response.isSuccessful()) {
-                consumer.accept(new ApiResponse<>(false, null, response.getError()));
+            if(!response.successful()) {
+                consumer.accept(new ApiResponse<>(false, null, response.error()));
                 return;
             }
-            consumer.accept(new ApiResponse<>(true, response.getData().message, null));
+            consumer.accept(new ApiResponse<>(true, response.data().message, null));
         });
     }
 
@@ -311,11 +311,11 @@ public class ApiHandler<T> {
                 emptyBody,
                 MessageSchema.class
         ).sendRequestAsync((response) -> {
-            if(!response.isSuccessful()) {
-                consumer.accept(new ApiResponse<>(false, null, response.getError()));
+            if(!response.successful()) {
+                consumer.accept(new ApiResponse<>(false, null, response.error()));
                 return;
             }
-            consumer.accept(new ApiResponse<>(true, response.getData().message, null));
+            consumer.accept(new ApiResponse<>(true, response.data().message, null));
         });
     }
 
@@ -333,11 +333,11 @@ public class ApiHandler<T> {
                 emptyBody,
                 MessageSchema.class
         ).sendRequestAsync((response) -> {
-            if(!response.isSuccessful()) {
-                consumer.accept(new ApiResponse<>(false, null, response.getError()));
+            if(!response.successful()) {
+                consumer.accept(new ApiResponse<>(false, null, response.error()));
                 return;
             }
-            consumer.accept(new ApiResponse<>(true, response.getData().message, null));
+            consumer.accept(new ApiResponse<>(true, response.data().message, null));
         });
     }
 
@@ -356,11 +356,11 @@ public class ApiHandler<T> {
                 Map.of("reason", reason),
                 MessageSchema.class
         ).sendRequestAsync((response) -> {
-            if(!response.isSuccessful()) {
-                consumer.accept(new ApiResponse<>(false, null, response.getError()));
+            if(!response.successful()) {
+                consumer.accept(new ApiResponse<>(false, null, response.error()));
                 return;
             }
-            consumer.accept(new ApiResponse<>(true, response.getData().message, null));
+            consumer.accept(new ApiResponse<>(true, response.data().message, null));
         });
     }
 
@@ -379,12 +379,12 @@ public class ApiHandler<T> {
                 Map.of("reason", reason),
                 MessageSchema.class
         ).sendRequestAsync((response) -> {
-            if(!response.isSuccessful()) {
-                consumer.accept(new ApiResponse<>(false, null, response.getError()));
+            if(!response.successful()) {
+                consumer.accept(new ApiResponse<>(false, null, response.error()));
                 return;
             }
             api.getCache().renew(uuid, (info) ->
-                    consumer.accept(new ApiResponse<>(true, response.getData().message, null))
+                    consumer.accept(new ApiResponse<>(true, response.data().message, null))
             );
         });
     }
@@ -403,12 +403,12 @@ public class ApiHandler<T> {
                 emptyBody,
                 MessageSchema.class
         ).sendRequestAsync((response) -> {
-            if(!response.isSuccessful()) {
-                consumer.accept(new ApiResponse<>(false, null, response.getError()));
+            if(!response.successful()) {
+                consumer.accept(new ApiResponse<>(false, null, response.error()));
                 return;
             }
             api.getCache().renew(uuid, (info) ->
-                    consumer.accept(new ApiResponse<>(true, response.getData().message, null))
+                    consumer.accept(new ApiResponse<>(true, response.data().message, null))
             );
         });
     }
@@ -429,12 +429,12 @@ public class ApiHandler<T> {
                 Map.of("reason", suspension.getReason(), "appealable", suspension.isAppealable()),
                 MessageSchema.class
         ).sendRequestAsync((response) -> {
-            if(!response.isSuccessful()) {
-                consumer.accept(new ApiResponse<>(false, null, response.getError()));
+            if(!response.successful()) {
+                consumer.accept(new ApiResponse<>(false, null, response.error()));
                 return;
             }
             api.getCache().renew(uuid, (info) ->
-                    consumer.accept(new ApiResponse<>(true, response.getData().message, null))
+                    consumer.accept(new ApiResponse<>(true, response.data().message, null))
             );
         });
     }
@@ -453,11 +453,11 @@ public class ApiHandler<T> {
                 Map.of("reason", reason),
                 MessageSchema.class
         ).sendRequestAsync((response) -> {
-            if(!response.isSuccessful()) {
-                consumer.accept(new ApiResponse<>(false, null, response.getError()));
+            if(!response.successful()) {
+                consumer.accept(new ApiResponse<>(false, null, response.error()));
                 return;
             }
-            consumer.accept(new ApiResponse<>(true, response.getData().message, null));
+            consumer.accept(new ApiResponse<>(true, response.data().message, null));
         });
     }
 
@@ -474,11 +474,11 @@ public class ApiHandler<T> {
                 emptyBody,
                 VerificationCodeSchema.class
         ).sendRequestAsync((response) -> {
-            if(!response.isSuccessful()) {
-                consumer.accept(new ApiResponse<>(false, null, response.getError()));
+            if(!response.successful()) {
+                consumer.accept(new ApiResponse<>(false, null, response.error()));
                 return;
             }
-            consumer.accept(new ApiResponse<>(true, response.getData().code, null));
+            consumer.accept(new ApiResponse<>(true, response.data().code, null));
         });
     }
 
@@ -495,12 +495,12 @@ public class ApiHandler<T> {
                 emptyBody,
                 MessageSchema.class
         ).sendRequestAsync((response) -> {
-            if(!response.isSuccessful()) {
-                consumer.accept(new ApiResponse<>(false, null, response.getError()));
+            if(!response.successful()) {
+                consumer.accept(new ApiResponse<>(false, null, response.error()));
                 return;
             }
             api.getCache().renewSelf((info) ->
-                    consumer.accept(new ApiResponse<>(true, response.getData().message, null))
+                    consumer.accept(new ApiResponse<>(true, response.data().message, null))
             );
         });
     }
@@ -519,11 +519,11 @@ public class ApiHandler<T> {
                 Map.of("email", email),
                 MessageSchema.class
         ).sendRequestAsync((response) -> {
-            if(!response.isSuccessful()) {
-                consumer.accept(new ApiResponse<>(false, null, response.getError()));
+            if(!response.successful()) {
+                consumer.accept(new ApiResponse<>(false, null, response.error()));
                 return;
             }
-            consumer.accept(new ApiResponse<>(true, response.getData().message, null));
+            consumer.accept(new ApiResponse<>(true, response.data().message, null));
         });
     }
 
@@ -540,11 +540,11 @@ public class ApiHandler<T> {
                 emptyBody,
                 MessageSchema.class
         ).sendRequestAsync((response) -> {
-            if(!response.isSuccessful()) {
-                consumer.accept(new ApiResponse<>(false, null, response.getError()));
+            if(!response.successful()) {
+                consumer.accept(new ApiResponse<>(false, null, response.error()));
                 return;
             }
-            consumer.accept(new ApiResponse<>(true, response.getData().message, null));
+            consumer.accept(new ApiResponse<>(true, response.data().message, null));
         });
     }
 
@@ -562,11 +562,11 @@ public class ApiHandler<T> {
                 emptyBody,
                 MessageSchema.class
         ).sendRequestAsync((response) -> {
-            if(!response.isSuccessful()) {
-                consumer.accept(new ApiResponse<>(false, null, response.getError()));
+            if(!response.successful()) {
+                consumer.accept(new ApiResponse<>(false, null, response.error()));
                 return;
             }
-            consumer.accept(new ApiResponse<>(true, response.getData().message, null));
+            consumer.accept(new ApiResponse<>(true, response.data().message, null));
         });
     }
 
@@ -593,12 +593,12 @@ public class ApiHandler<T> {
                 emptyBody,
                 NoteSchema[].class
         ).sendRequestAsync((response) -> {
-            if(!response.isSuccessful()) {
-                consumer.accept(new ApiResponse<>(false, null, response.getError()));
+            if(!response.successful()) {
+                consumer.accept(new ApiResponse<>(false, null, response.error()));
                 return;
             }
             List<PlayerNote> notes = new ArrayList<>();
-            for(NoteSchema note : response.getData()) {
+            for(NoteSchema note : response.data()) {
                 notes.add(new PlayerNote(
                         note.id,
                         note.text,
@@ -635,11 +635,11 @@ public class ApiHandler<T> {
                 Map.of("note", note),
                 MessageSchema.class
         ).sendRequestAsync((response) -> {
-            if(!response.isSuccessful()) {
-                consumer.accept(new ApiResponse<>(false, null, response.getError()));
+            if(!response.successful()) {
+                consumer.accept(new ApiResponse<>(false, null, response.error()));
                 return;
             }
-            consumer.accept(new ApiResponse<>(true, response.getData().message, null));
+            consumer.accept(new ApiResponse<>(true, response.data().message, null));
         });
     }
 
@@ -668,11 +668,11 @@ public class ApiHandler<T> {
                 emptyBody,
                 NoteSchema.class
         ).sendRequestAsync((response) -> {
-            if(!response.isSuccessful()) {
-                consumer.accept(new ApiResponse<>(false, null, response.getError()));
+            if(!response.successful()) {
+                consumer.accept(new ApiResponse<>(false, null, response.error()));
                 return;
             }
-            NoteSchema body = response.getData();
+            NoteSchema body = response.data();
             consumer.accept(new ApiResponse<>(
                     false,
                     new PlayerNote(
@@ -711,11 +711,11 @@ public class ApiHandler<T> {
                 emptyBody,
                 MessageSchema.class
         ).sendRequestAsync((response) -> {
-            if(!response.isSuccessful()) {
-                consumer.accept(new ApiResponse<>(false, null, response.getError()));
+            if(!response.successful()) {
+                consumer.accept(new ApiResponse<>(false, null, response.error()));
                 return;
             }
-            consumer.accept(new ApiResponse<>(true, response.getData().message, null));
+            consumer.accept(new ApiResponse<>(true, response.data().message, null));
         });
     }
 
@@ -742,29 +742,15 @@ public class ApiHandler<T> {
             this.error = error;
         }
 
-        /**
-         * Checks if the request was successful
-         *
-         * @return If the request was successful
-         */
-        public boolean isSuccessful() {
+        public boolean successful() {
             return successful;
         }
 
-        /**
-         * Gets the data returned if available
-         *
-         * @return the data if available
-         */
-        public T getData() {
+        public T data() {
             return data;
         }
 
-        /**
-         * Get the error returned if available
-         * @return an error if available
-         */
-        public String getError() {
+        public String error() {
             return error;
         }
     }

@@ -117,12 +117,53 @@ public class ApiRequest<T> {
     }
 
     /**
-     * A record which passes a lightweight API response to consumers.
+     * A class which passes a lightweight API response to consumers.
      *
-     * @param successful If the request was successful
-     * @param data       The response data
-     * @param error      An error message
-     * @param <T>        The type of the response data
+     * @param <T> The return type
      */
-    public record ResponseBody<T>(boolean successful, T data, String error) {}
+    public static class ResponseBody<T> {
+
+        private final boolean successful;
+        private final T data;
+        private final String error;
+
+        /**
+         * Constructs a new response body.
+         *
+         * @param successful If the request was successful
+         * @param data       The response data
+         * @param error      An error message
+         */
+        public ResponseBody(boolean successful, T data, String error) {
+            this.successful = successful;
+            this.data = data;
+            this.error = error;
+        }
+
+        /**
+         * Checks if the request was successful
+         *
+         * @return If the request was successful
+         */
+        public boolean isSuccessful() {
+            return successful;
+        }
+
+        /**
+         * Gets the data returned if available
+         *
+         * @return the data if available
+         */
+        public T getData() {
+            return data;
+        }
+
+        /**
+         * Get the error returned if available
+         * @return an error if available
+         */
+        public String getError() {
+            return error;
+        }
+    }
 }
