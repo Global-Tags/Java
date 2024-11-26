@@ -78,17 +78,15 @@ public class ApiRequest<T> {
                 }
                 T parsedBody = gson.fromJson(response.body(), responseType);
                 consumer.accept(new ResponseBody<>(
-                        response.statusCode() >= 200 && response.statusCode() < 300,
+                        true,
                         parsedBody,
                         null
                 ));
             }).exceptionally(throwable -> {
-                throwable.printStackTrace();
                 consumer.accept(new ResponseBody<>(false, null, throwable.getLocalizedMessage()));
                 return null;
             });
         } catch (Exception e) {
-            e.printStackTrace();
             consumer.accept(new ResponseBody<>(false, null, e.getLocalizedMessage()));
         }
     }
