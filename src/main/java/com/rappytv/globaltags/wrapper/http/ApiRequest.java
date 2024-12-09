@@ -64,9 +64,9 @@ public class ApiRequest<T> {
      */
     public void sendRequestAsync(Consumer<@NotNull ResponseBody<T>> consumer) {
         try {
-            HttpRequest request = getBuilder()
-                    .uri(new URI(api.getUrls().getApiBase() + path))
-                    .method(method, getBodyPublisher())
+            HttpRequest request = this.getBuilder()
+                    .uri(new URI(this.api.getUrls().getApiBase() + this.path))
+                    .method(this.method, this.getBodyPublisher())
                     .build();
 
             client.sendAsync(request, HttpResponse.BodyHandlers.ofString()).thenAccept(response -> {
@@ -76,19 +76,17 @@ public class ApiRequest<T> {
                     consumer.accept(new ResponseBody<>(false, null, body.error));
                     return;
                 }
-                T parsedBody = gson.fromJson(response.body(), responseType);
+                T parsedBody = gson.fromJson(response.body(), this.responseType);
                 consumer.accept(new ResponseBody<>(
-                        response.statusCode() >= 200 && response.statusCode() < 300,
+                        true,
                         parsedBody,
                         null
                 ));
             }).exceptionally(throwable -> {
-                throwable.printStackTrace();
                 consumer.accept(new ResponseBody<>(false, null, throwable.getLocalizedMessage()));
                 return null;
             });
         } catch (Exception e) {
-            e.printStackTrace();
             consumer.accept(new ResponseBody<>(false, null, e.getLocalizedMessage()));
         }
     }
@@ -101,9 +99,9 @@ public class ApiRequest<T> {
     private HttpRequest.Builder getBuilder() {
         return HttpRequest.newBuilder()
                 .header("Content-Type", "application/json")
-                .header("Authorization", api.getAuthorizationHeader())
-                .header("X-Language", api.getLanguageCode())
-                .header("X-Agent", api.getAgent().toString());
+                .header("Authorization", this.api.getAuthorizationHeader())
+                .header("X-Language", this.api.getLanguageCode())
+                .header("X-Agent", this.api.getAgent().toString());
     }
 
     /**
@@ -112,17 +110,58 @@ public class ApiRequest<T> {
      * @return The {@link HttpRequest.BodyPublisher} from the data parameter
      */
     private HttpRequest.BodyPublisher getBodyPublisher() {
-        if (body == null || body.isEmpty()) return HttpRequest.BodyPublishers.noBody();
-        return HttpRequest.BodyPublishers.ofString(gson.toJson(body));
+        if (this.body == null || this.body.isEmpty()) return HttpRequest.BodyPublishers.noBody();
+        return HttpRequest.BodyPublishers.ofString(gson.toJson(this.body));
     }
 
     /**
-     * A record which passes a lightweight API response to consumers.
+     * A class which passes a lightweight API response to consumers.
      *
-     * @param successful If the request was successful
-     * @param data       The response data
-     * @param error      An error message
-     * @param <T>        The type of the response data
+     * @param <T> The return type
      */
-    public record ResponseBody<T>(boolean successful, T data, String error) {}
+    public static class ResponseBody<T> {
+
+        private final boolean successful;
+        private final T data;
+        private final String error;
+
+        /**
+         * Constructs a new response body.
+         *
+         * @param successful If the request was successful
+         * @param data       The response data
+         * @param error      An error message
+         */
+        public ResponseBody(boolean successful, T data, String error) {
+            this.successful = successful;
+            this.data = data;
+            this.error = error;
+        }
+
+        /**
+         * Checks if the request was successful
+         *
+         * @return If the request was successful
+         */
+        public boolean isSuccessful() {
+            return this.successful;
+        }
+
+        /**
+         * Gets the data returned if available
+         *
+         * @return the data if available
+         */
+        public T getData() {
+            return this.data;
+        }
+
+        /**
+         * Get the error returned if available
+         * @return an error if available
+         */
+        public String getError() {
+            return this.error;
+        }
+    }
 }

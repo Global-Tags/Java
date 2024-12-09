@@ -42,7 +42,7 @@ public class PlayerNote {
      */
     @NotNull
     public String getId() {
-        return id;
+        return this.id;
     }
 
     /**
@@ -52,7 +52,7 @@ public class PlayerNote {
      */
     @NotNull
     public String getText() {
-        return text;
+        return this.text;
     }
 
     /**
@@ -62,7 +62,7 @@ public class PlayerNote {
      */
     @NotNull
     public UUID getAuthor() {
-        return author;
+        return this.author;
     }
 
     /**
@@ -71,16 +71,16 @@ public class PlayerNote {
      * @return The date and time when the note was created.
      */
     public Date getCreatedAt() {
-        return createdAt;
+        return this.createdAt;
     }
 
     @Override
     public String toString() {
         return "PlayerNote{" +
-                "id='" + id + '\'' +
-                ", text='" + text + '\'' +
-                ", author=" + author +
-                ", createdAt=" + createdAt +
+                "id='" + this.id + '\'' +
+                ", text='" + this.text + '\'' +
+                ", author=" + this.author +
+                ", createdAt=" + this.createdAt +
                 '}';
     }
 }
