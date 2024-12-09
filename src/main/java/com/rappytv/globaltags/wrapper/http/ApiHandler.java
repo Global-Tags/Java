@@ -4,14 +4,9 @@ import com.rappytv.globaltags.wrapper.GlobalTagsAPI;
 import com.rappytv.globaltags.wrapper.enums.ConnectionType;
 import com.rappytv.globaltags.wrapper.enums.GlobalIcon;
 import com.rappytv.globaltags.wrapper.enums.GlobalPosition;
-import com.rappytv.globaltags.wrapper.http.schemas.MessageSchema;
-import com.rappytv.globaltags.wrapper.http.schemas.NoteSchema;
-import com.rappytv.globaltags.wrapper.http.schemas.PlayerInfoSchema;
-import com.rappytv.globaltags.wrapper.http.schemas.VerificationCodeSchema;
-import com.rappytv.globaltags.wrapper.model.ApiInfo;
-import com.rappytv.globaltags.wrapper.model.PlayerInfo;
-import com.rappytv.globaltags.wrapper.model.PlayerNote;
-import com.rappytv.globaltags.wrapper.model.TagHistoryEntry;
+import com.rappytv.globaltags.wrapper.enums.ReferralLeaderboardType;
+import com.rappytv.globaltags.wrapper.http.schemas.*;
+import com.rappytv.globaltags.wrapper.model.*;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -57,6 +52,53 @@ public class ApiHandler<T> {
                 return;
             }
             consumer.accept(new ApiResponse<>(true, response.getData(), null));
+        });
+    }
+
+    /**
+     * A request to get the current referral leaderboards
+     *
+     * @param consumer The action to be executed on response.
+     */
+    public void getReferralLeaderboards(Consumer<ApiResponse<Map<ReferralLeaderboardType, List<ReferralLeaderboardEntry>>>> consumer) {
+        new ApiRequest<>(
+                this.api,
+                "GET",
+                Routes.getReferralLeaderboards(),
+                ReferralLeaderboardsSchema.class
+        ).sendRequestAsync((response) -> {
+            if (!response.isSuccessful()) {
+                consumer.accept(new ApiResponse<>(false, null, response.getError()));
+                return;
+            }
+            ReferralLeaderboardsSchema schemas = response.getData();
+            Map<ReferralLeaderboardType, List<ReferralLeaderboardEntry>> leaderboards = new HashMap<>();
+            List<ReferralLeaderboardEntry> totalEntries = new ArrayList<>();
+            List<ReferralLeaderboardEntry> currentMonthEntries = new ArrayList<>();
+            try {
+                for (int i = 0; i < schemas.totalLeaderboard.length; i++) {
+                    ReferralLeaderboardsSchema.ReferralLeaderboardEntrySchema entry = schemas.totalLeaderboard[i];
+                    totalEntries.add(new ReferralLeaderboardEntry(
+                            i + 1,
+                            UUID.fromString(entry.uuid),
+                            entry.totalReferrals,
+                            entry.currentMonthReferrals
+                    ));
+                }
+                for (int i = 0; i < schemas.currentMonthLeaderboard.length; i++) {
+                    ReferralLeaderboardsSchema.ReferralLeaderboardEntrySchema entry = schemas.currentMonthLeaderboard[i];
+                    currentMonthEntries.add(new ReferralLeaderboardEntry(
+                            i + 1,
+                            UUID.fromString(entry.uuid),
+                            entry.totalReferrals,
+                            entry.currentMonthReferrals
+                    ));
+                }
+            } catch (IllegalArgumentException ignored) {
+            }
+            leaderboards.put(ReferralLeaderboardType.TOTAL, totalEntries);
+            leaderboards.put(ReferralLeaderboardType.CURRENT_MONTH, currentMonthEntries);
+            consumer.accept(new ApiResponse<>(true, leaderboards, null));
         });
     }
 

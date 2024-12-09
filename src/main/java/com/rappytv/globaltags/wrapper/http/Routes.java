@@ -55,6 +55,18 @@ public class Routes {
     /**
      * <pre>
      * Route for
+     * - GET /referrals
+     * </pre>
+     *
+     * @return The HTTP route
+     */
+    public static String getReferralLeaderboards() {
+        return "/referrals";
+    }
+
+    /**
+     * <pre>
+     * Route for
      * - GET /players/{uuid}
      * - POST /players/{uuid}
      * - DELETE /players/{uuid}
