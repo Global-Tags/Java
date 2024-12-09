@@ -33,7 +33,7 @@ public abstract class GlobalTagsAPI<T> {
      */
     @NotNull
     public Urls getUrls() {
-        return urls;
+        return this.urls;
     }
 
     /**
@@ -76,7 +76,7 @@ public abstract class GlobalTagsAPI<T> {
      */
     @NotNull
     public PlayerInfo.Cache<T> getCache() {
-        return cache;
+        return this.cache;
     }
 
     /**
@@ -85,7 +85,7 @@ public abstract class GlobalTagsAPI<T> {
      */
     @NotNull
     public ApiHandler<T> getApiHandler() {
-        return apiHandler;
+        return this.apiHandler;
     }
 
     /**
@@ -108,9 +108,9 @@ public abstract class GlobalTagsAPI<T> {
      */
     @NotNull
     public String getAuthorizationHeader() {
-        String auth = getAuthorization();
+        String auth = this.getAuthorization();
         if(auth == null) return "";
-        return String.format("%s %s", getAuthType().getId(), auth);
+        return String.format("%s %s", this.getAuthType().getId(), auth);
     }
 
     /**
@@ -149,7 +149,7 @@ public abstract class GlobalTagsAPI<T> {
          */
         @NotNull
         public String getAgent() {
-            return agent;
+            return this.agent;
         }
 
         /**
@@ -158,7 +158,7 @@ public abstract class GlobalTagsAPI<T> {
          */
         @NotNull
         public String getAgentVersion() {
-            return agentVersion;
+            return this.agentVersion;
         }
 
         /**
@@ -167,7 +167,7 @@ public abstract class GlobalTagsAPI<T> {
          */
         @Nullable
         public String getMinecraftVersion() {
-            return minecraftVersion;
+            return this.minecraftVersion;
         }
 
         @Override
@@ -176,7 +176,7 @@ public abstract class GlobalTagsAPI<T> {
                     "%s v%s%s",
                     this.agent,
                     this.agentVersion,
-                    minecraftVersion != null ? " - " + minecraftVersion : ""
+                    this.minecraftVersion != null ? " - " + this.minecraftVersion : ""
             );
         }
     }

@@ -64,9 +64,9 @@ public class ApiRequest<T> {
      */
     public void sendRequestAsync(Consumer<@NotNull ResponseBody<T>> consumer) {
         try {
-            HttpRequest request = getBuilder()
-                    .uri(new URI(api.getUrls().getApiBase() + path))
-                    .method(method, getBodyPublisher())
+            HttpRequest request = this.getBuilder()
+                    .uri(new URI(this.api.getUrls().getApiBase() + this.path))
+                    .method(this.method, this.getBodyPublisher())
                     .build();
 
             client.sendAsync(request, HttpResponse.BodyHandlers.ofString()).thenAccept(response -> {
@@ -76,7 +76,7 @@ public class ApiRequest<T> {
                     consumer.accept(new ResponseBody<>(false, null, body.error));
                     return;
                 }
-                T parsedBody = gson.fromJson(response.body(), responseType);
+                T parsedBody = gson.fromJson(response.body(), this.responseType);
                 consumer.accept(new ResponseBody<>(
                         true,
                         parsedBody,
@@ -99,9 +99,9 @@ public class ApiRequest<T> {
     private HttpRequest.Builder getBuilder() {
         return HttpRequest.newBuilder()
                 .header("Content-Type", "application/json")
-                .header("Authorization", api.getAuthorizationHeader())
-                .header("X-Language", api.getLanguageCode())
-                .header("X-Agent", api.getAgent().toString());
+                .header("Authorization", this.api.getAuthorizationHeader())
+                .header("X-Language", this.api.getLanguageCode())
+                .header("X-Agent", this.api.getAgent().toString());
     }
 
     /**
@@ -110,8 +110,8 @@ public class ApiRequest<T> {
      * @return The {@link HttpRequest.BodyPublisher} from the data parameter
      */
     private HttpRequest.BodyPublisher getBodyPublisher() {
-        if (body == null || body.isEmpty()) return HttpRequest.BodyPublishers.noBody();
-        return HttpRequest.BodyPublishers.ofString(gson.toJson(body));
+        if (this.body == null || this.body.isEmpty()) return HttpRequest.BodyPublishers.noBody();
+        return HttpRequest.BodyPublishers.ofString(gson.toJson(this.body));
     }
 
     /**
@@ -144,7 +144,7 @@ public class ApiRequest<T> {
          * @return If the request was successful
          */
         public boolean isSuccessful() {
-            return successful;
+            return this.successful;
         }
 
         /**
@@ -153,7 +153,7 @@ public class ApiRequest<T> {
          * @return the data if available
          */
         public T getData() {
-            return data;
+            return this.data;
         }
 
         /**
@@ -161,7 +161,7 @@ public class ApiRequest<T> {
          * @return an error if available
          */
         public String getError() {
-            return error;
+            return this.error;
         }
     }
 }

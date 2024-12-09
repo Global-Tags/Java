@@ -33,7 +33,7 @@ public class ApiInfo {
      */
     @NotNull
     public String getVersion() {
-        return version;
+        return this.version;
     }
 
     /**
@@ -42,7 +42,7 @@ public class ApiInfo {
      * @return the number of requests
      */
     public int getRequests() {
-        return requests;
+        return this.requests;
     }
 
     /**
@@ -52,7 +52,7 @@ public class ApiInfo {
      */
     @NotNull
     public CommitData getCommit() {
-        return commit;
+        return this.commit;
     }
 
     /**
@@ -84,7 +84,7 @@ public class ApiInfo {
          */
         @NotNull
         public String getBranch() {
-            return branch;
+            return this.branch;
         }
 
         /**
@@ -94,7 +94,7 @@ public class ApiInfo {
          */
         @NotNull
         public String getSha() {
-            return sha;
+            return this.sha;
         }
 
         /**
@@ -104,7 +104,7 @@ public class ApiInfo {
          */
         @NotNull
         public String getTree() {
-            return tree;
+            return this.tree;
         }
     }
 }

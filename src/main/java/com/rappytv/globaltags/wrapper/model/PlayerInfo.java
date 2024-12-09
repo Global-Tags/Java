@@ -1,15 +1,14 @@
 package com.rappytv.globaltags.wrapper.model;
 
+import com.rappytv.globaltags.wrapper.GlobalTagsAPI;
 import com.rappytv.globaltags.wrapper.enums.GlobalIcon;
 import com.rappytv.globaltags.wrapper.enums.GlobalPermission;
 import com.rappytv.globaltags.wrapper.enums.GlobalPosition;
 import com.rappytv.globaltags.wrapper.enums.GlobalRole;
-import com.rappytv.globaltags.wrapper.GlobalTagsAPI;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.Timer;
 import java.util.function.Consumer;
 
 /**
@@ -34,16 +33,17 @@ public class PlayerInfo<T> {
 
     /**
      * Build a new PlayerInfo instance
-     * @param api The {@link GlobalTagsAPI} for the {@link GlobalTagsAPI#translateColorCodes(String)} method
-     * @param uuid The player's {@link UUID}
-     * @param tag The player's plain tag including color codes
-     * @param position The player's global position as a string
-     * @param icon The player's global icon as a string
-     * @param referred If the player has already marked someone as their inviter
-     * @param referrals How many players the player has invited
-     * @param roles The player's roles
+     *
+     * @param api         The {@link GlobalTagsAPI} for the {@link GlobalTagsAPI#translateColorCodes(String)} method
+     * @param uuid        The player's {@link UUID}
+     * @param tag         The player's plain tag including color codes
+     * @param position    The player's global position as a string
+     * @param icon        The player's global icon as a string
+     * @param referred    If the player has already marked someone as their inviter
+     * @param referrals   How many players the player has invited
+     * @param roles       The player's roles
      * @param permissions The player's permissions
-     * @param suspension The player's {@link Suspension}
+     * @param suspension  The player's {@link Suspension}
      */
     public PlayerInfo(
             @NotNull GlobalTagsAPI<T> api,
@@ -66,20 +66,22 @@ public class PlayerInfo<T> {
         this.referred = referred;
         this.referrals = referrals;
         this.roles = new ArrayList<>();
-        for(String role : roles) {
+        for (String role : roles) {
             try {
                 this.roles.add(GlobalRole.valueOf(role.toUpperCase()));
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
         }
         this.permissions = new HashMap<>();
         List<GlobalPermission> playerPermissions = new ArrayList<>();
-        for(String permission : permissions) {
+        for (String permission : permissions) {
             GlobalPermission globalPermission;
             try {
                 playerPermissions.add(GlobalPermission.valueOf(permission.toUpperCase()));
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
         }
-        for(GlobalPermission permission : GlobalPermission.values()) {
+        for (GlobalPermission permission : GlobalPermission.values()) {
             this.permissions.put(permission, playerPermissions.contains(permission));
         }
         this.suspension = suspension != null ? suspension : new Suspension();
@@ -92,7 +94,7 @@ public class PlayerInfo<T> {
      */
     @NotNull
     public UUID getUUID() {
-        return uuid;
+        return this.uuid;
     }
 
     /**
@@ -102,7 +104,7 @@ public class PlayerInfo<T> {
      */
     @Nullable
     public T getTag() {
-        return !plainTag.isBlank() ? tag : null;
+        return !this.plainTag.isBlank() ? this.tag : null;
     }
 
     /**
@@ -112,7 +114,7 @@ public class PlayerInfo<T> {
      */
     @NotNull
     public String getPlainTag() {
-        return plainTag;
+        return this.plainTag;
     }
 
     /**
@@ -123,7 +125,7 @@ public class PlayerInfo<T> {
     @NotNull
     public GlobalPosition getPosition() {
         try {
-            return GlobalPosition.valueOf(position);
+            return GlobalPosition.valueOf(this.position);
         } catch (Exception ignored) {
             return GlobalPosition.ABOVE;
         }
@@ -137,7 +139,7 @@ public class PlayerInfo<T> {
     @NotNull
     public GlobalIcon getGlobalIcon() {
         try {
-            return GlobalIcon.valueOf(icon.type);
+            return GlobalIcon.valueOf(this.icon.type);
         } catch (Exception ignored) {
             return GlobalIcon.NONE;
         }
@@ -150,7 +152,7 @@ public class PlayerInfo<T> {
      */
     @Nullable
     public String getGlobalIconHash() {
-        return icon.hash;
+        return this.icon.hash;
     }
 
     /**
@@ -159,7 +161,7 @@ public class PlayerInfo<T> {
      * @return {@code true} if the player has a custom global icon; otherwise {@code false}.
      */
     public boolean hasCustomGlobalIcon() {
-        return getGlobalIcon() == GlobalIcon.CUSTOM && icon.hash != null;
+        return this.getGlobalIcon() == GlobalIcon.CUSTOM && this.icon.hash != null;
     }
 
     /**
@@ -169,8 +171,8 @@ public class PlayerInfo<T> {
      */
     @NotNull
     public String getIconUrl() {
-        if(hasCustomGlobalIcon()) return urls.getCustomIcon(uuid, icon.hash);
-        return urls.getDefaultIcon(getGlobalIcon());
+        if (this.hasCustomGlobalIcon()) return this.urls.getCustomIcon(this.uuid, this.icon.hash);
+        return this.urls.getDefaultIcon(this.getGlobalIcon());
     }
 
     /**
@@ -180,7 +182,7 @@ public class PlayerInfo<T> {
      * @return {@code true} if the player has the specified permission; otherwise {@code false}.
      */
     public boolean hasPermission(GlobalPermission permission) {
-        return permissions.containsKey(permission) && permissions.get(permission);
+        return this.permissions.containsKey(permission) && this.permissions.get(permission);
     }
 
     /**
@@ -189,7 +191,7 @@ public class PlayerInfo<T> {
      * @return {@code true} if the player has referred another player; otherwise {@code false}.
      */
     public boolean hasReferred() {
-        return referred;
+        return this.referred;
     }
 
     /**
@@ -198,7 +200,7 @@ public class PlayerInfo<T> {
      * @return The number of players invited by this player.
      */
     public int getReferrals() {
-        return referrals;
+        return this.referrals;
     }
 
     /**
@@ -208,7 +210,7 @@ public class PlayerInfo<T> {
      */
     @NotNull
     public List<GlobalRole> getRoles() {
-        return roles;
+        return this.roles;
     }
 
     /**
@@ -218,8 +220,8 @@ public class PlayerInfo<T> {
      */
     @Nullable
     public GlobalRole getHighestRole() {
-        for(GlobalRole role : GlobalRole.values()) {
-            if(roles.contains(role)) return role;
+        for (GlobalRole role : GlobalRole.values()) {
+            if (this.roles.contains(role)) return role;
         }
         return null;
     }
@@ -231,9 +233,9 @@ public class PlayerInfo<T> {
      */
     @Nullable
     public String getHighestRoleIcon() {
-        GlobalRole role = getHighestRole();
-        if(role == null) return null;
-        return urls.getRoleIcon(role);
+        GlobalRole role = this.getHighestRole();
+        if (role == null) return null;
+        return this.urls.getRoleIcon(role);
     }
 
     /**
@@ -242,7 +244,7 @@ public class PlayerInfo<T> {
      * @return {@code true} if the player is suspended; otherwise {@code false}.
      */
     public boolean isSuspended() {
-        return suspension.active;
+        return this.suspension.active;
     }
 
     /**
@@ -252,22 +254,22 @@ public class PlayerInfo<T> {
      */
     @NotNull
     public Suspension getSuspension() {
-        return suspension;
+        return this.suspension;
     }
 
     @Override
     public String toString() {
         return String.format(
                 "Playerinfo{uuid=%s, tag='%s', position='%s', icon='%s', referred=%s, referrals=%s, roles=%s, permissions=%s, suspension=%s}",
-                uuid,
-                plainTag,
-                getPosition().name().toLowerCase(),
-                icon,
-                referred,
-                referrals,
-                roles,
-                permissions,
-                suspension
+                this.uuid,
+                this.plainTag,
+                this.getPosition().name().toLowerCase(),
+                this.icon,
+                this.referred,
+                this.referrals,
+                this.roles,
+                this.permissions,
+                this.suspension
         );
     }
 
@@ -312,7 +314,7 @@ public class PlayerInfo<T> {
         /**
          * Creates an active suspension.
          *
-         * @param reason The reason for the suspension.
+         * @param reason     The reason for the suspension.
          * @param appealable Whether the suspension is appealable.
          */
         public Suspension(String reason, boolean appealable) {
@@ -323,35 +325,38 @@ public class PlayerInfo<T> {
 
         /**
          * Returns if the suspension is active or not
+         *
          * @return If the suspension is active or not
          */
         public boolean isActive() {
-            return active;
+            return this.active;
         }
 
         /**
          * Returns the suspension reason
+         *
          * @return Returns the suspension reason
          */
         @Nullable
         public String getReason() {
-            return reason;
+            return this.reason;
         }
 
         /**
          * Returns if the suspension can be appealed
+         *
          * @return If the suspension can be appealed
          */
         public boolean isAppealable() {
-            return appealable;
+            return this.appealable;
         }
 
         @Override
         public String toString() {
             return "Suspension{" +
-                    "active=" + active +
-                    ", reason='" + reason + '\'' +
-                    ", appealable=" + appealable +
+                    "active=" + this.active +
+                    ", reason='" + this.reason + '\'' +
+                    ", appealable=" + this.appealable +
                     '}';
         }
     }
@@ -365,6 +370,8 @@ public class PlayerInfo<T> {
 
         private final static Timer timer = new Timer();
         private final GlobalTagsAPI<T> api;
+        private final Map<UUID, PlayerInfo<T>> cache = new HashMap<>();
+        private final Set<UUID> resolving = new HashSet<>();
 
         /**
          * Initializes a cache with default cleanup intervals.
@@ -386,7 +393,6 @@ public class PlayerInfo<T> {
                 }
             });
         }
-
         /**
          * Initializes a cache with custom cleanup intervals.
          *
@@ -397,17 +403,17 @@ public class PlayerInfo<T> {
             Objects.requireNonNull(api, "api must not be null");
             Objects.requireNonNull(options, "options may not be null");
             this.api = api;
-            if(options.getCacheClearInterval() > -1) {
+            if (options.getCacheClearInterval() > -1) {
                 timer.scheduleAtFixedRate(new TimerTask() {
                     @Override
                     public void run() {
                         api.getCache().clear();
-                        if(api.getClientUUID() != null) api.getCache().resolveSelf();
+                        if (api.getClientUUID() != null) api.getCache().resolveSelf();
                     }
                 }, options.getCacheClearInterval(), options.getCacheClearInterval());
             }
 
-            if(options.getCacheRenewInterval() > -1) {
+            if (options.getCacheRenewInterval() > -1) {
                 timer.scheduleAtFixedRate(new TimerTask() {
                     @Override
                     public void run() {
@@ -417,9 +423,6 @@ public class PlayerInfo<T> {
             }
         }
 
-        private final Map<UUID, PlayerInfo<T>> cache = new HashMap<>();
-        private final Set<UUID> resolving = new HashSet<>();
-
         /**
          * Adds a {@link PlayerInfo} to the cache
          *
@@ -427,14 +430,14 @@ public class PlayerInfo<T> {
          * @param info The {@link PlayerInfo}
          */
         public void add(UUID uuid, PlayerInfo<T> info) {
-            cache.put(uuid, info);
+            this.cache.put(uuid, info);
         }
 
         /**
          * Removes the {@link GlobalTagsAPI#getClientUUID()} from the cache
          */
         public void removeSelf() {
-            remove(api.getClientUUID());
+            this.remove(this.api.getClientUUID());
         }
 
         /**
@@ -443,7 +446,7 @@ public class PlayerInfo<T> {
          * @param uuid The corresponding {@link UUID}
          */
         public void remove(UUID uuid) {
-            cache.remove(uuid);
+            this.cache.remove(uuid);
         }
 
         /**
@@ -453,7 +456,7 @@ public class PlayerInfo<T> {
          * @return If the player is in the cache
          */
         public boolean has(UUID uuid) {
-            return cache.containsKey(uuid);
+            return this.cache.containsKey(uuid);
         }
 
         /**
@@ -464,14 +467,15 @@ public class PlayerInfo<T> {
          */
         @Nullable
         public PlayerInfo<T> get(UUID uuid) {
-            return cache.get(uuid);
+            return this.cache.get(uuid);
         }
 
         /**
          * Resolve the UUID {@link GlobalTagsAPI#getClientUUID()} into the cache
          */
         public void resolveSelf() {
-            resolveSelf((info) -> {});
+            this.resolveSelf((info) -> {
+            });
         }
 
         /**
@@ -480,7 +484,7 @@ public class PlayerInfo<T> {
          * @param consumer A consumer returning the resolved {@link PlayerInfo}
          */
         public void resolveSelf(Consumer<@Nullable PlayerInfo<T>> consumer) {
-            resolve(api.getClientUUID(), consumer);
+            this.resolve(this.api.getClientUUID(), consumer);
         }
 
         /**
@@ -489,37 +493,38 @@ public class PlayerInfo<T> {
          * @param uuid The uuid which should be resolved
          */
         public void resolve(UUID uuid) {
-            resolve(uuid, (info) -> {});
+            this.resolve(uuid, (info) -> {
+            });
         }
 
         /**
          * Resolve a specific {@link UUID} into the cache
          *
-         * @param uuid The uuid which should be resolved
+         * @param uuid     The uuid which should be resolved
          * @param consumer A consumer returning the resolved {@link PlayerInfo}
          */
         public void resolve(UUID uuid, Consumer<@Nullable PlayerInfo<T>> consumer) {
-            if(has(uuid)) {
-                consumer.accept(get(uuid));
+            if (this.has(uuid)) {
+                consumer.accept(this.get(uuid));
                 return;
             }
-            fetch(uuid, consumer);
+            this.fetch(uuid, consumer);
         }
 
         /**
          * Fetches a specific {@link UUID}
          *
-         * @param uuid The uuid which should be fetched
+         * @param uuid     The uuid which should be fetched
          * @param consumer A consumer returning the resolved {@link PlayerInfo}
          */
         private void fetch(UUID uuid, Consumer<@Nullable PlayerInfo<T>> consumer) {
-            if(resolving.contains(uuid)) return;
-            resolving.add(uuid);
+            if (this.resolving.contains(uuid)) return;
+            this.resolving.add(uuid);
 
-            api.getApiHandler().getInfo(uuid, (info) -> {
-                add(uuid, info.getData());
-                resolving.remove(uuid);
-                resolve(uuid, consumer);
+            this.api.getApiHandler().getInfo(uuid, (info) -> {
+                this.add(uuid, info.getData());
+                this.resolving.remove(uuid);
+                this.resolve(uuid, consumer);
             });
         }
 
@@ -527,7 +532,8 @@ public class PlayerInfo<T> {
          * Renews tag data of {@link GlobalTagsAPI#getClientUUID()}
          */
         public void renewSelf() {
-            renewSelf((info) -> {});
+            this.renewSelf((info) -> {
+            });
         }
 
         /**
@@ -536,7 +542,7 @@ public class PlayerInfo<T> {
          * @param consumer A consumer returning the renewed {@link PlayerInfo}
          */
         public void renewSelf(Consumer<@Nullable PlayerInfo<T>> consumer) {
-            renew(api.getClientUUID(), consumer);
+            this.renew(this.api.getClientUUID(), consumer);
         }
 
         /**
@@ -545,18 +551,19 @@ public class PlayerInfo<T> {
          * @param uuid The uuid which should be renewed
          */
         public void renew(UUID uuid) {
-            renew(uuid, (info) -> {});
+            this.renew(uuid, (info) -> {
+            });
         }
 
         /**
          * Renews tag data of a specific uuid
          *
-         * @param uuid The uuid which should be renewed
+         * @param uuid     The uuid which should be renewed
          * @param consumer A consumer returning the renewed {@link PlayerInfo}
          */
         public void renew(UUID uuid, Consumer<@Nullable PlayerInfo<T>> consumer) {
-            fetch(uuid, (info) -> {
-                cache.put(uuid, info);
+            this.fetch(uuid, (info) -> {
+                this.cache.put(uuid, info);
                 consumer.accept(info);
             });
         }
@@ -565,8 +572,8 @@ public class PlayerInfo<T> {
          * Renews tag data of all cached uuids
          */
         public void renewAll() {
-            for(UUID uuid : cache.keySet()) {
-                renew(uuid);
+            for (UUID uuid : this.cache.keySet()) {
+                this.renew(uuid);
             }
         }
 
@@ -574,8 +581,8 @@ public class PlayerInfo<T> {
          * Clears the cache
          */
         public void clear() {
-            cache.clear();
-            resolving.clear();
+            this.cache.clear();
+            this.resolving.clear();
         }
 
         /**

@@ -28,6 +28,6 @@ public enum AuthProvider {
      * @return The internal identifier of the authentication provider
      */
     public String getId() {
-        return id;
+        return this.id;
     }
 }

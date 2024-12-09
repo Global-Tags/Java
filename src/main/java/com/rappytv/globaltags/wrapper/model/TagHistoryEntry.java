@@ -30,7 +30,7 @@ public class TagHistoryEntry {
      */
     @NotNull
     public String getTag() {
-        return tag;
+        return this.tag;
     }
 
     /**
@@ -40,6 +40,6 @@ public class TagHistoryEntry {
      */
     @NotNull
     public List<String> getFlaggedWords() {
-        return flaggedWords;
+        return this.flaggedWords;
     }
 }

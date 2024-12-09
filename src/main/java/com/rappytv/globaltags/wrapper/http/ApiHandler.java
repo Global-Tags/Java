@@ -4,7 +4,10 @@ import com.rappytv.globaltags.wrapper.GlobalTagsAPI;
 import com.rappytv.globaltags.wrapper.enums.ConnectionType;
 import com.rappytv.globaltags.wrapper.enums.GlobalIcon;
 import com.rappytv.globaltags.wrapper.enums.GlobalPosition;
-import com.rappytv.globaltags.wrapper.http.schemas.*;
+import com.rappytv.globaltags.wrapper.http.schemas.MessageSchema;
+import com.rappytv.globaltags.wrapper.http.schemas.NoteSchema;
+import com.rappytv.globaltags.wrapper.http.schemas.PlayerInfoSchema;
+import com.rappytv.globaltags.wrapper.http.schemas.VerificationCodeSchema;
 import com.rappytv.globaltags.wrapper.model.ApiInfo;
 import com.rappytv.globaltags.wrapper.model.PlayerInfo;
 import com.rappytv.globaltags.wrapper.model.PlayerNote;
@@ -44,7 +47,7 @@ public class ApiHandler<T> {
      */
     public void getApiInfo(Consumer<ApiResponse<ApiInfo>> consumer) {
         new ApiRequest<>(
-                api,
+                this.api,
                 "GET",
                 Routes.getApiInfo(),
                 ApiInfo.class
@@ -63,7 +66,7 @@ public class ApiHandler<T> {
      * @param consumer The action to be executed on response.
      */
     public void getInfo(Consumer<ApiResponse<PlayerInfo<T>>> consumer) {
-        getInfo(api.getClientUUID(), consumer);
+        this.getInfo(this.api.getClientUUID(), consumer);
     }
 
     /**
@@ -74,7 +77,7 @@ public class ApiHandler<T> {
      */
     public void getInfo(UUID uuid, Consumer<ApiResponse<PlayerInfo<T>>> consumer) {
         new ApiRequest<>(
-                api,
+                this.api,
                 "GET",
                 Routes.player(uuid),
                 PlayerInfoSchema.class
@@ -87,7 +90,7 @@ public class ApiHandler<T> {
             consumer.accept(new ApiResponse<>(
                     true,
                     new PlayerInfo<>(
-                            api,
+                            this.api,
                             uuid,
                             body.tag,
                             body.position,
@@ -109,7 +112,7 @@ public class ApiHandler<T> {
      * @param consumer The action to be executed on response.
      */
     public void getTagHistory(Consumer<ApiResponse<List<TagHistoryEntry>>> consumer) {
-        getTagHistory(api.getClientUUID(), consumer);
+        this.getTagHistory(this.api.getClientUUID(), consumer);
     }
 
     /**
@@ -120,7 +123,7 @@ public class ApiHandler<T> {
      */
     public void getTagHistory(UUID uuid, Consumer<ApiResponse<List<TagHistoryEntry>>> consumer) {
         new ApiRequest<>(
-                api,
+                this.api,
                 "GET",
                 Routes.tagHistory(uuid),
                 TagHistoryEntry[].class
@@ -144,7 +147,7 @@ public class ApiHandler<T> {
      * @param consumer The action to be executed on response.
      */
     public void setTag(String tag, Consumer<ApiResponse<String>> consumer) {
-        setTag(api.getClientUUID(), tag, consumer);
+        this.setTag(this.api.getClientUUID(), tag, consumer);
     }
 
     /**
@@ -156,7 +159,7 @@ public class ApiHandler<T> {
      */
     public void setTag(UUID uuid, String tag, Consumer<ApiResponse<String>> consumer) {
         new ApiRequest<>(
-                api,
+                this.api,
                 "POST",
                 Routes.player(uuid),
                 Map.of("tag", tag),
@@ -166,7 +169,7 @@ public class ApiHandler<T> {
                 consumer.accept(new ApiResponse<>(false, null, response.getError()));
                 return;
             }
-            api.getCache().renew(uuid, (info) ->
+            this.api.getCache().renew(uuid, (info) ->
                     consumer.accept(new ApiResponse<>(true, response.getData().message, null))
             );
         });
@@ -179,7 +182,7 @@ public class ApiHandler<T> {
      * @param consumer The action to be executed on response.
      */
     public void setPosition(GlobalPosition position, Consumer<ApiResponse<String>> consumer) {
-        setPosition(api.getClientUUID(), position, consumer);
+        this.setPosition(this.api.getClientUUID(), position, consumer);
     }
 
     /**
@@ -191,7 +194,7 @@ public class ApiHandler<T> {
      */
     public void setPosition(UUID uuid, GlobalPosition position, Consumer<ApiResponse<String>> consumer) {
         new ApiRequest<>(
-                api,
+                this.api,
                 "POST",
                 Routes.setPosition(uuid),
                 Map.of("position", position.name()),
@@ -201,7 +204,7 @@ public class ApiHandler<T> {
                 consumer.accept(new ApiResponse<>(false, null, response.getError()));
                 return;
             }
-            api.getCache().renew(uuid, (info) ->
+            this.api.getCache().renew(uuid, (info) ->
                     consumer.accept(new ApiResponse<>(true, response.getData().message, null))
             );
         });
@@ -214,7 +217,7 @@ public class ApiHandler<T> {
      * @param consumer The action to be executed on response.
      */
     public void setIcon(GlobalIcon icon, Consumer<ApiResponse<String>> consumer) {
-        setIcon(api.getClientUUID(), icon, consumer);
+        this.setIcon(this.api.getClientUUID(), icon, consumer);
     }
 
     /**
@@ -226,7 +229,7 @@ public class ApiHandler<T> {
      */
     public void setIcon(UUID uuid, GlobalIcon icon, Consumer<ApiResponse<String>> consumer) {
         new ApiRequest<>(
-                api,
+                this.api,
                 "POST",
                 Routes.setIcon(uuid),
                 Map.of("icon", icon.name()),
@@ -236,7 +239,7 @@ public class ApiHandler<T> {
                 consumer.accept(new ApiResponse<>(false, null, response.getError()));
                 return;
             }
-            api.getCache().renew(uuid, (info) ->
+            this.api.getCache().renew(uuid, (info) ->
                     consumer.accept(new ApiResponse<>(true, response.getData().message, null))
             );
         });
@@ -248,7 +251,7 @@ public class ApiHandler<T> {
      * @param consumer The action to be executed on response.
      */
     public void resetTag(Consumer<ApiResponse<String>> consumer) {
-        resetTag(api.getClientUUID(), consumer);
+        this.resetTag(this.api.getClientUUID(), consumer);
     }
 
     /**
@@ -259,7 +262,7 @@ public class ApiHandler<T> {
      */
     public void resetTag(UUID uuid, Consumer<ApiResponse<String>> consumer) {
         new ApiRequest<>(
-                api,
+                this.api,
                 "DELETE",
                 Routes.player(uuid),
                 emptyBody,
@@ -269,7 +272,7 @@ public class ApiHandler<T> {
                 consumer.accept(new ApiResponse<>(false, null, response.getError()));
                 return;
             }
-            api.getCache().renew(uuid, (info) ->
+            this.api.getCache().renew(uuid, (info) ->
                     consumer.accept(new ApiResponse<>(true, response.getData().message, null))
             );
         });
@@ -283,7 +286,7 @@ public class ApiHandler<T> {
      */
     public void watchPlayer(UUID uuid, Consumer<ApiResponse<String>> consumer) {
         new ApiRequest<>(
-                api,
+                this.api,
                 "POST",
                 Routes.watchPlayer(uuid),
                 emptyBody,
@@ -305,7 +308,7 @@ public class ApiHandler<T> {
      */
     public void unwatchPlayer(UUID uuid, Consumer<ApiResponse<String>> consumer) {
         new ApiRequest<>(
-                api,
+                this.api,
                 "POST",
                 Routes.unwatchPlayer(uuid),
                 emptyBody,
@@ -327,7 +330,7 @@ public class ApiHandler<T> {
      */
     public void referPlayer(UUID uuid, Consumer<ApiResponse<String>> consumer) {
         new ApiRequest<>(
-                api,
+                this.api,
                 "POST",
                 Routes.referPlayer(uuid),
                 emptyBody,
@@ -350,7 +353,7 @@ public class ApiHandler<T> {
      */
     public void reportPlayer(UUID uuid, String reason, Consumer<ApiResponse<String>> consumer) {
         new ApiRequest<>(
-                api,
+                this.api,
                 "POST",
                 Routes.reportPlayer(uuid),
                 Map.of("reason", reason),
@@ -373,7 +376,7 @@ public class ApiHandler<T> {
      */
     public void banPlayer(UUID uuid, String reason, Consumer<ApiResponse<String>> consumer) {
         new ApiRequest<>(
-                api,
+                this.api,
                 "POST",
                 Routes.ban(uuid),
                 Map.of("reason", reason),
@@ -383,7 +386,7 @@ public class ApiHandler<T> {
                 consumer.accept(new ApiResponse<>(false, null, response.getError()));
                 return;
             }
-            api.getCache().renew(uuid, (info) ->
+            this.api.getCache().renew(uuid, (info) ->
                     consumer.accept(new ApiResponse<>(true, response.getData().message, null))
             );
         });
@@ -397,7 +400,7 @@ public class ApiHandler<T> {
      */
     public void unbanPlayer(UUID uuid, Consumer<ApiResponse<String>> consumer) {
         new ApiRequest<>(
-                api,
+                this.api,
                 "DELETE",
                 Routes.ban(uuid),
                 emptyBody,
@@ -407,7 +410,7 @@ public class ApiHandler<T> {
                 consumer.accept(new ApiResponse<>(false, null, response.getError()));
                 return;
             }
-            api.getCache().renew(uuid, (info) ->
+            this.api.getCache().renew(uuid, (info) ->
                     consumer.accept(new ApiResponse<>(true, response.getData().message, null))
             );
         });
@@ -423,7 +426,7 @@ public class ApiHandler<T> {
     public void editBan(UUID uuid, PlayerInfo.Suspension suspension, Consumer<ApiResponse<String>> consumer) {
         Objects.requireNonNull(suspension.getReason(), "Reason must not be null");
         new ApiRequest<>(
-                api,
+                this.api,
                 "PUT",
                 Routes.ban(uuid),
                 Map.of("reason", suspension.getReason(), "appealable", suspension.isAppealable()),
@@ -433,7 +436,7 @@ public class ApiHandler<T> {
                 consumer.accept(new ApiResponse<>(false, null, response.getError()));
                 return;
             }
-            api.getCache().renew(uuid, (info) ->
+            this.api.getCache().renew(uuid, (info) ->
                     consumer.accept(new ApiResponse<>(true, response.getData().message, null))
             );
         });
@@ -447,9 +450,9 @@ public class ApiHandler<T> {
      */
     public void appealBan(String reason, Consumer<ApiResponse<String>> consumer) {
         new ApiRequest<>(
-                api,
+                this.api,
                 "POST",
-                Routes.appealBan(api.getClientUUID()),
+                Routes.appealBan(this.api.getClientUUID()),
                 Map.of("reason", reason),
                 MessageSchema.class
         ).sendRequestAsync((response) -> {
@@ -468,9 +471,9 @@ public class ApiHandler<T> {
      */
     public void linkDiscord(Consumer<ApiResponse<String>> consumer) {
         new ApiRequest<>(
-                api,
+                this.api,
                 "POST",
-                Routes.connection(api.getClientUUID(), ConnectionType.DISCORD),
+                Routes.connection(this.api.getClientUUID(), ConnectionType.DISCORD),
                 emptyBody,
                 VerificationCodeSchema.class
         ).sendRequestAsync((response) -> {
@@ -489,9 +492,9 @@ public class ApiHandler<T> {
      */
     public void unlinkDiscord(Consumer<ApiResponse<String>> consumer) {
         new ApiRequest<>(
-                api,
+                this.api,
                 "DELETE",
-                Routes.connection(api.getClientUUID(), ConnectionType.DISCORD),
+                Routes.connection(this.api.getClientUUID(), ConnectionType.DISCORD),
                 emptyBody,
                 MessageSchema.class
         ).sendRequestAsync((response) -> {
@@ -499,7 +502,7 @@ public class ApiHandler<T> {
                 consumer.accept(new ApiResponse<>(false, null, response.getError()));
                 return;
             }
-            api.getCache().renewSelf((info) ->
+            this.api.getCache().renewSelf((info) ->
                     consumer.accept(new ApiResponse<>(true, response.getData().message, null))
             );
         });
@@ -513,9 +516,9 @@ public class ApiHandler<T> {
      */
     public void linkEmail(String email, Consumer<ApiResponse<String>> consumer) {
         new ApiRequest<>(
-                api,
+                this.api,
                 "POST",
-                Routes.connection(api.getClientUUID(), ConnectionType.EMAIL),
+                Routes.connection(this.api.getClientUUID(), ConnectionType.EMAIL),
                 Map.of("email", email),
                 MessageSchema.class
         ).sendRequestAsync((response) -> {
@@ -534,9 +537,9 @@ public class ApiHandler<T> {
      */
     public void unlinkEmail(Consumer<ApiResponse<String>> consumer) {
         new ApiRequest<>(
-                api,
+                this.api,
                 "DELETE",
-                Routes.connection(api.getClientUUID(), ConnectionType.EMAIL),
+                Routes.connection(this.api.getClientUUID(), ConnectionType.EMAIL),
                 emptyBody,
                 MessageSchema.class
         ).sendRequestAsync((response) -> {
@@ -556,9 +559,9 @@ public class ApiHandler<T> {
      */
     public void verifyEmail(String code, Consumer<ApiResponse<String>> consumer) {
         new ApiRequest<>(
-                api,
+                this.api,
                 "POST",
-                Routes.verifyEmail(api.getClientUUID(), code),
+                Routes.verifyEmail(this.api.getClientUUID(), code),
                 emptyBody,
                 MessageSchema.class
         ).sendRequestAsync((response) -> {
@@ -576,7 +579,7 @@ public class ApiHandler<T> {
      * @param consumer The action to be executed on response.
      */
     public void getNotes(Consumer<ApiResponse<List<PlayerNote>>> consumer) {
-        getNotes(api.getClientUUID(), consumer);
+        this.getNotes(this.api.getClientUUID(), consumer);
     }
 
     /**
@@ -587,7 +590,7 @@ public class ApiHandler<T> {
      */
     public void getNotes(UUID uuid, Consumer<ApiResponse<List<PlayerNote>>> consumer) {
         new ApiRequest<>(
-                api,
+                this.api,
                 "GET",
                 Routes.notes(uuid),
                 emptyBody,
@@ -617,7 +620,7 @@ public class ApiHandler<T> {
      * @param consumer The action to be executed on response.
      */
     public void createNote(String note, Consumer<ApiResponse<String>> consumer) {
-        createNote(api.getClientUUID(), note, consumer);
+        this.createNote(this.api.getClientUUID(), note, consumer);
     }
 
     /**
@@ -629,7 +632,7 @@ public class ApiHandler<T> {
      */
     public void createNote(UUID uuid, String note, Consumer<ApiResponse<String>> consumer) {
         new ApiRequest<>(
-                api,
+                this.api,
                 "POST",
                 Routes.notes(uuid),
                 Map.of("note", note),
@@ -650,7 +653,7 @@ public class ApiHandler<T> {
      * @param consumer The action to be executed on response.
      */
     public void getNote(String noteId, Consumer<ApiResponse<PlayerNote>> consumer) {
-        getNote(api.getClientUUID(), noteId, consumer);
+        this.getNote(this.api.getClientUUID(), noteId, consumer);
     }
 
     /**
@@ -662,7 +665,7 @@ public class ApiHandler<T> {
      */
     public void getNote(UUID uuid, String noteId, Consumer<ApiResponse<PlayerNote>> consumer) {
         new ApiRequest<>(
-                api,
+                this.api,
                 "GET",
                 Routes.note(uuid, noteId),
                 emptyBody,
@@ -693,7 +696,7 @@ public class ApiHandler<T> {
      * @param consumer The action to be executed on response.
      */
     public void deleteNote(String noteId, Consumer<ApiResponse<String>> consumer) {
-        deleteNote(api.getClientUUID(), noteId, consumer);
+        this.deleteNote(this.api.getClientUUID(), noteId, consumer);
     }
 
     /**
@@ -705,7 +708,7 @@ public class ApiHandler<T> {
      */
     public void deleteNote(UUID uuid, String noteId, Consumer<ApiResponse<String>> consumer) {
         new ApiRequest<>(
-                api,
+                this.api,
                 "DELETE",
                 Routes.note(uuid, noteId),
                 emptyBody,
@@ -748,7 +751,7 @@ public class ApiHandler<T> {
          * @return If the request was successful
          */
         public boolean isSuccessful() {
-            return successful;
+            return this.successful;
         }
 
         /**
@@ -757,7 +760,7 @@ public class ApiHandler<T> {
          * @return the data if available
          */
         public T getData() {
-            return data;
+            return this.data;
         }
 
         /**
@@ -765,7 +768,7 @@ public class ApiHandler<T> {
          * @return an error if available
          */
         public String getError() {
-            return error;
+            return this.error;
         }
     }
 }
