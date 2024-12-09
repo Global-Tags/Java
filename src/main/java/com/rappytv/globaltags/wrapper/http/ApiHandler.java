@@ -95,7 +95,6 @@ public class ApiHandler<T> {
                             body.tag,
                             body.position,
                             body.icon,
-                            body.referred,
                             body.referrals,
                             body.roles,
                             body.permissions,

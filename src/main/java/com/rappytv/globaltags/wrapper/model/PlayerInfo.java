@@ -1,5 +1,6 @@
 package com.rappytv.globaltags.wrapper.model;
 
+import com.google.gson.annotations.SerializedName;
 import com.rappytv.globaltags.wrapper.GlobalTagsAPI;
 import com.rappytv.globaltags.wrapper.enums.GlobalIcon;
 import com.rappytv.globaltags.wrapper.enums.GlobalPermission;
@@ -25,8 +26,7 @@ public class PlayerInfo<T> {
     private final String plainTag;
     private final String position;
     private final Icon icon;
-    private final boolean referred;
-    private final int referrals;
+    private final ReferralInfo referralInfo;
     private final List<GlobalRole> roles;
     private final Map<GlobalPermission, Boolean> permissions;
     private final Suspension suspension;
@@ -34,16 +34,15 @@ public class PlayerInfo<T> {
     /**
      * Build a new PlayerInfo instance
      *
-     * @param api         The {@link GlobalTagsAPI} for the {@link GlobalTagsAPI#translateColorCodes(String)} method
-     * @param uuid        The player's {@link UUID}
-     * @param tag         The player's plain tag including color codes
-     * @param position    The player's global position as a string
-     * @param icon        The player's global icon as a string
-     * @param referred    If the player has already marked someone as their inviter
-     * @param referrals   How many players the player has invited
-     * @param roles       The player's roles
-     * @param permissions The player's permissions
-     * @param suspension  The player's {@link Suspension}
+     * @param api          The {@link GlobalTagsAPI} for the {@link GlobalTagsAPI#translateColorCodes(String)} method
+     * @param uuid         The player's {@link UUID}
+     * @param tag          The player's plain tag including color codes
+     * @param position     The player's global position as a string
+     * @param icon         The player's global icon as a string
+     * @param referralInfo The player's referral info
+     * @param roles        The player's roles
+     * @param permissions  The player's permissions
+     * @param suspension   The player's {@link Suspension}
      */
     public PlayerInfo(
             @NotNull GlobalTagsAPI<T> api,
@@ -51,8 +50,7 @@ public class PlayerInfo<T> {
             @Nullable String tag,
             @NotNull String position,
             @NotNull Icon icon,
-            boolean referred,
-            int referrals,
+            ReferralInfo referralInfo,
             @NotNull String[] roles,
             @NotNull String[] permissions,
             @Nullable Suspension suspension
@@ -63,8 +61,7 @@ public class PlayerInfo<T> {
         this.plainTag = tag != null ? tag : "";
         this.position = position;
         this.icon = icon;
-        this.referred = referred;
-        this.referrals = referrals;
+        this.referralInfo = referralInfo;
         this.roles = new ArrayList<>();
         for (String role : roles) {
             try {
@@ -186,21 +183,39 @@ public class PlayerInfo<T> {
     }
 
     /**
+     * Gets the number of players this player has invited.
+     *
+     * @return The number of players invited by this player.
+     */
+    public ReferralInfo getReferralInfo() {
+        return this.referralInfo;
+    }
+
+    /**
      * Checks if the player has referred another player as their inviter.
      *
      * @return {@code true} if the player has referred another player; otherwise {@code false}.
      */
     public boolean hasReferred() {
-        return this.referred;
+        return this.getReferralInfo().hasReferred();
     }
 
     /**
-     * Gets the number of players this player has invited.
+     * Gets the total number of referrals the player has made.
      *
-     * @return The number of players invited by this player.
+     * @return The total number of referrals.
      */
-    public int getReferrals() {
-        return this.referrals;
+    public int getTotalReferrals() {
+        return this.getReferralInfo().getTotalReferrals();
+    }
+
+    /**
+     * Gets the number of referrals the player has made in the current month.
+     *
+     * @return The number of referrals in the current month.
+     */
+    public int getCurrentMonthReferrals() {
+        return this.getReferralInfo().getCurrentMonthReferrals();
     }
 
     /**
@@ -259,18 +274,18 @@ public class PlayerInfo<T> {
 
     @Override
     public String toString() {
-        return String.format(
-                "Playerinfo{uuid=%s, tag='%s', position='%s', icon='%s', referred=%s, referrals=%s, roles=%s, permissions=%s, suspension=%s}",
-                this.uuid,
-                this.plainTag,
-                this.getPosition().name().toLowerCase(),
-                this.icon,
-                this.referred,
-                this.referrals,
-                this.roles,
-                this.permissions,
-                this.suspension
-        );
+        return "PlayerInfo{" +
+                "uuid=" + this.uuid +
+                ", tag=" + this.tag +
+                ", plainTag='" + this.plainTag + '\'' +
+                ", position=" + this.getPosition() +
+                ", icon=PlayerIcon{type=" + this.getGlobalIcon() +
+                ", hash=" + this.getGlobalIconHash() + '}' +
+                ", referralInfo=" + this.referralInfo +
+                ", roles=" + this.roles +
+                ", permissions=" + this.permissions +
+                ", suspension=" + this.suspension +
+                '}';
     }
 
     /**
@@ -290,6 +305,78 @@ public class PlayerInfo<T> {
         public Icon(String type, String hash) {
             this.type = type;
             this.hash = hash;
+        }
+
+        @Override
+        public String toString() {
+            return "Icon{" +
+                    "type='" + this.type + '\'' +
+                    ", hash='" + this.hash + '\'' +
+                    '}';
+        }
+    }
+
+    /**
+     * Holds information about a player's referrals.
+     */
+    public static class ReferralInfo {
+
+        @SerializedName("has_referred")
+        private final boolean hasReferred;
+
+        @SerializedName("total_referrals")
+        private final int totalReferrals;
+
+        @SerializedName("current_month_referrals")
+        private final int currentMonthReferrals;
+
+        /**
+         * Builds a new {@link ReferralInfo}
+         *
+         * @param hasReferred           If the player has already marked someone as their inviter
+         * @param totalReferrals        The total number of players the player has invited
+         * @param currentMonthReferrals The number of players the player has invited in the current month
+         */
+        public ReferralInfo(boolean hasReferred, int totalReferrals, int currentMonthReferrals) {
+            this.hasReferred = hasReferred;
+            this.totalReferrals = totalReferrals;
+            this.currentMonthReferrals = currentMonthReferrals;
+        }
+
+        /**
+         * Checks if the player has already marked someone as their inviter.
+         *
+         * @return {@code true} if the player has already marked someone as their inviter; otherwise {@code false}.
+         */
+        public boolean hasReferred() {
+            return this.hasReferred;
+        }
+
+        /**
+         * Gets the total number of players the player has invited.
+         *
+         * @return The total number of players the player has invited.
+         */
+        public int getTotalReferrals() {
+            return this.totalReferrals;
+        }
+
+        /**
+         * Gets the number of players the player has invited in the current month.
+         *
+         * @return The number of players the player has invited in the current month.
+         */
+        public int getCurrentMonthReferrals() {
+            return this.currentMonthReferrals;
+        }
+
+        @Override
+        public String toString() {
+            return "ReferralInfo{" +
+                    "hasReferred=" + this.hasReferred +
+                    ", totalReferrals=" + this.totalReferrals +
+                    ", currentMonthReferrals=" + this.currentMonthReferrals +
+                    '}';
         }
     }
 
@@ -393,6 +480,7 @@ public class PlayerInfo<T> {
                 }
             });
         }
+
         /**
          * Initializes a cache with custom cleanup intervals.
          *
