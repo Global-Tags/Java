@@ -5,7 +5,6 @@ import com.rappytv.globaltags.wrapper.GlobalTagsAPI;
 import com.rappytv.globaltags.wrapper.enums.GlobalIcon;
 import com.rappytv.globaltags.wrapper.enums.GlobalPermission;
 import com.rappytv.globaltags.wrapper.enums.GlobalPosition;
-import com.rappytv.globaltags.wrapper.enums.GlobalRole;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,7 +26,7 @@ public class PlayerInfo<T> {
     private final String position;
     private final Icon icon;
     private final ReferralInfo referralInfo;
-    private final List<GlobalRole> roles;
+    private final List<String> roles;
     private final Map<GlobalPermission, Boolean> permissions;
     private final Suspension suspension;
 
@@ -62,13 +61,7 @@ public class PlayerInfo<T> {
         this.position = position;
         this.icon = icon;
         this.referralInfo = referralInfo;
-        this.roles = new ArrayList<>();
-        for (String role : roles) {
-            try {
-                this.roles.add(GlobalRole.valueOf(role.toUpperCase()));
-            } catch (Exception ignored) {
-            }
-        }
+        this.roles = List.of(roles);
         this.permissions = new HashMap<>();
         List<GlobalPermission> playerPermissions = new ArrayList<>();
         for (String permission : permissions) {
@@ -224,7 +217,7 @@ public class PlayerInfo<T> {
      * @return A list of the player's roles.
      */
     @NotNull
-    public List<GlobalRole> getRoles() {
+    public List<String> getRoles() {
         return this.roles;
     }
 
@@ -234,11 +227,9 @@ public class PlayerInfo<T> {
      * @return The player's highest role, or {@code null} if no roles are assigned.
      */
     @Nullable
-    public GlobalRole getHighestRole() {
-        for (GlobalRole role : GlobalRole.values()) {
-            if (this.roles.contains(role)) return role;
-        }
-        return null;
+    public String getHighestRole() {
+        if(this.roles.isEmpty()) return null;
+        return this.roles.get(0);
     }
 
     /**
@@ -248,7 +239,7 @@ public class PlayerInfo<T> {
      */
     @Nullable
     public String getHighestRoleIcon() {
-        GlobalRole role = this.getHighestRole();
+        String role = this.getHighestRole();
         if (role == null) return null;
         return this.urls.getRoleIcon(role);
     }
