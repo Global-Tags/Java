@@ -138,6 +138,7 @@ public class ApiHandler<T> {
                             body.position,
                             body.icon,
                             body.referrals,
+                            body.roleIcon,
                             body.roles,
                             body.permissions,
                             body.ban

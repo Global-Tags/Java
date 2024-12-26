@@ -8,6 +8,7 @@ public class PlayerInfoSchema {
     public String position;
     public PlayerInfo.Icon icon;
     public PlayerInfo.ReferralInfo referrals;
+    public String roleIcon;
     public String[] roles;
     public String[] permissions;
     public PlayerInfo.Suspension ban;

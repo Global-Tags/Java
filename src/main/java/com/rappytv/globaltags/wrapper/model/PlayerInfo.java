@@ -26,6 +26,7 @@ public class PlayerInfo<T> {
     private final String position;
     private final Icon icon;
     private final ReferralInfo referralInfo;
+    private final String roleIcon;
     private final List<String> roles;
     private final Map<GlobalPermission, Boolean> permissions;
     private final Suspension suspension;
@@ -39,6 +40,7 @@ public class PlayerInfo<T> {
      * @param position     The player's global position as a string
      * @param icon         The player's global icon as a string
      * @param referralInfo The player's referral info
+     * @param roleIcon     The player's role icon
      * @param roles        The player's roles
      * @param permissions  The player's permissions
      * @param suspension   The player's {@link Suspension}
@@ -50,6 +52,7 @@ public class PlayerInfo<T> {
             @NotNull String position,
             @NotNull Icon icon,
             ReferralInfo referralInfo,
+            @Nullable String roleIcon,
             @NotNull String[] roles,
             @NotNull String[] permissions,
             @Nullable Suspension suspension
@@ -61,6 +64,7 @@ public class PlayerInfo<T> {
         this.position = position;
         this.icon = icon;
         this.referralInfo = referralInfo;
+        this.roleIcon = roleIcon;
         this.roles = List.of(roles);
         this.permissions = new HashMap<>();
         List<GlobalPermission> playerPermissions = new ArrayList<>();
@@ -115,7 +119,7 @@ public class PlayerInfo<T> {
     @NotNull
     public GlobalPosition getPosition() {
         try {
-            return GlobalPosition.valueOf(this.position);
+            return GlobalPosition.valueOf(this.position.toUpperCase());
         } catch (Exception ignored) {
             return GlobalPosition.ABOVE;
         }
@@ -129,7 +133,7 @@ public class PlayerInfo<T> {
     @NotNull
     public GlobalIcon getGlobalIcon() {
         try {
-            return GlobalIcon.valueOf(this.icon.type);
+            return GlobalIcon.valueOf(this.icon.type.toUpperCase());
         } catch (Exception ignored) {
             return GlobalIcon.NONE;
         }
@@ -212,6 +216,15 @@ public class PlayerInfo<T> {
     }
 
     /**
+     * Gets highest displayable role icon IF the player has role icons enabled
+     * @return The highest displayable role icon of the player
+     */
+    @Nullable
+    public String getRoleIcon() {
+        return this.roleIcon;
+    }
+
+    /**
      * Gets all roles assigned to the player.
      *
      * @return A list of the player's roles.
@@ -235,8 +248,10 @@ public class PlayerInfo<T> {
     /**
      * Gets the icon URL for the player's highest role.
      *
+     * @deprecated Use {@link #getRoleIcon()} instead
      * @return The role icon URL, or {@code null} if no roles are assigned.
      */
+    @Deprecated(since = "1.2.1", forRemoval = true)
     @Nullable
     public String getHighestRoleIcon() {
         String role = this.getHighestRole();
@@ -273,6 +288,7 @@ public class PlayerInfo<T> {
                 ", icon=PlayerIcon{type=" + this.getGlobalIcon() +
                 ", hash=" + this.getGlobalIconHash() + '}' +
                 ", referralInfo=" + this.referralInfo +
+                ", roleIcon='" + this.roleIcon + '\'' +
                 ", roles=" + this.roles +
                 ", permissions=" + this.permissions +
                 ", suspension=" + this.suspension +
