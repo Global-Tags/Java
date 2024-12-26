@@ -409,6 +409,33 @@ public class ApiHandler<T> {
         });
     }
 
+    public void getReports(UUID uuid, Consumer<ApiResponse<List<PlayerReport>>> consumer) {
+        new ApiRequest<>(
+                this.api,
+                "GET",
+                Routes.playerReports(uuid),
+                emptyBody,
+                ReportSchema[].class
+        ).sendRequestAsync((response) -> {
+            if(!response.isSuccessful()) {
+                consumer.accept(new ApiResponse<>(false, null, response.getError()));
+                return;
+            }
+
+            List<PlayerReport> reports = new ArrayList<>();
+            for(ReportSchema report : response.getData()) {
+                reports.add(new PlayerReport(
+                        report.id,
+                        report.reason,
+                        report.reportedTag,
+                        report.by,
+                        report.createdAt
+                ));
+            }
+            consumer.accept(new ApiResponse<>(true, reports, null));
+        });
+    }
+
     /**
      * A request to ban a specific uuid
      *
