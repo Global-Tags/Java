@@ -38,7 +38,7 @@ public abstract class GlobalTagsAPI<T> {
     /**
      * Get the current user agent, version and minecraft version to be identified by the API. Example:
      * <blockquote><pre>
-     * new Agent("LabyAddon", "v1.2.0", "1.21");
+     * new Agent("LabyAddon", "1.2.0", "1.21");
      * </pre></blockquote>
      * @return The user agent
      */
