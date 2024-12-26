@@ -2,7 +2,6 @@ package com.rappytv.globaltags.wrapper;
 
 import com.rappytv.globaltags.wrapper.enums.AuthProvider;
 import com.rappytv.globaltags.wrapper.enums.GlobalIcon;
-import com.rappytv.globaltags.wrapper.enums.GlobalRole;
 import com.rappytv.globaltags.wrapper.http.ApiHandler;
 import com.rappytv.globaltags.wrapper.model.PlayerInfo;
 import org.jetbrains.annotations.NotNull;
@@ -39,7 +38,7 @@ public abstract class GlobalTagsAPI<T> {
     /**
      * Get the current user agent, version and minecraft version to be identified by the API. Example:
      * <blockquote><pre>
-     * new Agent("LabyAddon", "v1.2.0", "1.21");
+     * new Agent("LabyAddon", "1.2.0", "1.21");
      * </pre></blockquote>
      * @return The user agent
      */
@@ -72,7 +71,7 @@ public abstract class GlobalTagsAPI<T> {
 
     /**
      * Get the tag cache
-     * @return Returns a instance of {@link PlayerInfo.Cache}
+     * @return Returns an instance of {@link PlayerInfo.Cache}
      */
     @NotNull
     public PlayerInfo.Cache<T> getCache() {
@@ -81,7 +80,7 @@ public abstract class GlobalTagsAPI<T> {
 
     /**
      * Get the api handler
-     * @return Returns a instance of {@link ApiHandler}
+     * @return Returns an instance of {@link ApiHandler}
      */
     @NotNull
     public ApiHandler<T> getApiHandler() {
@@ -214,10 +213,10 @@ public abstract class GlobalTagsAPI<T> {
          * @return The url of the icon
          */
         @NotNull
-        public String getRoleIcon(GlobalRole role) {
+        public String getRoleIcon(String role) {
             return String.format(
                     "https://cdn.rappytv.com/globaltags/icons/role/%s.png",
-                    role.name().toLowerCase()
+                    role.toLowerCase()
             );
         }
 
