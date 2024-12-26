@@ -397,7 +397,7 @@ public class ApiHandler<T> {
         new ApiRequest<>(
                 this.api,
                 "POST",
-                Routes.reportPlayer(uuid),
+                Routes.playerReports(uuid),
                 Map.of("reason", reason),
                 MessageSchema.class
         ).sendRequestAsync((response) -> {

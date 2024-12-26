@@ -160,14 +160,26 @@ public class Routes {
     /**
      * <pre>
      * Route for
-     * - POST /players/{uuid}/report
+     * - GET /players/{uuid}/reports
+     * - POST /players/{uuid}/reports
      * </pre>
      *
+     * @param uuid The {@link UUID} of the player you want to manage the reports of
+     * @return The HTTP route
+     */
+    public static String playerReports(UUID uuid) {
+        return "/players/" + uuid + "/reports";
+    }
+
+    /**
+     *
+     * @deprecated Use {@link #playerReports(UUID)} instead
      * @param uuid The {@link UUID} of the player you want to report
      * @return The HTTP route
      */
+    @Deprecated(since = "1.2.1", forRemoval = true)
     public static String reportPlayer(UUID uuid) {
-        return "/players/" + uuid + "/report";
+        return playerReports(uuid);
     }
 
     /**
