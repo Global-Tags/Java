@@ -2,6 +2,7 @@ package com.rappytv.globaltags.wrapper.model.adapters;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 
 import java.io.IOException;
@@ -20,7 +21,7 @@ public class DateTypeAdapter extends TypeAdapter<Date> {
 
     @Override
     public Date read(JsonReader in) throws IOException {
-        if (in.peek() == com.google.gson.stream.JsonToken.NULL) {
+        if (in.peek() == JsonToken.NULL) {
             in.nextNull();
             return null;
         }
