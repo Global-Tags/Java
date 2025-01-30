@@ -3,7 +3,7 @@ package com.rappytv.globaltags.wrapper.model;
 import java.util.UUID;
 
 /**
- * A class representing an entry in the referral leaderboard
+ * A class representing an entry in a referral leaderboard
  */
 public class ReferralLeaderboardEntry {
 
