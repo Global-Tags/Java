@@ -7,6 +7,8 @@ import com.rappytv.globaltags.wrapper.enums.GlobalPosition;
 import com.rappytv.globaltags.wrapper.enums.ReferralLeaderboardType;
 import com.rappytv.globaltags.wrapper.http.schemas.*;
 import com.rappytv.globaltags.wrapper.model.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -415,24 +417,58 @@ public class ApiHandler<T> {
                 "GET",
                 Routes.playerReports(uuid),
                 emptyBody,
-                ReportSchema[].class
+                PlayerReport[].class
         ).sendRequestAsync((response) -> {
             if(!response.isSuccessful()) {
                 consumer.accept(new ApiResponse<>(false, null, response.getError()));
                 return;
             }
+            consumer.accept(new ApiResponse<>(true, Arrays.asList(response.getData()), null));
+        });
+    }
 
-            List<PlayerReport> reports = new ArrayList<>();
-            for(ReportSchema report : response.getData()) {
-                reports.add(new PlayerReport(
-                        report.id,
-                        report.reason,
-                        report.reportedTag,
-                        report.by,
-                        report.createdAt
-                ));
+    /**
+     * A request to get a specific ban of a specific uuid
+     *
+     * @param uuid The uuid you want to get the ban of
+     * @param id The id of the ban you want to get
+     * @param consumer The action to be executed on response.
+     */
+    public void getBan(UUID uuid, String id, Consumer<ApiResponse<BanInfo>> consumer) {
+        new ApiRequest<>(
+                this.api,
+                "GET",
+                Routes.ban(uuid, id),
+                emptyBody,
+                BanInfo.class
+        ).sendRequestAsync((response) -> {
+            if(!response.isSuccessful()) {
+                consumer.accept(new ApiResponse<>(false, null, response.getError()));
+                return;
             }
-            consumer.accept(new ApiResponse<>(true, reports, null));
+            consumer.accept(new ApiResponse<>(true, response.getData(), null));
+        });
+    }
+
+    /**
+     * A request to get a list of all bans of a specific uuid
+     *
+     * @param uuid The uuid you want to get the bans of
+     * @param consumer The action to be executed on response.
+     */
+    public void getBans(UUID uuid, Consumer<ApiResponse<List<BanInfo>>> consumer) {
+        new ApiRequest<>(
+                this.api,
+                "GET",
+                Routes.bans(uuid),
+                emptyBody,
+                BanInfo[].class
+        ).sendRequestAsync((response) -> {
+            if(!response.isSuccessful()) {
+                consumer.accept(new ApiResponse<>(false, null, response.getError()));
+                return;
+            }
+            consumer.accept(new ApiResponse<>(true, Arrays.asList(response.getData()), null));
         });
     }
 
@@ -444,11 +480,52 @@ public class ApiHandler<T> {
      * @param consumer The action to be executed on response.
      */
     public void banPlayer(UUID uuid, String reason, Consumer<ApiResponse<String>> consumer) {
+        this.banPlayer(uuid, reason, null, null, consumer);
+    }
+
+    /**
+     * A request to ban a specific uuid
+     *
+     * @param uuid The uuid you want to ban
+     * @param reason The reason for the ban
+     * @param appealable If the user should be able to appeal the ban
+     * @param consumer The action to be executed on response.
+     */
+    public void banPlayer(UUID uuid, String reason, boolean appealable, Consumer<ApiResponse<String>> consumer) {
+        this.banPlayer(uuid, reason, appealable, null, consumer);
+    }
+
+    /**
+     * A request to ban a specific uuid
+     *
+     * @param uuid The uuid you want to ban
+     * @param reason The reason for the ban
+     * @param duration The duration of the ban in milliseconds
+     * @param consumer The action to be executed on response.
+     */
+    public void banPlayer(UUID uuid, String reason, long duration, Consumer<ApiResponse<String>> consumer) {
+        this.banPlayer(uuid, reason, null, duration, consumer);
+    }
+
+    /**
+     * A request to ban a specific uuid
+     *
+     * @param uuid The uuid you want to ban
+     * @param reason The reason for the ban
+     * @param appealable If the user should be able to appeal the ban
+     * @param duration The duration of the ban in milliseconds
+     * @param consumer The action to be executed on response.
+     */
+    public void banPlayer(@NotNull UUID uuid, @NotNull String reason, @Nullable Boolean appealable, @Nullable Long duration, Consumer<ApiResponse<String>> consumer) {
+        HashMap<String, Object> body = new HashMap<>();
+        body.put("reason", reason);
+        body.put("appealable", appealable);
+        body.put("duration", duration);
         new ApiRequest<>(
                 this.api,
                 "POST",
                 Routes.bans(uuid),
-                Map.of("reason", reason),
+                body,
                 MessageSchema.class
         ).sendRequestAsync((response) -> {
             if(!response.isSuccessful()) {
@@ -496,7 +573,7 @@ public class ApiHandler<T> {
         Objects.requireNonNull(suspension.getReason(), "Reason must not be null");
         new ApiRequest<>(
                 this.api,
-                "PUT",
+                "PATCH",
                 Routes.bans(uuid),
                 Map.of("reason", suspension.getReason(), "appealable", suspension.isAppealable()),
                 MessageSchema.class
@@ -663,22 +740,13 @@ public class ApiHandler<T> {
                 "GET",
                 Routes.notes(uuid),
                 emptyBody,
-                NoteSchema[].class
+                PlayerNote[].class
         ).sendRequestAsync((response) -> {
             if(!response.isSuccessful()) {
                 consumer.accept(new ApiResponse<>(false, null, response.getError()));
                 return;
             }
-            List<PlayerNote> notes = new ArrayList<>();
-            for(NoteSchema note : response.getData()) {
-                notes.add(new PlayerNote(
-                        note.id,
-                        note.text,
-                        note.author,
-                        note.createdAt
-                ));
-            }
-            consumer.accept(new ApiResponse<>(true, notes, null));
+            consumer.accept(new ApiResponse<>(true, Arrays.asList(response.getData()), null));
         });
     }
 
@@ -738,23 +806,13 @@ public class ApiHandler<T> {
                 "GET",
                 Routes.note(uuid, noteId),
                 emptyBody,
-                NoteSchema.class
+                PlayerNote.class
         ).sendRequestAsync((response) -> {
             if(!response.isSuccessful()) {
                 consumer.accept(new ApiResponse<>(false, null, response.getError()));
                 return;
             }
-            NoteSchema body = response.getData();
-            consumer.accept(new ApiResponse<>(
-                    false,
-                    new PlayerNote(
-                        body.id,
-                        body.text,
-                        body.author,
-                        body.createdAt
-                    ),
-                    null
-            ));
+            consumer.accept(new ApiResponse<>(true, response.getData(), null));
         });
     }
 
@@ -838,6 +896,15 @@ public class ApiHandler<T> {
          */
         public String getError() {
             return this.error;
+        }
+
+        @Override
+        public String toString() {
+            return "ApiResponse{" +
+                    "successful=" + this.successful +
+                    ", data=" + this.data +
+                    ", error='" + this.error + '\'' +
+                    '}';
         }
     }
 }

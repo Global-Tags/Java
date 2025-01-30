@@ -27,12 +27,12 @@ public class PlayerNote {
             @NotNull String id,
             @NotNull String text,
             @NotNull String author,
-            long createdAt
+            @NotNull Date createdAt
     ) {
         this.id = id;
         this.text = text;
         this.author = UUID.fromString(author);
-        this.createdAt = new Date(createdAt);
+        this.createdAt = createdAt;
     }
 
     /**
