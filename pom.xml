@@ -6,7 +6,7 @@
 
     <groupId>com.rappytv.globaltags</groupId>
     <artifactId>GlobalTagsJava</artifactId>
-    <version>1.2.1</version>
+    <version>1.2.2</version>
 
     <name>GlobalTagsJava</name>
     <description>A wrapper for the GlobalTagsAPI</description>
