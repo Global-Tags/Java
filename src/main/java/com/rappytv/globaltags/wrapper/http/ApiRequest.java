@@ -1,15 +1,20 @@
 package com.rappytv.globaltags.wrapper.http;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.rappytv.globaltags.wrapper.GlobalTagsAPI;
 import com.rappytv.globaltags.wrapper.http.schemas.ErrorSchema;
+import com.rappytv.globaltags.wrapper.model.adapters.DateTypeAdapter;
+import com.rappytv.globaltags.wrapper.model.adapters.UUIDTypeAdapter;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Date;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 /**
@@ -19,8 +24,11 @@ import java.util.function.Consumer;
  */
 public class ApiRequest<T> {
 
-    private static final Gson gson = new Gson();
     private static final HttpClient client = HttpClient.newHttpClient();
+    private static final Gson gson = new GsonBuilder()
+            .registerTypeAdapter(Date.class, new DateTypeAdapter())
+            .registerTypeAdapter(UUID.class, new UUIDTypeAdapter())
+            .create();
 
     private final String method;
     private final String path;
