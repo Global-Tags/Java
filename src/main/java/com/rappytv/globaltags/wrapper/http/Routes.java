@@ -216,7 +216,7 @@ public class Routes {
      * Route for
      * - GET /players/{uuid}/bans
      * - POST /players/{uuid}/bans
-     * - PUT /players/{uuid}/bans
+     * - PATCH /players/{uuid}/bans
      * - DELETE /players/{uuid}/bans
      * </pre>
      *
@@ -232,9 +232,23 @@ public class Routes {
     /**
      * <pre>
      * Route for
+     * - GET /players/{uuid}/bans/{id}
+     * </pre>
+     *
+     * @param uuid The {@link UUID} of the player you want to get the ban of
+     * @param id The ID of the ban you want to get
+     * @return The HTTP route
+     */
+    public static String ban(UUID uuid, String id) {
+        return "/players/" + uuid + "/bans/" + id;
+    }
+
+    /**
+     * <pre>
+     * Route for
      * - GET /players/{uuid}/bans
      * - POST /players/{uuid}/bans
-     * - PUT /players/{uuid}/bans
+     * - PATCH /players/{uuid}/bans
      * - DELETE /players/{uuid}/bans
      * </pre>
      *
