@@ -48,16 +48,21 @@ public class ApiInfo {
     /**
      * Retrieves the commit data associated with the API.
      *
+     * @deprecated The API does not support these fields anymore
      * @return the commit data, never null
      */
     @NotNull
+    @Deprecated(since = "1.2.2", forRemoval = true)
     public CommitData getCommit() {
         return this.commit;
     }
 
     /**
      * Represents data related to a Git commit, including the branch, SHA, and tree information.
+     *
+     * @deprecated The API does not support these fields anymore
      */
+    @Deprecated(since = "1.2.2", forRemoval = true)
     public static class CommitData {
 
         private final String branch;
