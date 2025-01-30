@@ -447,7 +447,7 @@ public class ApiHandler<T> {
         new ApiRequest<>(
                 this.api,
                 "POST",
-                Routes.ban(uuid),
+                Routes.bans(uuid),
                 Map.of("reason", reason),
                 MessageSchema.class
         ).sendRequestAsync((response) -> {
@@ -471,7 +471,7 @@ public class ApiHandler<T> {
         new ApiRequest<>(
                 this.api,
                 "DELETE",
-                Routes.ban(uuid),
+                Routes.bans(uuid),
                 emptyBody,
                 MessageSchema.class
         ).sendRequestAsync((response) -> {
@@ -497,7 +497,7 @@ public class ApiHandler<T> {
         new ApiRequest<>(
                 this.api,
                 "PUT",
-                Routes.ban(uuid),
+                Routes.bans(uuid),
                 Map.of("reason", suspension.getReason(), "appealable", suspension.isAppealable()),
                 MessageSchema.class
         ).sendRequestAsync((response) -> {

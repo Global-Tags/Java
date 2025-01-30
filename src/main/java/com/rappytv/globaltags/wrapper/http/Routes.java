@@ -214,17 +214,35 @@ public class Routes {
     /**
      * <pre>
      * Route for
-     * - GET /players/{uuid}/ban
-     * - POST /players/{uuid}/ban
-     * - PUT /players/{uuid}/ban
-     * - DELETE /players/{uuid}/ban
+     * - GET /players/{uuid}/bans
+     * - POST /players/{uuid}/bans
+     * - PUT /players/{uuid}/bans
+     * - DELETE /players/{uuid}/bans
+     * </pre>
+     *
+     * @deprecated Use {@link #bans(UUID)} instead
+     * @param uuid The {@link UUID} of the player you want to manage the ban of
+     * @return The HTTP route
+     */
+    @Deprecated(since = "1.2.2")
+    public static String ban(UUID uuid) {
+        return bans(uuid);
+    }
+
+    /**
+     * <pre>
+     * Route for
+     * - GET /players/{uuid}/bans
+     * - POST /players/{uuid}/bans
+     * - PUT /players/{uuid}/bans
+     * - DELETE /players/{uuid}/bans
      * </pre>
      *
      * @param uuid The {@link UUID} of the player you want to manage the ban of
      * @return The HTTP route
      */
-    public static String ban(UUID uuid) {
-        return "/players/" + uuid + "/ban";
+    public static String bans(UUID uuid) {
+        return "/players/" + uuid + "/bans";
     }
 
     /**
