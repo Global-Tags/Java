@@ -121,27 +121,27 @@ public class Routes {
     /**
      * <pre>
      * Route for
-     * - POST /players/{uuid}/watch
+     * - PATCH /players/{uuid}/icon/role-visibility
      * </pre>
      *
-     * @param uuid The {@link UUID} of the player you want to watch
+     * @param uuid The {@link UUID} of the player you want to update the role icon visibility of
      * @return The HTTP route
      */
-    public static String watchPlayer(UUID uuid) {
-        return "/players/" + uuid + "/watch";
+    public static String roleIconVisiblity(UUID uuid) {
+        return "/players/" + uuid + "/icon/role-visibility";
     }
 
     /**
      * <pre>
      * Route for
-     * - POST /players/{uuid}/unwatch
+     * - PATCH /players/{uuid}/watchlist
      * </pre>
      *
-     * @param uuid The {@link UUID} of the player you want to unwatch
+     * @param uuid The {@link UUID} of the player you want to update the watchlist status of
      * @return The HTTP route
      */
-    public static String unwatchPlayer(UUID uuid) {
-        return "/players/" + uuid + "/unwatch";
+    public static String watchlist(UUID uuid) {
+        return "/players/" + uuid + "/watchlist";
     }
 
     /**
