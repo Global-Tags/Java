@@ -5,7 +5,10 @@ import com.rappytv.globaltags.wrapper.enums.ConnectionType;
 import com.rappytv.globaltags.wrapper.enums.GlobalIcon;
 import com.rappytv.globaltags.wrapper.enums.GlobalPosition;
 import com.rappytv.globaltags.wrapper.enums.ReferralLeaderboardType;
-import com.rappytv.globaltags.wrapper.http.schemas.*;
+import com.rappytv.globaltags.wrapper.http.schemas.MessageSchema;
+import com.rappytv.globaltags.wrapper.http.schemas.PlayerInfoSchema;
+import com.rappytv.globaltags.wrapper.http.schemas.ReferralLeaderboardsSchema;
+import com.rappytv.globaltags.wrapper.http.schemas.VerificationCodeSchema;
 import com.rappytv.globaltags.wrapper.model.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -290,6 +293,41 @@ public class ApiHandler<T> {
     }
 
     /**
+     * A request to update the role icon visibility of {@link GlobalTagsAPI#getClientUUID()}
+     *
+     * @param visible  If the icon should be visible or not
+     * @param consumer The action to be executed on response.
+     */
+    public void setRoleIconVisibility(boolean visible, Consumer<ApiResponse<String>> consumer) {
+        this.setRoleIconVisibility(this.api.getClientUUID(), visible, consumer);
+    }
+
+    /**
+     * A request to update the role icon visibility of a specific uuid
+     *
+     * @param uuid     The uuid you want to update the role icon visibility of
+     * @param visible  If the icon should be visible or not
+     * @param consumer The action to be executed on response.
+     */
+    public void setRoleIconVisibility(UUID uuid, boolean visible, Consumer<ApiResponse<String>> consumer) {
+        new ApiRequest<>(
+                this.api,
+                "PATCH",
+                Routes.roleIconVisiblity(uuid),
+                Map.of("visible", visible),
+                MessageSchema.class
+        ).sendRequestAsync((response) -> {
+            if (!response.isSuccessful()) {
+                consumer.accept(new ApiResponse<>(false, null, response.getError()));
+                return;
+            }
+            this.api.getCache().renew(uuid, (info) ->
+                    consumer.accept(new ApiResponse<>(true, response.getData().message, null))
+            );
+        });
+    }
+
+    /**
      * A request to clear the tag of {@link GlobalTagsAPI#getClientUUID()}
      *
      * @param consumer The action to be executed on response.
@@ -328,34 +366,12 @@ public class ApiHandler<T> {
      * @param uuid The uuid you want to add to the watchlist
      * @param consumer The action to be executed on response.
      */
-    public void watchPlayer(UUID uuid, Consumer<ApiResponse<String>> consumer) {
+    public void updateWatchlistStatus(UUID uuid, boolean watched, Consumer<ApiResponse<String>> consumer) {
         new ApiRequest<>(
                 this.api,
-                "POST",
-                Routes.watchPlayer(uuid),
-                emptyBody,
-                MessageSchema.class
-        ).sendRequestAsync((response) -> {
-            if(!response.isSuccessful()) {
-                consumer.accept(new ApiResponse<>(false, null, response.getError()));
-                return;
-            }
-            consumer.accept(new ApiResponse<>(true, response.getData().message, null));
-        });
-    }
-
-    /**
-     * A request to remove a player from the watchlist
-     *
-     * @param uuid The uuid you want to remove from the watchlist
-     * @param consumer The action to be executed on response.
-     */
-    public void unwatchPlayer(UUID uuid, Consumer<ApiResponse<String>> consumer) {
-        new ApiRequest<>(
-                this.api,
-                "POST",
-                Routes.unwatchPlayer(uuid),
-                emptyBody,
+                "PATCH",
+                Routes.watchlist(uuid),
+                Map.of("watched", watched),
                 MessageSchema.class
         ).sendRequestAsync((response) -> {
             if(!response.isSuccessful()) {
