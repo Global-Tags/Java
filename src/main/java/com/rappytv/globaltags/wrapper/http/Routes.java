@@ -134,14 +134,45 @@ public class Routes {
     /**
      * <pre>
      * Route for
+     * - GET /players/{uuid}/watchlist
      * - PATCH /players/{uuid}/watchlist
      * </pre>
      *
-     * @param uuid The {@link UUID} of the player you want to update the watchlist status of
+     * @param uuid The {@link UUID} of the player you want to get or update the watchlist status of
      * @return The HTTP route
      */
     public static String watchlist(UUID uuid) {
         return "/players/" + uuid + "/watchlist";
+    }
+
+    /**
+     * <pre>
+     * Route for
+     * - GET /players/{uuid}/api-keys
+     * - POST /players/{uuid}/api-keys
+     * </pre>
+     *
+     * @param uuid The {@link UUID} of the player you want to get or update the watchlist status of
+     * @return The HTTP route
+     */
+    public static String apiKeys(UUID uuid) {
+        return "/players/" + uuid + "/api-keys";
+    }
+
+    /**
+     * <pre>
+     * Route for
+     * - GET /players/{uuid}/api-keys/{key}
+     * - PATCH /players/{uuid}/api-keys/{key}
+     * - DELETE /players/{uuid}/api-keys/{key}
+     * </pre>
+     *
+     * @param uuid The {@link UUID} of the player you want to manage the API key of
+     * @param key  The ID of the key you want to manage
+     * @return The HTTP route
+     */
+    public static String apiKey(UUID uuid, String key) {
+        return "/players/" + uuid + "/api-keys/" + key;
     }
 
     /**
