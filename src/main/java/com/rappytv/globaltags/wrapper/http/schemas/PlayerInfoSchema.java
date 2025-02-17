@@ -1,5 +1,6 @@
 package com.rappytv.globaltags.wrapper.http.schemas;
 
+import com.rappytv.globaltags.wrapper.model.BanInfo;
 import com.rappytv.globaltags.wrapper.model.PlayerInfo;
 
 public class PlayerInfoSchema {
@@ -11,5 +12,5 @@ public class PlayerInfoSchema {
     public String roleIcon;
     public String[] roles;
     public String[] permissions;
-    public PlayerInfo.Suspension ban;
+    public BanInfo ban;
 }

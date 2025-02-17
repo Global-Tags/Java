@@ -715,16 +715,16 @@ public class ApiHandler<T> {
      * A request to edit the ban of a specific uuid
      *
      * @param uuid The uuid you want to edit the ban of
-     * @param suspension The new {@link PlayerInfo.Suspension} object
+     * @param reason The new reason for the ban
+     * @param appealable If the ban should be appealable or not
      * @param consumer The action to be executed on response.
      */
-    public void editBan(UUID uuid, PlayerInfo.Suspension suspension, Consumer<ApiResponse<String>> consumer) {
-        Objects.requireNonNull(suspension.getReason(), "Reason must not be null");
+    public void editBan(UUID uuid, @NotNull String reason, boolean appealable, Consumer<ApiResponse<String>> consumer) {
         new ApiRequest<>(
                 this.api,
                 "PATCH",
                 Routes.bans(uuid),
-                Map.of("reason", suspension.getReason(), "appealable", suspension.isAppealable()),
+                Map.of("reason", reason, "appealable", appealable),
                 MessageSchema.class
         ).sendRequestAsync((response) -> {
             if(!response.isSuccessful()) {
