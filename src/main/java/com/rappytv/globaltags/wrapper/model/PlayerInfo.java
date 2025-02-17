@@ -12,7 +12,7 @@ import java.util.*;
 import java.util.function.Consumer;
 
 /**
- * Represents player information associated with a UUID, including tags, roles, permissions, and suspension details.
+ * Represents player information associated with a UUID, including tags, roles, permissions, and ban info.
  *
  * @param <T> The type used by {@link GlobalTagsAPI} to represent colored tags (e.g., formatted strings or components).
  */
@@ -29,7 +29,7 @@ public class PlayerInfo<T> {
     private final String roleIcon;
     private final List<String> roles;
     private final Map<GlobalPermission, Boolean> permissions;
-    private final Suspension suspension;
+    private final BanInfo banInfo;
 
     /**
      * Build a new PlayerInfo instance
@@ -43,7 +43,7 @@ public class PlayerInfo<T> {
      * @param roleIcon     The player's role icon
      * @param roles        The player's roles
      * @param permissions  The player's permissions
-     * @param suspension   The player's {@link Suspension}
+     * @param banInfo      The player's {@link BanInfo}
      */
     public PlayerInfo(
             @NotNull GlobalTagsAPI<T> api,
@@ -55,7 +55,7 @@ public class PlayerInfo<T> {
             @Nullable String roleIcon,
             @NotNull String[] roles,
             @NotNull String[] permissions,
-            @Nullable Suspension suspension
+            @Nullable BanInfo banInfo
     ) {
         this.urls = api.getUrls();
         this.uuid = uuid;
@@ -78,7 +78,7 @@ public class PlayerInfo<T> {
         for (GlobalPermission permission : GlobalPermission.values()) {
             this.permissions.put(permission, playerPermissions.contains(permission));
         }
-        this.suspension = suspension != null ? suspension : new Suspension();
+        this.banInfo = banInfo;
     }
 
     /**
@@ -260,22 +260,22 @@ public class PlayerInfo<T> {
     }
 
     /**
-     * Checks if the player is currently suspended.
+     * Checks if the player is currently banned.
      *
-     * @return {@code true} if the player is suspended; otherwise {@code false}.
+     * @return {@code true} if the player is banned; otherwise {@code false}.
      */
-    public boolean isSuspended() {
-        return this.suspension.active;
+    public boolean isBanned() {
+        return this.banInfo != null;
     }
 
     /**
-     * Gets the player's suspension details.
+     * Gets the player's ban details.
      *
-     * @return The player's {@link Suspension} object.
+     * @return The player's {@link BanInfo} object.
      */
     @NotNull
-    public Suspension getSuspension() {
-        return this.suspension;
+    public BanInfo getBanInfo() {
+        return this.banInfo;
     }
 
     @Override
@@ -291,7 +291,7 @@ public class PlayerInfo<T> {
                 ", roleIcon='" + this.roleIcon + '\'' +
                 ", roles=" + this.roles +
                 ", permissions=" + this.permissions +
-                ", suspension=" + this.suspension +
+                ", banInfo=" + this.banInfo +
                 '}';
     }
 
@@ -383,74 +383,6 @@ public class PlayerInfo<T> {
                     "hasReferred=" + this.hasReferred +
                     ", totalReferrals=" + this.totalReferrals +
                     ", currentMonthReferrals=" + this.currentMonthReferrals +
-                    '}';
-        }
-    }
-
-    /**
-     * Represents a player's ban or suspension status.
-     */
-    public static class Suspension {
-
-        private final boolean active;
-        private final String reason;
-        private final boolean appealable;
-
-        /**
-         * Creates an inactive suspension
-         */
-        public Suspension() {
-            this.active = false;
-            this.reason = null;
-            this.appealable = false;
-        }
-
-        /**
-         * Creates an active suspension.
-         *
-         * @param reason     The reason for the suspension.
-         * @param appealable Whether the suspension is appealable.
-         */
-        public Suspension(String reason, boolean appealable) {
-            this.active = true;
-            this.reason = reason;
-            this.appealable = appealable;
-        }
-
-        /**
-         * Returns if the suspension is active or not
-         *
-         * @return If the suspension is active or not
-         */
-        public boolean isActive() {
-            return this.active;
-        }
-
-        /**
-         * Returns the suspension reason
-         *
-         * @return Returns the suspension reason
-         */
-        @Nullable
-        public String getReason() {
-            return this.reason;
-        }
-
-        /**
-         * Returns if the suspension can be appealed
-         *
-         * @return If the suspension can be appealed
-         */
-        public boolean isAppealable() {
-            return this.appealable;
-        }
-
-        @Override
-        public String toString() {
-            return "Suspension{" +
-                    "active=" + this.active +
-                    ", reason='" + this.reason + '\'' +
-                    ", appealable=" + this.appealable +
                     '}';
         }
     }

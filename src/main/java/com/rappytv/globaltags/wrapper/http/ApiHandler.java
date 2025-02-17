@@ -5,10 +5,7 @@ import com.rappytv.globaltags.wrapper.enums.ConnectionType;
 import com.rappytv.globaltags.wrapper.enums.GlobalIcon;
 import com.rappytv.globaltags.wrapper.enums.GlobalPosition;
 import com.rappytv.globaltags.wrapper.enums.ReferralLeaderboardType;
-import com.rappytv.globaltags.wrapper.http.schemas.MessageSchema;
-import com.rappytv.globaltags.wrapper.http.schemas.PlayerInfoSchema;
-import com.rappytv.globaltags.wrapper.http.schemas.ReferralLeaderboardsSchema;
-import com.rappytv.globaltags.wrapper.http.schemas.VerificationCodeSchema;
+import com.rappytv.globaltags.wrapper.http.schemas.*;
 import com.rappytv.globaltags.wrapper.model.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -361,6 +358,28 @@ public class ApiHandler<T> {
     }
 
     /**
+     * A request to get a player's watchlist status
+     *
+     * @param uuid     The uuid you want to get the watchlist status of
+     * @param consumer The action to be executed on response.
+     */
+    public void getWatchlistStatus(UUID uuid, Consumer<ApiResponse<Boolean>> consumer) {
+        new ApiRequest<>(
+                this.api,
+                "GET",
+                Routes.watchlist(uuid),
+                emptyBody,
+                WatchlistSchema.class
+        ).sendRequestAsync((response) -> {
+            if (!response.isSuccessful()) {
+                consumer.accept(new ApiResponse<>(false, null, response.getError()));
+                return;
+            }
+            consumer.accept(new ApiResponse<>(true, response.getData().watched, null));
+        });
+    }
+
+    /**
      * A request to add a player to the watchlist
      *
      * @param uuid The uuid you want to add to the watchlist
@@ -375,6 +394,120 @@ public class ApiHandler<T> {
                 MessageSchema.class
         ).sendRequestAsync((response) -> {
             if(!response.isSuccessful()) {
+                consumer.accept(new ApiResponse<>(false, null, response.getError()));
+                return;
+            }
+            consumer.accept(new ApiResponse<>(true, response.getData().message, null));
+        });
+    }
+
+    /**
+     * A request to get a player's API keys
+     *
+     * @param uuid     The uuid you want to get the API keys of
+     * @param consumer The action to be executed on response
+     */
+    public void getApiKeys(UUID uuid, Consumer<ApiResponse<List<ApiKey>>> consumer) {
+        new ApiRequest<>(
+                this.api,
+                "GET",
+                Routes.apiKeys(uuid),
+                emptyBody,
+                ApiKey[].class
+        ).sendRequestAsync((response) -> {
+            if (!response.isSuccessful()) {
+                consumer.accept(new ApiResponse<>(false, null, response.getError()));
+                return;
+            }
+            consumer.accept(new ApiResponse<>(true, Arrays.asList(response.getData()), null));
+        });
+    }
+
+    /**
+     * A request to get a player's API key
+     *
+     * @param uuid     The uuid you want to get the API key of
+     * @param name     The name of the API key
+     * @param consumer The action to be executed on response.
+     */
+    public void getApiKey(UUID uuid, String name, Consumer<ApiResponse<ApiKey>> consumer) {
+        new ApiRequest<>(
+                this.api,
+                "GET",
+                Routes.apiKey(uuid, name),
+                emptyBody,
+                ApiKey.class
+        ).sendRequestAsync((response) -> {
+            if (!response.isSuccessful()) {
+                consumer.accept(new ApiResponse<>(false, null, response.getError()));
+                return;
+            }
+            consumer.accept(new ApiResponse<>(true, response.getData(), null));
+        });
+    }
+
+    /**
+     * A request to create a player API key
+     *
+     * @param uuid     The uuid you want to create the API key for
+     * @param name     The name of the API key
+     * @param consumer The action to be executed on response.
+     */
+    public void createApiKey(UUID uuid, String name, Consumer<ApiResponse<ApiKeyCreationSchema>> consumer) {
+        new ApiRequest<>(
+                this.api,
+                "POST",
+                Routes.apiKeys(uuid),
+                Map.of("name", name),
+                ApiKeyCreationSchema.class
+        ).sendRequestAsync((response) -> {
+            if (!response.isSuccessful()) {
+                consumer.accept(new ApiResponse<>(false, null, response.getError()));
+                return;
+            }
+            consumer.accept(new ApiResponse<>(true, response.getData(), null));
+        });
+    }
+
+    /**
+     * A request to regenerate a player's API key
+     *
+     * @param uuid     The uuid you want to regenerate the API key of
+     * @param name     The name of the API key
+     * @param consumer The action to be executed on response.
+     */
+    public void regenerateApiKey(UUID uuid, String name, Consumer<ApiResponse<ApiKeyRegenSchema>> consumer) {
+        new ApiRequest<>(
+                this.api,
+                "PATCH",
+                Routes.apiKey(uuid, name),
+                emptyBody,
+                ApiKeyRegenSchema.class
+        ).sendRequestAsync((response) -> {
+            if (!response.isSuccessful()) {
+                consumer.accept(new ApiResponse<>(false, null, response.getError()));
+                return;
+            }
+            consumer.accept(new ApiResponse<>(true, response.getData(), null));
+        });
+    }
+
+    /**
+     * A request to delete a player's API key
+     *
+     * @param uuid     The uuid you want to delete the API key of
+     * @param name     The name of the API key
+     * @param consumer The action to be executed on response.
+     */
+    public void deleteApiKey(UUID uuid, String name, Consumer<ApiResponse<String>> consumer) {
+        new ApiRequest<>(
+                this.api,
+                "DELETE",
+                Routes.apiKey(uuid, name),
+                emptyBody,
+                MessageSchema.class
+        ).sendRequestAsync((response) -> {
+            if (!response.isSuccessful()) {
                 consumer.accept(new ApiResponse<>(false, null, response.getError()));
                 return;
             }
@@ -582,16 +715,16 @@ public class ApiHandler<T> {
      * A request to edit the ban of a specific uuid
      *
      * @param uuid The uuid you want to edit the ban of
-     * @param suspension The new {@link PlayerInfo.Suspension} object
+     * @param reason The new reason for the ban
+     * @param appealable If the ban should be appealable or not
      * @param consumer The action to be executed on response.
      */
-    public void editBan(UUID uuid, PlayerInfo.Suspension suspension, Consumer<ApiResponse<String>> consumer) {
-        Objects.requireNonNull(suspension.getReason(), "Reason must not be null");
+    public void editBan(UUID uuid, @NotNull String reason, boolean appealable, Consumer<ApiResponse<String>> consumer) {
         new ApiRequest<>(
                 this.api,
                 "PATCH",
                 Routes.bans(uuid),
-                Map.of("reason", suspension.getReason(), "appealable", suspension.isAppealable()),
+                Map.of("reason", reason, "appealable", appealable),
                 MessageSchema.class
         ).sendRequestAsync((response) -> {
             if(!response.isSuccessful()) {
@@ -863,64 +996,5 @@ public class ApiHandler<T> {
             }
             consumer.accept(new ApiResponse<>(true, response.getData().message, null));
         });
-    }
-
-    /**
-     * An inline class containing response data for these requests
-     * @param <T> The type of the data
-     */
-    public static class ApiResponse<T> {
-
-        private final boolean successful;
-        private final T data;
-        private final String error;
-
-        /**
-         * Constructs a new ApiResponse instance
-         *
-         * @param successful If the request was successful
-         * @param data The data returned if available
-         * @param error The error returned if available
-         */
-        public ApiResponse(boolean successful, T data, String error) {
-            this.successful = successful;
-            this.data = data;
-            this.error = error;
-        }
-
-        /**
-         * Checks if the request was successful
-         *
-         * @return If the request was successful
-         */
-        public boolean isSuccessful() {
-            return this.successful;
-        }
-
-        /**
-         * Gets the data returned if available
-         *
-         * @return the data if available
-         */
-        public T getData() {
-            return this.data;
-        }
-
-        /**
-         * Get the error returned if available
-         * @return an error if available
-         */
-        public String getError() {
-            return this.error;
-        }
-
-        @Override
-        public String toString() {
-            return "ApiResponse{" +
-                    "successful=" + this.successful +
-                    ", data=" + this.data +
-                    ", error='" + this.error + '\'' +
-                    '}';
-        }
     }
 }

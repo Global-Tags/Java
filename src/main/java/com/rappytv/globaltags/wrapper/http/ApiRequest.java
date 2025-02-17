@@ -70,7 +70,7 @@ public class ApiRequest<T> {
      *
      * @param consumer A consumer which gets called when the API responds
      */
-    public void sendRequestAsync(Consumer<@NotNull ResponseBody<T>> consumer) {
+    public void sendRequestAsync(Consumer<@NotNull ApiResponse<T>> consumer) {
         try {
             HttpRequest request = this.getBuilder()
                     .uri(new URI(this.api.getUrls().getApiBase() + this.path))
@@ -81,21 +81,21 @@ public class ApiRequest<T> {
                 boolean success = response.statusCode() >= 200 && response.statusCode() < 300;
                 if(!success) {
                     ErrorSchema body = gson.fromJson(response.body(), ErrorSchema.class);
-                    consumer.accept(new ResponseBody<>(false, null, body.error));
+                    consumer.accept(new ApiResponse<>(false, null, body.error));
                     return;
                 }
                 T parsedBody = gson.fromJson(response.body(), this.responseType);
-                consumer.accept(new ResponseBody<>(
+                consumer.accept(new ApiResponse<>(
                         true,
                         parsedBody,
                         null
                 ));
             }).exceptionally(throwable -> {
-                consumer.accept(new ResponseBody<>(false, null, throwable.getLocalizedMessage()));
+                consumer.accept(new ApiResponse<>(false, null, throwable.getLocalizedMessage()));
                 return null;
             });
         } catch (Exception e) {
-            consumer.accept(new ResponseBody<>(false, null, e.getLocalizedMessage()));
+            consumer.accept(new ApiResponse<>(false, null, e.getLocalizedMessage()));
         }
     }
 
@@ -120,56 +120,5 @@ public class ApiRequest<T> {
     private HttpRequest.BodyPublisher getBodyPublisher() {
         if (this.body == null || this.body.isEmpty()) return HttpRequest.BodyPublishers.noBody();
         return HttpRequest.BodyPublishers.ofString(gson.toJson(this.body));
-    }
-
-    /**
-     * A class which passes a lightweight API response to consumers.
-     *
-     * @param <T> The return type
-     */
-    public static class ResponseBody<T> {
-
-        private final boolean successful;
-        private final T data;
-        private final String error;
-
-        /**
-         * Constructs a new response body.
-         *
-         * @param successful If the request was successful
-         * @param data       The response data
-         * @param error      An error message
-         */
-        public ResponseBody(boolean successful, T data, String error) {
-            this.successful = successful;
-            this.data = data;
-            this.error = error;
-        }
-
-        /**
-         * Checks if the request was successful
-         *
-         * @return If the request was successful
-         */
-        public boolean isSuccessful() {
-            return this.successful;
-        }
-
-        /**
-         * Gets the data returned if available
-         *
-         * @return the data if available
-         */
-        public T getData() {
-            return this.data;
-        }
-
-        /**
-         * Get the error returned if available
-         * @return an error if available
-         */
-        public String getError() {
-            return this.error;
-        }
     }
 }
