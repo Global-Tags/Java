@@ -21,7 +21,7 @@ public class GiftCodeRedeemSchema extends MessageSchema {
      * @return the gift expiration date
      */
     @NotNull
-    public Date getCode() {
+    public Date getExpiresAt() {
         return this.expiresAt;
     }
 
