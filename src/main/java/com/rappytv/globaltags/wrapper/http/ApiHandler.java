@@ -690,7 +690,7 @@ public class ApiHandler<T> {
      * @param code     The gift code to redeem
      * @param consumer The action to be executed on response.
      */
-    public void redeemGiftCode(@NotNull String code, @NotNull Consumer<ApiResponse<String>> consumer) {
+    public void redeemGiftCode(@NotNull String code, @NotNull Consumer<ApiResponse<GiftCodeRedeemSchema>> consumer) {
         Objects.requireNonNull(code);
         Objects.requireNonNull(consumer);
         new ApiRequest<>(
@@ -698,13 +698,13 @@ public class ApiHandler<T> {
                 "POST",
                 Routes.redeemGiftCode(code),
                 emptyBody,
-                MessageSchema.class
+                GiftCodeRedeemSchema.class
         ).sendRequestAsync((response) -> {
             if (!response.isSuccessful()) {
                 consumer.accept(new ApiResponse<>(false, null, response.getError()));
                 return;
             }
-            consumer.accept(new ApiResponse<>(true, response.getData().message, null));
+            consumer.accept(new ApiResponse<>(true, response.getData(), null));
         });
     }
 
