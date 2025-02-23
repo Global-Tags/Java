@@ -516,6 +516,168 @@ public class ApiHandler<T> {
     }
 
     /**
+     * A request to get all gift codes
+     *
+     * @param consumer The action to be executed on response
+     */
+    public void getGiftCodes(Consumer<ApiResponse<List<GiftCode>>> consumer) {
+        new ApiRequest<>(
+                this.api,
+                "GET",
+                Routes.giftCodes(),
+                emptyBody,
+                GiftCode[].class
+        ).sendRequestAsync((response) -> {
+            if (!response.isSuccessful()) {
+                consumer.accept(new ApiResponse<>(false, null, response.getError()));
+                return;
+            }
+            consumer.accept(new ApiResponse<>(true, Arrays.asList(response.getData()), null));
+        });
+    }
+
+    /**
+     * A request to get a specific gift code
+     *
+     * @param code     The gift code
+     * @param consumer The action to be executed on response.
+     */
+    public void getGiftCode(String code, Consumer<ApiResponse<GiftCode>> consumer) {
+        new ApiRequest<>(
+                this.api,
+                "GET",
+                Routes.giftCode(code),
+                emptyBody,
+                GiftCode.class
+        ).sendRequestAsync((response) -> {
+            if (!response.isSuccessful()) {
+                consumer.accept(new ApiResponse<>(false, null, response.getError()));
+                return;
+            }
+            consumer.accept(new ApiResponse<>(true, response.getData(), null));
+        });
+    }
+
+    /**
+     * A request to create a gift code
+     *
+     * @param name           The name of the gift code
+     * @param role           The gifted role
+     * @param maxUses        The maximum number uses of the code
+     * @param consumer       The action to be executed on response.
+     */
+    public void createGiftCode(@NotNull String name, @NotNull String role, int maxUses, @NotNull Consumer<ApiResponse<GiftCodeCreationSchema>> consumer) {
+        this.createGiftCode(name, role, maxUses, null, null, consumer);
+    }
+
+    /**
+     * A request to create a gift code
+     *
+     * @param name           The name of the gift code
+     * @param role           The gifted role
+     * @param maxUses        The maximum number uses of the cod
+     * @param giftDuration   How long the gifted role should last in milliseconds
+     * @param consumer       The action to be executed on response.
+     */
+    public void createGiftCode(@NotNull String name, @NotNull String role, int maxUses, @Nullable Long giftDuration, @NotNull Consumer<ApiResponse<GiftCodeCreationSchema>> consumer) {
+        this.createGiftCode(name, role, maxUses, null, giftDuration, consumer);
+    }
+
+    /**
+     * A request to create a gift code
+     *
+     * @param name           The name of the gift code
+     * @param role           The gifted role
+     * @param maxUses        The maximum number uses of the code
+     * @param codeExpiration A date when the code should expire
+     * @param consumer       The action to be executed on response.
+     */
+    public void createGiftCode(@NotNull String name, @NotNull String role, int maxUses, @Nullable Date codeExpiration, @NotNull Consumer<ApiResponse<GiftCodeCreationSchema>> consumer) {
+        this.createGiftCode(name, role, maxUses, codeExpiration, null, consumer);
+    }
+
+    /**
+     * A request to create a gift code
+     *
+     * @param name           The name of the gift code
+     * @param role           The gifted role
+     * @param maxUses        The maximum number uses of the code
+     * @param codeExpiration A date when the code should expire
+     * @param giftDuration   How long the gifted role should last in milliseconds
+     * @param consumer       The action to be executed on response.
+     */
+    public void createGiftCode(@NotNull String name, @NotNull String role, int maxUses, @Nullable Date codeExpiration, @Nullable Long giftDuration, @NotNull Consumer<ApiResponse<GiftCodeCreationSchema>> consumer) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("name", name);
+        body.put("role", role);
+        body.put("max_uses", maxUses);
+        if(codeExpiration != null) {
+            body.put("code_expiration", codeExpiration.getTime());
+        }
+        if(giftDuration != null) {
+            body.put("gift_duration", giftDuration);
+        }
+
+        new ApiRequest<>(
+                this.api,
+                "POST",
+                Routes.giftCodes(),
+                body,
+                GiftCodeCreationSchema.class
+        ).sendRequestAsync((response) -> {
+            if (!response.isSuccessful()) {
+                consumer.accept(new ApiResponse<>(false, null, response.getError()));
+                return;
+            }
+            consumer.accept(new ApiResponse<>(true, response.getData(), null));
+        });
+    }
+
+    /**
+     * A request to redeem a gift code
+     *
+     * @param code     The gift code to redeem
+     * @param consumer The action to be executed on response.
+     */
+    public void redeemGiftCode(String code, Consumer<ApiResponse<String>> consumer) {
+        new ApiRequest<>(
+                this.api,
+                "POST",
+                Routes.redeemGiftCode(code),
+                emptyBody,
+                MessageSchema.class
+        ).sendRequestAsync((response) -> {
+            if (!response.isSuccessful()) {
+                consumer.accept(new ApiResponse<>(false, null, response.getError()));
+                return;
+            }
+            consumer.accept(new ApiResponse<>(true, response.getData().message, null));
+        });
+    }
+
+    /**
+     * A request to delete a gift code
+     *
+     * @param code     The gift code to delete
+     * @param consumer The action to be executed on response.
+     */
+    public void deleteGiftCode(String code, Consumer<ApiResponse<String>> consumer) {
+        new ApiRequest<>(
+                this.api,
+                "DELETE",
+                Routes.giftCode(code),
+                emptyBody,
+                MessageSchema.class
+        ).sendRequestAsync((response) -> {
+            if (!response.isSuccessful()) {
+                consumer.accept(new ApiResponse<>(false, null, response.getError()));
+                return;
+            }
+            consumer.accept(new ApiResponse<>(true, response.getData().message, null));
+        });
+    }
+
+    /**
      * A request to mark a specific uuid as the inviter of {@link GlobalTagsAPI#getClientUUID()}
      *
      * @param uuid The uuid you want to mark as the inviter
