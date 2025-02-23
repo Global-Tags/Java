@@ -331,4 +331,44 @@ public class Routes {
     public static String note(UUID uuid, String id) {
         return "/players/" + uuid + "/notes/" + id;
     }
+
+    /**
+     * <pre>
+     * Route for
+     * - GET /gift-codes
+     * - POST /gift-codes
+     * </pre>
+     *
+     * @return The HTTP route
+     */
+    public static String giftCodes() {
+        return "/gift-codes";
+    }
+
+    /**
+     * <pre>
+     * Route for
+     * - GET /gift-codes/{code}
+     * - DELETE /gift-codes/{code}
+     * </pre>
+     *
+     * @param code The gift code
+     * @return The HTTP route
+     */
+    public static String giftCode(String code) {
+        return "/gift-codes/" + code;
+    }
+
+    /**
+     * <pre>
+     * Route for
+     * - POST /gift-codes/{code}/redeem
+     * </pre>
+     *
+     * @param code The gift code
+     * @return The HTTP route
+     */
+    public static String redeemGiftCode(String code) {
+        return "/gift-codes/" + code + "/redeem";
+    }
 }
