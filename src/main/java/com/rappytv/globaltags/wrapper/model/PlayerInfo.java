@@ -273,7 +273,7 @@ public class PlayerInfo<T> {
      *
      * @return The player's {@link BanInfo} object.
      */
-    @NotNull
+    @Nullable
     public BanInfo getBanInfo() {
         return this.banInfo;
     }
