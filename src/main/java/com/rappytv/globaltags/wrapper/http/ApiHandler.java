@@ -42,14 +42,15 @@ public class ApiHandler<T> {
      *
      * @param consumer The action to be executed on response.
      */
-    public void getApiInfo(Consumer<ApiResponse<ApiInfo>> consumer) {
+    public void getApiInfo(@NotNull Consumer<ApiResponse<ApiInfo>> consumer) {
+        Objects.requireNonNull(consumer);
         new ApiRequest<>(
                 this.api,
                 "GET",
                 Routes.getApiInfo(),
                 ApiInfo.class
         ).sendRequestAsync((response) -> {
-            if(!response.isSuccessful()) {
+            if (!response.isSuccessful()) {
                 consumer.accept(new ApiResponse<>(false, null, response.getError()));
                 return;
             }
@@ -62,7 +63,8 @@ public class ApiHandler<T> {
      *
      * @param consumer The action to be executed on response.
      */
-    public void getReferralLeaderboards(Consumer<ApiResponse<Map<ReferralLeaderboardType, List<ReferralLeaderboardEntry>>>> consumer) {
+    public void getReferralLeaderboards(@NotNull Consumer<ApiResponse<Map<ReferralLeaderboardType, List<ReferralLeaderboardEntry>>>> consumer) {
+        Objects.requireNonNull(consumer);
         new ApiRequest<>(
                 this.api,
                 "GET",
@@ -109,24 +111,26 @@ public class ApiHandler<T> {
      *
      * @param consumer The action to be executed on response.
      */
-    public void getInfo(Consumer<ApiResponse<PlayerInfo<T>>> consumer) {
+    public void getInfo(@NotNull Consumer<ApiResponse<PlayerInfo<T>>> consumer) {
+        Objects.requireNonNull(this.api.getClientUUID(), "client uuid cannot be null");
         this.getInfo(this.api.getClientUUID(), consumer);
     }
 
     /**
      * A request to get the player info of a specific uuid
      *
-     * @param uuid The uuid to get the info of
+     * @param uuid     The uuid to get the info of
      * @param consumer The action to be executed on response.
      */
-    public void getInfo(UUID uuid, Consumer<ApiResponse<PlayerInfo<T>>> consumer) {
+    public void getInfo(@NotNull UUID uuid, @NotNull Consumer<ApiResponse<PlayerInfo<T>>> consumer) {
+        Objects.requireNonNull(uuid);
         new ApiRequest<>(
                 this.api,
                 "GET",
                 Routes.player(uuid),
                 PlayerInfoSchema.class
         ).sendRequestAsync((response) -> {
-            if(!response.isSuccessful()) {
+            if (!response.isSuccessful()) {
                 consumer.accept(new ApiResponse<>(false, null, response.getError()));
                 return;
             }
@@ -155,24 +159,26 @@ public class ApiHandler<T> {
      *
      * @param consumer The action to be executed on response.
      */
-    public void getTagHistory(Consumer<ApiResponse<List<TagHistoryEntry>>> consumer) {
+    public void getTagHistory(@NotNull Consumer<ApiResponse<List<TagHistoryEntry>>> consumer) {
+        Objects.requireNonNull(this.api.getClientUUID(), "client uuid cannot be null");
         this.getTagHistory(this.api.getClientUUID(), consumer);
     }
 
     /**
      * A request to get the tag history of a specific uuid
      *
-     * @param uuid The uuid to get the tag history of
+     * @param uuid     The uuid to get the tag history of
      * @param consumer The action to be executed on response.
      */
-    public void getTagHistory(UUID uuid, Consumer<ApiResponse<List<TagHistoryEntry>>> consumer) {
+    public void getTagHistory(@NotNull UUID uuid, @NotNull Consumer<ApiResponse<List<TagHistoryEntry>>> consumer) {
+        Objects.requireNonNull(uuid);
         new ApiRequest<>(
                 this.api,
                 "GET",
                 Routes.tagHistory(uuid),
                 TagHistoryEntry[].class
         ).sendRequestAsync((response) -> {
-            if(!response.isSuccessful()) {
+            if (!response.isSuccessful()) {
                 consumer.accept(new ApiResponse<>(false, null, response.getError()));
                 return;
             }
@@ -187,21 +193,26 @@ public class ApiHandler<T> {
     /**
      * A request to update the tag of {@link GlobalTagsAPI#getClientUUID()}
      *
-     * @param tag The new tag you want to set
+     * @param tag      The new tag you want to set
      * @param consumer The action to be executed on response.
      */
-    public void setTag(String tag, Consumer<ApiResponse<String>> consumer) {
+    public void setTag(@NotNull String tag, @NotNull Consumer<ApiResponse<String>> consumer) {
+        Objects.requireNonNull(this.api.getClientUUID(), "client uuid cannot be null");
+        Objects.requireNonNull(tag);
         this.setTag(this.api.getClientUUID(), tag, consumer);
     }
 
     /**
      * A request to update the tag of a specific uuid
      *
-     * @param uuid The uuid you want to update the tag of
-     * @param tag The new tag you want to set
+     * @param uuid     The uuid you want to update the tag of
+     * @param tag      The new tag you want to set
      * @param consumer The action to be executed on response.
      */
-    public void setTag(UUID uuid, String tag, Consumer<ApiResponse<String>> consumer) {
+    public void setTag(@NotNull UUID uuid, @NotNull String tag, @NotNull Consumer<ApiResponse<String>> consumer) {
+        Objects.requireNonNull(uuid);
+        Objects.requireNonNull(tag);
+        Objects.requireNonNull(consumer);
         new ApiRequest<>(
                 this.api,
                 "POST",
@@ -209,7 +220,7 @@ public class ApiHandler<T> {
                 Map.of("tag", tag),
                 MessageSchema.class
         ).sendRequestAsync((response) -> {
-            if(!response.isSuccessful()) {
+            if (!response.isSuccessful()) {
                 consumer.accept(new ApiResponse<>(false, null, response.getError()));
                 return;
             }
@@ -225,18 +236,23 @@ public class ApiHandler<T> {
      * @param position The new position you want to set
      * @param consumer The action to be executed on response.
      */
-    public void setPosition(GlobalPosition position, Consumer<ApiResponse<String>> consumer) {
+    public void setPosition(@NotNull GlobalPosition position, @NotNull Consumer<ApiResponse<String>> consumer) {
+        Objects.requireNonNull(this.api.getClientUUID(), "client uuid cannot be null");
+        Objects.requireNonNull(position);
         this.setPosition(this.api.getClientUUID(), position, consumer);
     }
 
     /**
      * A request to update the {@link GlobalPosition} of a specific uuid
      *
-     * @param uuid The uuid you want to update the position of
+     * @param uuid     The uuid you want to update the position of
      * @param position The new position you want to set
      * @param consumer The action to be executed on response.
      */
-    public void setPosition(UUID uuid, GlobalPosition position, Consumer<ApiResponse<String>> consumer) {
+    public void setPosition(@NotNull UUID uuid, @NotNull GlobalPosition position, @NotNull Consumer<ApiResponse<String>> consumer) {
+        Objects.requireNonNull(uuid);
+        Objects.requireNonNull(position);
+        Objects.requireNonNull(consumer);
         new ApiRequest<>(
                 this.api,
                 "POST",
@@ -244,7 +260,7 @@ public class ApiHandler<T> {
                 Map.of("position", position.name()),
                 MessageSchema.class
         ).sendRequestAsync((response) -> {
-            if(!response.isSuccessful()) {
+            if (!response.isSuccessful()) {
                 consumer.accept(new ApiResponse<>(false, null, response.getError()));
                 return;
             }
@@ -257,21 +273,26 @@ public class ApiHandler<T> {
     /**
      * A request to update the global icon of {@link GlobalTagsAPI#getClientUUID()}
      *
-     * @param icon The new icon you want to set
+     * @param icon     The new icon you want to set
      * @param consumer The action to be executed on response.
      */
-    public void setIcon(GlobalIcon icon, Consumer<ApiResponse<String>> consumer) {
+    public void setIcon(@NotNull GlobalIcon icon, @NotNull Consumer<ApiResponse<String>> consumer) {
+        Objects.requireNonNull(this.api.getClientUUID(), "client uuid cannot be null");
+        Objects.requireNonNull(icon);
         this.setIcon(this.api.getClientUUID(), icon, consumer);
     }
 
     /**
      * A request to update the global icon of a specific uuid
      *
-     * @param uuid The uuid you want to update the icon of
-     * @param icon The new icon you want to set
+     * @param uuid     The uuid you want to update the icon of
+     * @param icon     The new icon you want to set
      * @param consumer The action to be executed on response.
      */
-    public void setIcon(UUID uuid, GlobalIcon icon, Consumer<ApiResponse<String>> consumer) {
+    public void setIcon(@NotNull UUID uuid, @NotNull GlobalIcon icon, @NotNull Consumer<ApiResponse<String>> consumer) {
+        Objects.requireNonNull(uuid);
+        Objects.requireNonNull(icon);
+        Objects.requireNonNull(consumer);
         new ApiRequest<>(
                 this.api,
                 "POST",
@@ -279,7 +300,7 @@ public class ApiHandler<T> {
                 Map.of("icon", icon.name()),
                 MessageSchema.class
         ).sendRequestAsync((response) -> {
-            if(!response.isSuccessful()) {
+            if (!response.isSuccessful()) {
                 consumer.accept(new ApiResponse<>(false, null, response.getError()));
                 return;
             }
@@ -295,7 +316,8 @@ public class ApiHandler<T> {
      * @param visible  If the icon should be visible or not
      * @param consumer The action to be executed on response.
      */
-    public void setRoleIconVisibility(boolean visible, Consumer<ApiResponse<String>> consumer) {
+    public void setRoleIconVisibility(boolean visible, @NotNull Consumer<ApiResponse<String>> consumer) {
+        Objects.requireNonNull(this.api.getClientUUID(), "client uuid cannot be null");
         this.setRoleIconVisibility(this.api.getClientUUID(), visible, consumer);
     }
 
@@ -306,7 +328,9 @@ public class ApiHandler<T> {
      * @param visible  If the icon should be visible or not
      * @param consumer The action to be executed on response.
      */
-    public void setRoleIconVisibility(UUID uuid, boolean visible, Consumer<ApiResponse<String>> consumer) {
+    public void setRoleIconVisibility(@NotNull UUID uuid, boolean visible, @NotNull Consumer<ApiResponse<String>> consumer) {
+        Objects.requireNonNull(uuid);
+        Objects.requireNonNull(consumer);
         new ApiRequest<>(
                 this.api,
                 "PATCH",
@@ -329,17 +353,20 @@ public class ApiHandler<T> {
      *
      * @param consumer The action to be executed on response.
      */
-    public void resetTag(Consumer<ApiResponse<String>> consumer) {
+    public void resetTag(@NotNull Consumer<ApiResponse<String>> consumer) {
+        Objects.requireNonNull(this.api.getClientUUID(), "client uuid cannot be null");
         this.resetTag(this.api.getClientUUID(), consumer);
     }
 
     /**
      * A request to clear the tag of a specific uuid
      *
-     * @param uuid The uuid you want to clear the tag of
+     * @param uuid     The uuid you want to clear the tag of
      * @param consumer The action to be executed on response.
      */
-    public void resetTag(UUID uuid, Consumer<ApiResponse<String>> consumer) {
+    public void resetTag(@NotNull UUID uuid, @NotNull Consumer<ApiResponse<String>> consumer) {
+        Objects.requireNonNull(uuid);
+        Objects.requireNonNull(consumer);
         new ApiRequest<>(
                 this.api,
                 "DELETE",
@@ -347,7 +374,7 @@ public class ApiHandler<T> {
                 emptyBody,
                 MessageSchema.class
         ).sendRequestAsync((response) -> {
-            if(!response.isSuccessful()) {
+            if (!response.isSuccessful()) {
                 consumer.accept(new ApiResponse<>(false, null, response.getError()));
                 return;
             }
@@ -363,7 +390,9 @@ public class ApiHandler<T> {
      * @param uuid     The uuid you want to get the watchlist status of
      * @param consumer The action to be executed on response.
      */
-    public void getWatchlistStatus(UUID uuid, Consumer<ApiResponse<Boolean>> consumer) {
+    public void getWatchlistStatus(@NotNull UUID uuid, @NotNull Consumer<ApiResponse<Boolean>> consumer) {
+        Objects.requireNonNull(uuid);
+        Objects.requireNonNull(consumer);
         new ApiRequest<>(
                 this.api,
                 "GET",
@@ -382,10 +411,12 @@ public class ApiHandler<T> {
     /**
      * A request to add a player to the watchlist
      *
-     * @param uuid The uuid you want to add to the watchlist
+     * @param uuid     The uuid you want to add to the watchlist
      * @param consumer The action to be executed on response.
      */
-    public void updateWatchlistStatus(UUID uuid, boolean watched, Consumer<ApiResponse<String>> consumer) {
+    public void updateWatchlistStatus(@NotNull UUID uuid, boolean watched, @NotNull Consumer<ApiResponse<String>> consumer) {
+        Objects.requireNonNull(uuid);
+        Objects.requireNonNull(consumer);
         new ApiRequest<>(
                 this.api,
                 "PATCH",
@@ -393,7 +424,7 @@ public class ApiHandler<T> {
                 Map.of("watched", watched),
                 MessageSchema.class
         ).sendRequestAsync((response) -> {
-            if(!response.isSuccessful()) {
+            if (!response.isSuccessful()) {
                 consumer.accept(new ApiResponse<>(false, null, response.getError()));
                 return;
             }
@@ -407,7 +438,9 @@ public class ApiHandler<T> {
      * @param uuid     The uuid you want to get the API keys of
      * @param consumer The action to be executed on response
      */
-    public void getApiKeys(UUID uuid, Consumer<ApiResponse<List<ApiKey>>> consumer) {
+    public void getApiKeys(@NotNull UUID uuid, @NotNull Consumer<ApiResponse<List<ApiKey>>> consumer) {
+        Objects.requireNonNull(uuid);
+        Objects.requireNonNull(consumer);
         new ApiRequest<>(
                 this.api,
                 "GET",
@@ -430,7 +463,10 @@ public class ApiHandler<T> {
      * @param name     The name of the API key
      * @param consumer The action to be executed on response.
      */
-    public void getApiKey(UUID uuid, String name, Consumer<ApiResponse<ApiKey>> consumer) {
+    public void getApiKey(@NotNull UUID uuid, @NotNull String name, @NotNull Consumer<ApiResponse<ApiKey>> consumer) {
+        Objects.requireNonNull(uuid);
+        Objects.requireNonNull(name);
+        Objects.requireNonNull(consumer);
         new ApiRequest<>(
                 this.api,
                 "GET",
@@ -453,7 +489,10 @@ public class ApiHandler<T> {
      * @param name     The name of the API key
      * @param consumer The action to be executed on response.
      */
-    public void createApiKey(UUID uuid, String name, Consumer<ApiResponse<ApiKeyCreationSchema>> consumer) {
+    public void createApiKey(@NotNull UUID uuid, @NotNull String name, @NotNull Consumer<ApiResponse<ApiKeyCreationSchema>> consumer) {
+        Objects.requireNonNull(uuid);
+        Objects.requireNonNull(name);
+        Objects.requireNonNull(consumer);
         new ApiRequest<>(
                 this.api,
                 "POST",
@@ -476,7 +515,10 @@ public class ApiHandler<T> {
      * @param name     The name of the API key
      * @param consumer The action to be executed on response.
      */
-    public void regenerateApiKey(UUID uuid, String name, Consumer<ApiResponse<ApiKeyRegenSchema>> consumer) {
+    public void regenerateApiKey(@NotNull UUID uuid, @NotNull String name, @NotNull Consumer<ApiResponse<ApiKeyRegenSchema>> consumer) {
+        Objects.requireNonNull(uuid);
+        Objects.requireNonNull(name);
+        Objects.requireNonNull(consumer);
         new ApiRequest<>(
                 this.api,
                 "PATCH",
@@ -499,7 +541,10 @@ public class ApiHandler<T> {
      * @param name     The name of the API key
      * @param consumer The action to be executed on response.
      */
-    public void deleteApiKey(UUID uuid, String name, Consumer<ApiResponse<String>> consumer) {
+    public void deleteApiKey(@NotNull UUID uuid, @NotNull String name, @NotNull Consumer<ApiResponse<String>> consumer) {
+        Objects.requireNonNull(uuid);
+        Objects.requireNonNull(name);
+        Objects.requireNonNull(consumer);
         new ApiRequest<>(
                 this.api,
                 "DELETE",
@@ -520,7 +565,8 @@ public class ApiHandler<T> {
      *
      * @param consumer The action to be executed on response
      */
-    public void getGiftCodes(Consumer<ApiResponse<List<GiftCode>>> consumer) {
+    public void getGiftCodes(@NotNull Consumer<ApiResponse<List<GiftCode>>> consumer) {
+        Objects.requireNonNull(consumer);
         new ApiRequest<>(
                 this.api,
                 "GET",
@@ -542,7 +588,9 @@ public class ApiHandler<T> {
      * @param code     The gift code
      * @param consumer The action to be executed on response.
      */
-    public void getGiftCode(String code, Consumer<ApiResponse<GiftCode>> consumer) {
+    public void getGiftCode(@NotNull String code, @NotNull Consumer<ApiResponse<GiftCode>> consumer) {
+        Objects.requireNonNull(code);
+        Objects.requireNonNull(consumer);
         new ApiRequest<>(
                 this.api,
                 "GET",
@@ -561,10 +609,10 @@ public class ApiHandler<T> {
     /**
      * A request to create a gift code
      *
-     * @param name           The name of the gift code
-     * @param role           The gifted role
-     * @param maxUses        The maximum number uses of the code
-     * @param consumer       The action to be executed on response.
+     * @param name     The name of the gift code
+     * @param role     The gifted role
+     * @param maxUses  The maximum number uses of the code
+     * @param consumer The action to be executed on response.
      */
     public void createGiftCode(@NotNull String name, @NotNull String role, int maxUses, @NotNull Consumer<ApiResponse<GiftCodeCreationSchema>> consumer) {
         this.createGiftCode(name, role, maxUses, null, null, consumer);
@@ -573,11 +621,11 @@ public class ApiHandler<T> {
     /**
      * A request to create a gift code
      *
-     * @param name           The name of the gift code
-     * @param role           The gifted role
-     * @param maxUses        The maximum number uses of the cod
-     * @param giftDuration   How long the gifted role should last in milliseconds
-     * @param consumer       The action to be executed on response.
+     * @param name         The name of the gift code
+     * @param role         The gifted role
+     * @param maxUses      The maximum number uses of the cod
+     * @param giftDuration How long the gifted role should last in milliseconds
+     * @param consumer     The action to be executed on response.
      */
     public void createGiftCode(@NotNull String name, @NotNull String role, int maxUses, @Nullable Long giftDuration, @NotNull Consumer<ApiResponse<GiftCodeCreationSchema>> consumer) {
         this.createGiftCode(name, role, maxUses, null, giftDuration, consumer);
@@ -607,14 +655,17 @@ public class ApiHandler<T> {
      * @param consumer       The action to be executed on response.
      */
     public void createGiftCode(@NotNull String name, @NotNull String role, int maxUses, @Nullable Date codeExpiration, @Nullable Long giftDuration, @NotNull Consumer<ApiResponse<GiftCodeCreationSchema>> consumer) {
+        Objects.requireNonNull(name);
+        Objects.requireNonNull(role);
+        Objects.requireNonNull(consumer);
         Map<String, Object> body = new HashMap<>();
         body.put("name", name);
         body.put("role", role);
         body.put("max_uses", maxUses);
-        if(codeExpiration != null) {
+        if (codeExpiration != null) {
             body.put("code_expiration", codeExpiration.getTime());
         }
-        if(giftDuration != null) {
+        if (giftDuration != null) {
             body.put("gift_duration", giftDuration);
         }
 
@@ -639,7 +690,9 @@ public class ApiHandler<T> {
      * @param code     The gift code to redeem
      * @param consumer The action to be executed on response.
      */
-    public void redeemGiftCode(String code, Consumer<ApiResponse<String>> consumer) {
+    public void redeemGiftCode(@NotNull String code, @NotNull Consumer<ApiResponse<String>> consumer) {
+        Objects.requireNonNull(code);
+        Objects.requireNonNull(consumer);
         new ApiRequest<>(
                 this.api,
                 "POST",
@@ -661,7 +714,9 @@ public class ApiHandler<T> {
      * @param code     The gift code to delete
      * @param consumer The action to be executed on response.
      */
-    public void deleteGiftCode(String code, Consumer<ApiResponse<String>> consumer) {
+    public void deleteGiftCode(@NotNull String code, @NotNull Consumer<ApiResponse<String>> consumer) {
+        Objects.requireNonNull(code);
+        Objects.requireNonNull(consumer);
         new ApiRequest<>(
                 this.api,
                 "DELETE",
@@ -680,10 +735,12 @@ public class ApiHandler<T> {
     /**
      * A request to mark a specific uuid as the inviter of {@link GlobalTagsAPI#getClientUUID()}
      *
-     * @param uuid The uuid you want to mark as the inviter
+     * @param uuid     The uuid you want to mark as the inviter
      * @param consumer The action to be executed on response.
      */
-    public void referPlayer(UUID uuid, Consumer<ApiResponse<String>> consumer) {
+    public void referPlayer(@NotNull UUID uuid, @NotNull Consumer<ApiResponse<String>> consumer) {
+        Objects.requireNonNull(uuid);
+        Objects.requireNonNull(consumer);
         new ApiRequest<>(
                 this.api,
                 "POST",
@@ -691,7 +748,7 @@ public class ApiHandler<T> {
                 emptyBody,
                 MessageSchema.class
         ).sendRequestAsync((response) -> {
-            if(!response.isSuccessful()) {
+            if (!response.isSuccessful()) {
                 consumer.accept(new ApiResponse<>(false, null, response.getError()));
                 return;
             }
@@ -702,11 +759,14 @@ public class ApiHandler<T> {
     /**
      * A request to report a specific uuid
      *
-     * @param uuid The uuid you want to report
-     * @param reason The reason why you want to report the uuid
+     * @param uuid     The uuid you want to report
+     * @param reason   The reason why you want to report the uuid
      * @param consumer The action to be executed on response.
      */
-    public void reportPlayer(UUID uuid, String reason, Consumer<ApiResponse<String>> consumer) {
+    public void reportPlayer(@NotNull UUID uuid, @NotNull String reason, @NotNull Consumer<ApiResponse<String>> consumer) {
+        Objects.requireNonNull(uuid);
+        Objects.requireNonNull(reason);
+        Objects.requireNonNull(consumer);
         new ApiRequest<>(
                 this.api,
                 "POST",
@@ -714,7 +774,7 @@ public class ApiHandler<T> {
                 Map.of("reason", reason),
                 MessageSchema.class
         ).sendRequestAsync((response) -> {
-            if(!response.isSuccessful()) {
+            if (!response.isSuccessful()) {
                 consumer.accept(new ApiResponse<>(false, null, response.getError()));
                 return;
             }
@@ -722,7 +782,9 @@ public class ApiHandler<T> {
         });
     }
 
-    public void getReports(UUID uuid, Consumer<ApiResponse<List<PlayerReport>>> consumer) {
+    public void getReports(@NotNull UUID uuid, @NotNull Consumer<ApiResponse<List<PlayerReport>>> consumer) {
+        Objects.requireNonNull(uuid);
+        Objects.requireNonNull(consumer);
         new ApiRequest<>(
                 this.api,
                 "GET",
@@ -730,7 +792,7 @@ public class ApiHandler<T> {
                 emptyBody,
                 PlayerReport[].class
         ).sendRequestAsync((response) -> {
-            if(!response.isSuccessful()) {
+            if (!response.isSuccessful()) {
                 consumer.accept(new ApiResponse<>(false, null, response.getError()));
                 return;
             }
@@ -741,11 +803,14 @@ public class ApiHandler<T> {
     /**
      * A request to get a specific ban of a specific uuid
      *
-     * @param uuid The uuid you want to get the ban of
-     * @param id The id of the ban you want to get
+     * @param uuid     The uuid you want to get the ban of
+     * @param id       The id of the ban you want to get
      * @param consumer The action to be executed on response.
      */
-    public void getBan(UUID uuid, String id, Consumer<ApiResponse<BanInfo>> consumer) {
+    public void getBan(@NotNull UUID uuid, @NotNull String id, @NotNull Consumer<ApiResponse<BanInfo>> consumer) {
+        Objects.requireNonNull(uuid);
+        Objects.requireNonNull(id);
+        Objects.requireNonNull(consumer);
         new ApiRequest<>(
                 this.api,
                 "GET",
@@ -753,7 +818,7 @@ public class ApiHandler<T> {
                 emptyBody,
                 BanInfo.class
         ).sendRequestAsync((response) -> {
-            if(!response.isSuccessful()) {
+            if (!response.isSuccessful()) {
                 consumer.accept(new ApiResponse<>(false, null, response.getError()));
                 return;
             }
@@ -764,10 +829,12 @@ public class ApiHandler<T> {
     /**
      * A request to get a list of all bans of a specific uuid
      *
-     * @param uuid The uuid you want to get the bans of
+     * @param uuid     The uuid you want to get the bans of
      * @param consumer The action to be executed on response.
      */
-    public void getBans(UUID uuid, Consumer<ApiResponse<List<BanInfo>>> consumer) {
+    public void getBans(@NotNull UUID uuid, @NotNull Consumer<ApiResponse<List<BanInfo>>> consumer) {
+        Objects.requireNonNull(uuid);
+        Objects.requireNonNull(consumer);
         new ApiRequest<>(
                 this.api,
                 "GET",
@@ -775,7 +842,7 @@ public class ApiHandler<T> {
                 emptyBody,
                 BanInfo[].class
         ).sendRequestAsync((response) -> {
-            if(!response.isSuccessful()) {
+            if (!response.isSuccessful()) {
                 consumer.accept(new ApiResponse<>(false, null, response.getError()));
                 return;
             }
@@ -786,52 +853,56 @@ public class ApiHandler<T> {
     /**
      * A request to ban a specific uuid
      *
-     * @param uuid The uuid you want to ban
-     * @param reason The reason for the ban
+     * @param uuid     The uuid you want to ban
+     * @param reason   The reason for the ban
      * @param consumer The action to be executed on response.
      */
-    public void banPlayer(UUID uuid, String reason, Consumer<ApiResponse<String>> consumer) {
+    public void banPlayer(@NotNull UUID uuid, @NotNull String reason, @NotNull Consumer<ApiResponse<String>> consumer) {
         this.banPlayer(uuid, reason, null, null, consumer);
     }
 
     /**
      * A request to ban a specific uuid
      *
-     * @param uuid The uuid you want to ban
-     * @param reason The reason for the ban
+     * @param uuid       The uuid you want to ban
+     * @param reason     The reason for the ban
      * @param appealable If the user should be able to appeal the ban
-     * @param consumer The action to be executed on response.
+     * @param consumer   The action to be executed on response.
      */
-    public void banPlayer(UUID uuid, String reason, boolean appealable, Consumer<ApiResponse<String>> consumer) {
+    public void banPlayer(@NotNull UUID uuid, @NotNull String reason, boolean appealable, @NotNull Consumer<ApiResponse<String>> consumer) {
         this.banPlayer(uuid, reason, appealable, null, consumer);
     }
 
     /**
      * A request to ban a specific uuid
      *
-     * @param uuid The uuid you want to ban
-     * @param reason The reason for the ban
+     * @param uuid     The uuid you want to ban
+     * @param reason   The reason for the ban
      * @param duration The duration of the ban in milliseconds
      * @param consumer The action to be executed on response.
      */
-    public void banPlayer(UUID uuid, String reason, long duration, Consumer<ApiResponse<String>> consumer) {
+    public void banPlayer(@NotNull UUID uuid, @NotNull String reason, long duration, @NotNull Consumer<ApiResponse<String>> consumer) {
         this.banPlayer(uuid, reason, null, duration, consumer);
     }
 
     /**
      * A request to ban a specific uuid
      *
-     * @param uuid The uuid you want to ban
-     * @param reason The reason for the ban
+     * @param uuid       The uuid you want to ban
+     * @param reason     The reason for the ban
      * @param appealable If the user should be able to appeal the ban
-     * @param duration The duration of the ban in milliseconds
-     * @param consumer The action to be executed on response.
+     * @param duration   The duration of the ban in milliseconds
+     * @param consumer   The action to be executed on response.
      */
     public void banPlayer(@NotNull UUID uuid, @NotNull String reason, @Nullable Boolean appealable, @Nullable Long duration, Consumer<ApiResponse<String>> consumer) {
+        Objects.requireNonNull(uuid);
+        Objects.requireNonNull(reason);
+        Objects.requireNonNull(consumer);
         HashMap<String, Object> body = new HashMap<>();
         body.put("reason", reason);
         body.put("appealable", appealable);
         body.put("duration", duration);
+
         new ApiRequest<>(
                 this.api,
                 "POST",
@@ -839,7 +910,7 @@ public class ApiHandler<T> {
                 body,
                 MessageSchema.class
         ).sendRequestAsync((response) -> {
-            if(!response.isSuccessful()) {
+            if (!response.isSuccessful()) {
                 consumer.accept(new ApiResponse<>(false, null, response.getError()));
                 return;
             }
@@ -852,10 +923,12 @@ public class ApiHandler<T> {
     /**
      * A request to unban a specific uuid
      *
-     * @param uuid The uuid you want to unban
+     * @param uuid     The uuid you want to unban
      * @param consumer The action to be executed on response.
      */
-    public void unbanPlayer(UUID uuid, Consumer<ApiResponse<String>> consumer) {
+    public void unbanPlayer(@NotNull UUID uuid, @NotNull Consumer<ApiResponse<String>> consumer) {
+        Objects.requireNonNull(uuid);
+        Objects.requireNonNull(consumer);
         new ApiRequest<>(
                 this.api,
                 "DELETE",
@@ -863,7 +936,7 @@ public class ApiHandler<T> {
                 emptyBody,
                 MessageSchema.class
         ).sendRequestAsync((response) -> {
-            if(!response.isSuccessful()) {
+            if (!response.isSuccessful()) {
                 consumer.accept(new ApiResponse<>(false, null, response.getError()));
                 return;
             }
@@ -876,12 +949,15 @@ public class ApiHandler<T> {
     /**
      * A request to edit the ban of a specific uuid
      *
-     * @param uuid The uuid you want to edit the ban of
-     * @param reason The new reason for the ban
+     * @param uuid       The uuid you want to edit the ban of
+     * @param reason     The new reason for the ban
      * @param appealable If the ban should be appealable or not
-     * @param consumer The action to be executed on response.
+     * @param consumer   The action to be executed on response.
      */
-    public void editBan(UUID uuid, @NotNull String reason, boolean appealable, Consumer<ApiResponse<String>> consumer) {
+    public void editBan(@NotNull UUID uuid, @NotNull String reason, boolean appealable, @NotNull Consumer<ApiResponse<String>> consumer) {
+        Objects.requireNonNull(uuid);
+        Objects.requireNonNull(reason);
+        Objects.requireNonNull(consumer);
         new ApiRequest<>(
                 this.api,
                 "PATCH",
@@ -889,7 +965,7 @@ public class ApiHandler<T> {
                 Map.of("reason", reason, "appealable", appealable),
                 MessageSchema.class
         ).sendRequestAsync((response) -> {
-            if(!response.isSuccessful()) {
+            if (!response.isSuccessful()) {
                 consumer.accept(new ApiResponse<>(false, null, response.getError()));
                 return;
             }
@@ -902,10 +978,12 @@ public class ApiHandler<T> {
     /**
      * A request to appeal the ban of {@link GlobalTagsAPI#getClientUUID()}
      *
-     * @param reason The reason why {@link GlobalTagsAPI#getClientUUID()} should be unbanned
+     * @param reason   The reason why {@link GlobalTagsAPI#getClientUUID()} should be unbanned
      * @param consumer The action to be executed on response.
      */
-    public void appealBan(String reason, Consumer<ApiResponse<String>> consumer) {
+    public void appealBan(@NotNull String reason, @NotNull Consumer<ApiResponse<String>> consumer) {
+        Objects.requireNonNull(reason);
+        Objects.requireNonNull(consumer);
         new ApiRequest<>(
                 this.api,
                 "POST",
@@ -913,7 +991,7 @@ public class ApiHandler<T> {
                 Map.of("reason", reason),
                 MessageSchema.class
         ).sendRequestAsync((response) -> {
-            if(!response.isSuccessful()) {
+            if (!response.isSuccessful()) {
                 consumer.accept(new ApiResponse<>(false, null, response.getError()));
                 return;
             }
@@ -926,7 +1004,8 @@ public class ApiHandler<T> {
      *
      * @param consumer The action to be executed on response.
      */
-    public void linkDiscord(Consumer<ApiResponse<String>> consumer) {
+    public void linkDiscord(@NotNull Consumer<ApiResponse<String>> consumer) {
+        Objects.requireNonNull(consumer);
         new ApiRequest<>(
                 this.api,
                 "POST",
@@ -934,7 +1013,7 @@ public class ApiHandler<T> {
                 emptyBody,
                 VerificationCodeSchema.class
         ).sendRequestAsync((response) -> {
-            if(!response.isSuccessful()) {
+            if (!response.isSuccessful()) {
                 consumer.accept(new ApiResponse<>(false, null, response.getError()));
                 return;
             }
@@ -947,7 +1026,8 @@ public class ApiHandler<T> {
      *
      * @param consumer The action to be executed on response.
      */
-    public void unlinkDiscord(Consumer<ApiResponse<String>> consumer) {
+    public void unlinkDiscord(@NotNull Consumer<ApiResponse<String>> consumer) {
+        Objects.requireNonNull(consumer);
         new ApiRequest<>(
                 this.api,
                 "DELETE",
@@ -955,7 +1035,7 @@ public class ApiHandler<T> {
                 emptyBody,
                 MessageSchema.class
         ).sendRequestAsync((response) -> {
-            if(!response.isSuccessful()) {
+            if (!response.isSuccessful()) {
                 consumer.accept(new ApiResponse<>(false, null, response.getError()));
                 return;
             }
@@ -968,10 +1048,12 @@ public class ApiHandler<T> {
     /**
      * A request to send an email verification to of {@link GlobalTagsAPI#getClientUUID()}.
      *
-     * @param email The email which should be linked
+     * @param email    The email which should be linked
      * @param consumer The action to be executed on response.
      */
-    public void linkEmail(String email, Consumer<ApiResponse<String>> consumer) {
+    public void linkEmail(@NotNull String email, @NotNull Consumer<ApiResponse<String>> consumer) {
+        Objects.requireNonNull(email);
+        Objects.requireNonNull(consumer);
         new ApiRequest<>(
                 this.api,
                 "POST",
@@ -979,7 +1061,7 @@ public class ApiHandler<T> {
                 Map.of("email", email),
                 MessageSchema.class
         ).sendRequestAsync((response) -> {
-            if(!response.isSuccessful()) {
+            if (!response.isSuccessful()) {
                 consumer.accept(new ApiResponse<>(false, null, response.getError()));
                 return;
             }
@@ -992,7 +1074,8 @@ public class ApiHandler<T> {
      *
      * @param consumer The action to be executed on response.
      */
-    public void unlinkEmail(Consumer<ApiResponse<String>> consumer) {
+    public void unlinkEmail(@NotNull Consumer<ApiResponse<String>> consumer) {
+        Objects.requireNonNull(consumer);
         new ApiRequest<>(
                 this.api,
                 "DELETE",
@@ -1000,7 +1083,7 @@ public class ApiHandler<T> {
                 emptyBody,
                 MessageSchema.class
         ).sendRequestAsync((response) -> {
-            if(!response.isSuccessful()) {
+            if (!response.isSuccessful()) {
                 consumer.accept(new ApiResponse<>(false, null, response.getError()));
                 return;
             }
@@ -1011,10 +1094,12 @@ public class ApiHandler<T> {
     /**
      * A request to verify the email with the received verification code.
      *
-     * @param code The verification code which was received via email
+     * @param code     The verification code which was received via email
      * @param consumer The action to be executed on response.
      */
-    public void verifyEmail(String code, Consumer<ApiResponse<String>> consumer) {
+    public void verifyEmail(@NotNull String code, @NotNull Consumer<ApiResponse<String>> consumer) {
+        Objects.requireNonNull(code);
+        Objects.requireNonNull(consumer);
         new ApiRequest<>(
                 this.api,
                 "POST",
@@ -1022,7 +1107,7 @@ public class ApiHandler<T> {
                 emptyBody,
                 MessageSchema.class
         ).sendRequestAsync((response) -> {
-            if(!response.isSuccessful()) {
+            if (!response.isSuccessful()) {
                 consumer.accept(new ApiResponse<>(false, null, response.getError()));
                 return;
             }
@@ -1035,17 +1120,20 @@ public class ApiHandler<T> {
      *
      * @param consumer The action to be executed on response.
      */
-    public void getNotes(Consumer<ApiResponse<List<PlayerNote>>> consumer) {
+    public void getNotes(@NotNull Consumer<ApiResponse<List<PlayerNote>>> consumer) {
+        Objects.requireNonNull(this.api.getClientUUID());
         this.getNotes(this.api.getClientUUID(), consumer);
     }
 
     /**
      * A request to get all notes of a specific uuid
      *
-     * @param uuid The uuid of the player
+     * @param uuid     The uuid of the player
      * @param consumer The action to be executed on response.
      */
-    public void getNotes(UUID uuid, Consumer<ApiResponse<List<PlayerNote>>> consumer) {
+    public void getNotes(@NotNull UUID uuid, @NotNull Consumer<ApiResponse<List<PlayerNote>>> consumer) {
+        Objects.requireNonNull(uuid);
+        Objects.requireNonNull(consumer);
         new ApiRequest<>(
                 this.api,
                 "GET",
@@ -1053,7 +1141,7 @@ public class ApiHandler<T> {
                 emptyBody,
                 PlayerNote[].class
         ).sendRequestAsync((response) -> {
-            if(!response.isSuccessful()) {
+            if (!response.isSuccessful()) {
                 consumer.accept(new ApiResponse<>(false, null, response.getError()));
                 return;
             }
@@ -1064,21 +1152,25 @@ public class ApiHandler<T> {
     /**
      * A request to create a note for {@link GlobalTagsAPI#getClientUUID()}
      *
-     * @param note The note which should be created
+     * @param note     The note which should be created
      * @param consumer The action to be executed on response.
      */
-    public void createNote(String note, Consumer<ApiResponse<String>> consumer) {
+    public void createNote(@NotNull String note, @NotNull Consumer<ApiResponse<String>> consumer) {
+        Objects.requireNonNull(this.api.getClientUUID());
         this.createNote(this.api.getClientUUID(), note, consumer);
     }
 
     /**
      * A request to create a note for a specific uuid
      *
-     * @param uuid The uuid of the player
-     * @param note The note which should be created
+     * @param uuid     The uuid of the player
+     * @param note     The note which should be created
      * @param consumer The action to be executed on response.
      */
-    public void createNote(UUID uuid, String note, Consumer<ApiResponse<String>> consumer) {
+    public void createNote(@NotNull UUID uuid, @NotNull String note, @NotNull Consumer<ApiResponse<String>> consumer) {
+        Objects.requireNonNull(uuid);
+        Objects.requireNonNull(note);
+        Objects.requireNonNull(consumer);
         new ApiRequest<>(
                 this.api,
                 "POST",
@@ -1086,7 +1178,7 @@ public class ApiHandler<T> {
                 Map.of("note", note),
                 MessageSchema.class
         ).sendRequestAsync((response) -> {
-            if(!response.isSuccessful()) {
+            if (!response.isSuccessful()) {
                 consumer.accept(new ApiResponse<>(false, null, response.getError()));
                 return;
             }
@@ -1097,21 +1189,25 @@ public class ApiHandler<T> {
     /**
      * A request to get a specific note of {@link GlobalTagsAPI#getClientUUID()}
      *
-     * @param noteId The ID of the note to get
+     * @param noteId   The ID of the note to get
      * @param consumer The action to be executed on response.
      */
     public void getNote(String noteId, Consumer<ApiResponse<PlayerNote>> consumer) {
+        Objects.requireNonNull(this.api.getClientUUID());
         this.getNote(this.api.getClientUUID(), noteId, consumer);
     }
 
     /**
      * A request to get a specific note of {@link GlobalTagsAPI#getClientUUID()}
      *
-     * @param uuid The uuid of the player
-     * @param noteId The ID of the note to get
+     * @param uuid     The uuid of the player
+     * @param noteId   The ID of the note to get
      * @param consumer The action to be executed on response.
      */
-    public void getNote(UUID uuid, String noteId, Consumer<ApiResponse<PlayerNote>> consumer) {
+    public void getNote(@NotNull UUID uuid, @NotNull String noteId, @NotNull Consumer<ApiResponse<PlayerNote>> consumer) {
+        Objects.requireNonNull(uuid);
+        Objects.requireNonNull(noteId);
+        Objects.requireNonNull(consumer);
         new ApiRequest<>(
                 this.api,
                 "GET",
@@ -1119,7 +1215,7 @@ public class ApiHandler<T> {
                 emptyBody,
                 PlayerNote.class
         ).sendRequestAsync((response) -> {
-            if(!response.isSuccessful()) {
+            if (!response.isSuccessful()) {
                 consumer.accept(new ApiResponse<>(false, null, response.getError()));
                 return;
             }
@@ -1130,21 +1226,25 @@ public class ApiHandler<T> {
     /**
      * Deletes a note of {@link GlobalTagsAPI#getClientUUID()}.
      *
-     * @param noteId The ID of the note to delete.
+     * @param noteId   The ID of the note to delete.
      * @param consumer The action to be executed on response.
      */
-    public void deleteNote(String noteId, Consumer<ApiResponse<String>> consumer) {
+    public void deleteNote(@NotNull String noteId, @NotNull Consumer<ApiResponse<String>> consumer) {
+        Objects.requireNonNull(this.api.getClientUUID());
         this.deleteNote(this.api.getClientUUID(), noteId, consumer);
     }
 
     /**
      * Deletes a note of a specific uuid.
      *
-     * @param uuid The UUID of the player whose note you want to delete.
-     * @param noteId The ID of the note to delete.
+     * @param uuid     The UUID of the player whose note you want to delete.
+     * @param noteId   The ID of the note to delete.
      * @param consumer The action to be executed on response.
      */
-    public void deleteNote(UUID uuid, String noteId, Consumer<ApiResponse<String>> consumer) {
+    public void deleteNote(@NotNull UUID uuid, @NotNull String noteId, @NotNull Consumer<ApiResponse<String>> consumer) {
+        Objects.requireNonNull(uuid);
+        Objects.requireNonNull(noteId);
+        Objects.requireNonNull(consumer);
         new ApiRequest<>(
                 this.api,
                 "DELETE",
@@ -1152,7 +1252,7 @@ public class ApiHandler<T> {
                 emptyBody,
                 MessageSchema.class
         ).sendRequestAsync((response) -> {
-            if(!response.isSuccessful()) {
+            if (!response.isSuccessful()) {
                 consumer.accept(new ApiResponse<>(false, null, response.getError()));
                 return;
             }
