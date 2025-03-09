@@ -300,7 +300,7 @@ public class Routes {
      * @return The HTTP route
      */
     public static String appealBan(UUID uuid) {
-        return "/players/" + uuid + "/ban/appeal";
+        return bans(uuid) + "/appeal";
     }
 
     /**
