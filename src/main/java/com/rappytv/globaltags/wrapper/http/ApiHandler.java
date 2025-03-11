@@ -705,7 +705,9 @@ public class ApiHandler<T> {
                 consumer.accept(new ApiResponse<>(false, null, response.getError()));
                 return;
             }
-            consumer.accept(new ApiResponse<>(true, response.getData(), null));
+            this.api.getCache().renewSelf((info) ->
+                    consumer.accept(new ApiResponse<>(true, response.getData(), null))
+            );
         });
     }
 
