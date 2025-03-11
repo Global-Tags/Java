@@ -10,6 +10,7 @@ public class PlayerInfoSchema {
     public PlayerInfo.Icon icon;
     public PlayerInfo.ReferralInfo referrals;
     public String roleIcon;
+    public boolean hideRoleIcon;
     public String[] roles;
     public String[] permissions;
     public BanInfo ban;
