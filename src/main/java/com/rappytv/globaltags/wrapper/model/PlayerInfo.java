@@ -27,6 +27,7 @@ public class PlayerInfo<T> {
     private final Icon icon;
     private final ReferralInfo referralInfo;
     private final String roleIcon;
+    private final boolean hideRoleIcon;
     private final List<String> roles;
     private final Map<GlobalPermission, Boolean> permissions;
     private final BanInfo banInfo;
@@ -41,6 +42,7 @@ public class PlayerInfo<T> {
      * @param icon         The player's global icon as a string
      * @param referralInfo The player's referral info
      * @param roleIcon     The player's role icon
+     * @param hideRoleIcon If the player's role icon is hidden
      * @param roles        The player's roles
      * @param permissions  The player's permissions
      * @param banInfo      The player's {@link BanInfo}
@@ -53,6 +55,7 @@ public class PlayerInfo<T> {
             @NotNull Icon icon,
             ReferralInfo referralInfo,
             @Nullable String roleIcon,
+            boolean hideRoleIcon,
             @NotNull String[] roles,
             @NotNull String[] permissions,
             @Nullable BanInfo banInfo
@@ -65,6 +68,7 @@ public class PlayerInfo<T> {
         this.icon = icon;
         this.referralInfo = referralInfo;
         this.roleIcon = roleIcon;
+        this.hideRoleIcon = hideRoleIcon;
         this.roles = List.of(roles);
         this.permissions = new HashMap<>();
         List<GlobalPermission> playerPermissions = new ArrayList<>();
@@ -222,6 +226,14 @@ public class PlayerInfo<T> {
     @Nullable
     public String getRoleIcon() {
         return this.roleIcon;
+    }
+
+    /**
+     * Checks if the player has their role icon hidden
+     * @return if the player's role icon is hidden or not
+     */
+    public boolean isRoleIconHidden() {
+        return this.hideRoleIcon;
     }
 
     /**

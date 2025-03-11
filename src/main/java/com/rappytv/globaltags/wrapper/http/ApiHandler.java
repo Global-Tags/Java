@@ -145,6 +145,7 @@ public class ApiHandler<T> {
                             body.icon,
                             body.referrals,
                             body.roleIcon,
+                            body.hideRoleIcon,
                             body.roles,
                             body.permissions,
                             body.ban
