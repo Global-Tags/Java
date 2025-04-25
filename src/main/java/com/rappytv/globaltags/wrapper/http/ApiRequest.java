@@ -3,9 +3,11 @@ package com.rappytv.globaltags.wrapper.http;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.rappytv.globaltags.wrapper.GlobalTagsAPI;
+import com.rappytv.globaltags.wrapper.enums.GlobalIcon;
+import com.rappytv.globaltags.wrapper.enums.GlobalPermission;
+import com.rappytv.globaltags.wrapper.enums.GlobalPosition;
 import com.rappytv.globaltags.wrapper.http.schemas.ErrorSchema;
-import com.rappytv.globaltags.wrapper.model.adapters.DateTypeAdapter;
-import com.rappytv.globaltags.wrapper.model.adapters.UUIDTypeAdapter;
+import com.rappytv.globaltags.wrapper.model.adapters.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.URI;
@@ -27,6 +29,9 @@ public class ApiRequest<T> {
     private static final HttpClient client = HttpClient.newHttpClient();
     private static final Gson gson = new GsonBuilder()
             .registerTypeAdapter(Date.class, new DateTypeAdapter())
+            .registerTypeAdapter(GlobalIcon.class, new GlobalIconTypeAdapter())
+            .registerTypeAdapter(GlobalPermission.class, new GlobalPermissionTypeAdapter())
+            .registerTypeAdapter(GlobalPosition.class, new GlobalPositionTypeAdapter())
             .registerTypeAdapter(UUID.class, new UUIDTypeAdapter())
             .create();
 
