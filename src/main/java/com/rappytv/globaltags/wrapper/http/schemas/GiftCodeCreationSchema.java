@@ -7,9 +7,11 @@ public class GiftCodeCreationSchema extends MessageSchema {
     private final String code;
 
     /**
-     * @param code The gift code
+     * @param message The success message
+     * @param code    The gift code
      */
-    public GiftCodeCreationSchema(@NotNull String code) {
+    public GiftCodeCreationSchema(@NotNull String message, @NotNull String code) {
+        super(message);
         this.code = code;
     }
 
