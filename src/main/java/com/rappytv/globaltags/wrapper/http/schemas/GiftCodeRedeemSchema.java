@@ -1,6 +1,7 @@
 package com.rappytv.globaltags.wrapper.http.schemas;
 
 import com.google.gson.annotations.SerializedName;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Date;
@@ -11,9 +12,11 @@ public class GiftCodeRedeemSchema extends MessageSchema {
     private final Date expiresAt;
 
     /**
+     * @param message   The success message
      * @param expiresAt When the gift expires
      */
-    public GiftCodeRedeemSchema(@Nullable Date expiresAt) {
+    public GiftCodeRedeemSchema(@NotNull String message, @Nullable Date expiresAt) {
+        super(message);
         this.expiresAt = expiresAt;
     }
 

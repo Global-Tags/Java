@@ -9,7 +9,8 @@ public class ApiKeyRegenSchema extends MessageSchema {
     /**
      * @param key The regenerated key
      */
-    public ApiKeyRegenSchema(@NotNull String key) {
+    public ApiKeyRegenSchema(@NotNull String message, @NotNull String key) {
+        super(message);
         this.key = key;
     }
 

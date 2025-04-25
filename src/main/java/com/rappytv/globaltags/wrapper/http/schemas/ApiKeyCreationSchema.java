@@ -7,11 +7,12 @@ public class ApiKeyCreationSchema extends ApiKeyRegenSchema {
     private final String name;
 
     /**
-     * @param name The API key name
-     * @param key  The regenerated key
+     * @param message The success message
+     * @param name    The API key name
+     * @param key     The regenerated key
      */
-    public ApiKeyCreationSchema(@NotNull String name, @NotNull String key) {
-        super(key);
+    public ApiKeyCreationSchema(@NotNull String message, @NotNull String name, @NotNull String key) {
+        super(message, key);
         this.name = name;
     }
 

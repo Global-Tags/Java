@@ -121,6 +121,19 @@ public class Routes {
     /**
      * <pre>
      * Route for
+     * - POST /players/{uuid}/icon/upload
+     * </pre>
+     *
+     * @param uuid The {@link UUID} of the player you want to upload the icon for
+     * @return The HTTP route
+     */
+    public static String uploadIcon(UUID uuid) {
+        return "/players/" + uuid + "/icon/upload";
+    }
+
+    /**
+     * <pre>
+     * Route for
      * - PATCH /players/{uuid}/icon/role-visibility
      * </pre>
      *
