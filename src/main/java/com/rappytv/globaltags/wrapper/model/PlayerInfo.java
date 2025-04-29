@@ -29,7 +29,7 @@ public class PlayerInfo<T> {
     private final String roleIcon;
     private final boolean hideRoleIcon;
     private final List<String> roles;
-    private final Map<GlobalPermission, Boolean> permissions;
+    private final List<GlobalPermission> permissions;
     private final BanInfo banInfo;
 
     /**
@@ -56,8 +56,8 @@ public class PlayerInfo<T> {
             ReferralInfo referralInfo,
             @Nullable String roleIcon,
             boolean hideRoleIcon,
-            @NotNull String[] roles,
-            @NotNull String[] permissions,
+            @NotNull List<String> roles,
+            @NotNull List<GlobalPermission> permissions,
             @Nullable BanInfo banInfo
     ) {
         this.urls = api.getUrls();
@@ -69,19 +69,8 @@ public class PlayerInfo<T> {
         this.referralInfo = referralInfo;
         this.roleIcon = roleIcon;
         this.hideRoleIcon = hideRoleIcon;
-        this.roles = List.of(roles);
-        this.permissions = new HashMap<>();
-        List<GlobalPermission> playerPermissions = new ArrayList<>();
-        for (String permission : permissions) {
-            GlobalPermission globalPermission;
-            try {
-                playerPermissions.add(GlobalPermission.valueOf(permission.toUpperCase()));
-            } catch (Exception ignored) {
-            }
-        }
-        for (GlobalPermission permission : GlobalPermission.values()) {
-            this.permissions.put(permission, playerPermissions.contains(permission));
-        }
+        this.roles = roles;
+        this.permissions = permissions;
         this.banInfo = banInfo;
     }
 
@@ -136,11 +125,7 @@ public class PlayerInfo<T> {
      */
     @NotNull
     public GlobalIcon getGlobalIcon() {
-        try {
-            return GlobalIcon.valueOf(this.icon.type.toUpperCase());
-        } catch (Exception ignored) {
-            return GlobalIcon.NONE;
-        }
+        return this.icon.type;
     }
 
     /**
@@ -167,10 +152,14 @@ public class PlayerInfo<T> {
      *
      * @return The URL of the player's global icon, either custom or default.
      */
-    @NotNull
+    @Nullable
     public String getIconUrl() {
+        GlobalIcon icon = this.getGlobalIcon();
         if (this.hasCustomGlobalIcon()) return this.urls.getCustomIcon(this.uuid, this.icon.hash);
-        return this.urls.getDefaultIcon(this.getGlobalIcon());
+        else if(icon == GlobalIcon.CUSTOM || icon == GlobalIcon.NONE) {
+            return null;
+        }
+        return this.urls.getDefaultIcon(icon);
     }
 
     /**
@@ -180,7 +169,7 @@ public class PlayerInfo<T> {
      * @return {@code true} if the player has the specified permission; otherwise {@code false}.
      */
     public boolean hasPermission(GlobalPermission permission) {
-        return this.permissions.containsKey(permission) && this.permissions.get(permission);
+        return this.permissions.contains(permission);
     }
 
     /**
@@ -312,7 +301,7 @@ public class PlayerInfo<T> {
      */
     public static class Icon {
 
-        private final String type;
+        private final GlobalIcon type;
         private final String hash;
 
         /**
@@ -321,7 +310,7 @@ public class PlayerInfo<T> {
          * @param type The {@link GlobalIcon} type.
          * @param hash The custom icon hash.
          */
-        public Icon(String type, String hash) {
+        public Icon(GlobalIcon type, String hash) {
             this.type = type;
             this.hash = hash;
         }
@@ -329,7 +318,7 @@ public class PlayerInfo<T> {
         @Override
         public String toString() {
             return "Icon{" +
-                    "type='" + this.type + '\'' +
+                    "name='" + this.type + '\'' +
                     ", hash='" + this.hash + '\'' +
                     '}';
         }

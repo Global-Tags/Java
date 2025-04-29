@@ -10,6 +10,9 @@ import com.rappytv.globaltags.wrapper.model.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -226,7 +229,7 @@ public class ApiHandler<T> {
                 return;
             }
             this.api.getCache().renew(uuid, (info) ->
-                    consumer.accept(new ApiResponse<>(true, response.getData().message, null))
+                    consumer.accept(new ApiResponse<>(true, response.getData().getMessage(), null))
             );
         });
     }
@@ -266,7 +269,7 @@ public class ApiHandler<T> {
                 return;
             }
             this.api.getCache().renew(uuid, (info) ->
-                    consumer.accept(new ApiResponse<>(true, response.getData().message, null))
+                    consumer.accept(new ApiResponse<>(true, response.getData().getMessage(), null))
             );
         });
     }
@@ -306,7 +309,47 @@ public class ApiHandler<T> {
                 return;
             }
             this.api.getCache().renew(uuid, (info) ->
-                    consumer.accept(new ApiResponse<>(true, response.getData().message, null))
+                    consumer.accept(new ApiResponse<>(true, response.getData().getMessage(), null))
+            );
+        });
+    }
+
+    /**
+     * A request to upload a custom icon for a specific uuid
+     *
+     * @param uuid     The uuid you want to upload the icon for
+     * @param file     The image file you want to upload
+     * @param consumer The action to be executed on response.
+     */
+    public void uploadIcon(@NotNull UUID uuid, @NotNull File file, @NotNull Consumer<ApiResponse<IconUploadSchema>> consumer) throws IOException {
+        Objects.requireNonNull(file);
+        this.uploadIcon(uuid, file.toPath(), consumer);
+    }
+
+    /**
+     * A request to upload a custom icon for a specific uuid
+     *
+     * @param uuid     The uuid you want to upload the icon for
+     * @param path     The image file path you want to upload
+     * @param consumer The action to be executed on response.
+     */
+    public void uploadIcon(@NotNull UUID uuid, @NotNull Path path, @NotNull Consumer<ApiResponse<IconUploadSchema>> consumer) throws IOException {
+        Objects.requireNonNull(uuid);
+        Objects.requireNonNull(path);
+        Objects.requireNonNull(consumer);
+        new ApiRequest<>(
+                this.api,
+                "POST",
+                Routes.uploadIcon(uuid),
+                MultipartData.newBuilder().addFile("image", path, "image/png").build(),
+                IconUploadSchema.class
+        ).sendRequestAsync((response) -> {
+            if (!response.isSuccessful()) {
+                consumer.accept(new ApiResponse<>(false, null, response.getError()));
+                return;
+            }
+            this.api.getCache().renew(uuid, (info) ->
+                    consumer.accept(new ApiResponse<>(true, response.getData(), null))
             );
         });
     }
@@ -344,7 +387,7 @@ public class ApiHandler<T> {
                 return;
             }
             this.api.getCache().renew(uuid, (info) ->
-                    consumer.accept(new ApiResponse<>(true, response.getData().message, null))
+                    consumer.accept(new ApiResponse<>(true, response.getData().getMessage(), null))
             );
         });
     }
@@ -380,7 +423,7 @@ public class ApiHandler<T> {
                 return;
             }
             this.api.getCache().renew(uuid, (info) ->
-                    consumer.accept(new ApiResponse<>(true, response.getData().message, null))
+                    consumer.accept(new ApiResponse<>(true, response.getData().getMessage(), null))
             );
         });
     }
@@ -429,7 +472,7 @@ public class ApiHandler<T> {
                 consumer.accept(new ApiResponse<>(false, null, response.getError()));
                 return;
             }
-            consumer.accept(new ApiResponse<>(true, response.getData().message, null));
+            consumer.accept(new ApiResponse<>(true, response.getData().getMessage(), null));
         });
     }
 
@@ -557,7 +600,7 @@ public class ApiHandler<T> {
                 consumer.accept(new ApiResponse<>(false, null, response.getError()));
                 return;
             }
-            consumer.accept(new ApiResponse<>(true, response.getData().message, null));
+            consumer.accept(new ApiResponse<>(true, response.getData().getMessage(), null));
         });
     }
 
@@ -731,7 +774,7 @@ public class ApiHandler<T> {
                 consumer.accept(new ApiResponse<>(false, null, response.getError()));
                 return;
             }
-            consumer.accept(new ApiResponse<>(true, response.getData().message, null));
+            consumer.accept(new ApiResponse<>(true, response.getData().getMessage(), null));
         });
     }
 
@@ -755,7 +798,7 @@ public class ApiHandler<T> {
                 consumer.accept(new ApiResponse<>(false, null, response.getError()));
                 return;
             }
-            consumer.accept(new ApiResponse<>(true, response.getData().message, null));
+            consumer.accept(new ApiResponse<>(true, response.getData().getMessage(), null));
         });
     }
 
@@ -781,7 +824,7 @@ public class ApiHandler<T> {
                 consumer.accept(new ApiResponse<>(false, null, response.getError()));
                 return;
             }
-            consumer.accept(new ApiResponse<>(true, response.getData().message, null));
+            consumer.accept(new ApiResponse<>(true, response.getData().getMessage(), null));
         });
     }
 
@@ -918,7 +961,7 @@ public class ApiHandler<T> {
                 return;
             }
             this.api.getCache().renew(uuid, (info) ->
-                    consumer.accept(new ApiResponse<>(true, response.getData().message, null))
+                    consumer.accept(new ApiResponse<>(true, response.getData().getMessage(), null))
             );
         });
     }
@@ -944,7 +987,7 @@ public class ApiHandler<T> {
                 return;
             }
             this.api.getCache().renew(uuid, (info) ->
-                    consumer.accept(new ApiResponse<>(true, response.getData().message, null))
+                    consumer.accept(new ApiResponse<>(true, response.getData().getMessage(), null))
             );
         });
     }
@@ -973,7 +1016,7 @@ public class ApiHandler<T> {
                 return;
             }
             this.api.getCache().renew(uuid, (info) ->
-                    consumer.accept(new ApiResponse<>(true, response.getData().message, null))
+                    consumer.accept(new ApiResponse<>(true, response.getData().getMessage(), null))
             );
         });
     }
@@ -998,7 +1041,7 @@ public class ApiHandler<T> {
                 consumer.accept(new ApiResponse<>(false, null, response.getError()));
                 return;
             }
-            consumer.accept(new ApiResponse<>(true, response.getData().message, null));
+            consumer.accept(new ApiResponse<>(true, response.getData().getMessage(), null));
         });
     }
 
@@ -1043,7 +1086,7 @@ public class ApiHandler<T> {
                 return;
             }
             this.api.getCache().renewSelf((info) ->
-                    consumer.accept(new ApiResponse<>(true, response.getData().message, null))
+                    consumer.accept(new ApiResponse<>(true, response.getData().getMessage(), null))
             );
         });
     }
@@ -1068,7 +1111,7 @@ public class ApiHandler<T> {
                 consumer.accept(new ApiResponse<>(false, null, response.getError()));
                 return;
             }
-            consumer.accept(new ApiResponse<>(true, response.getData().message, null));
+            consumer.accept(new ApiResponse<>(true, response.getData().getMessage(), null));
         });
     }
 
@@ -1090,7 +1133,7 @@ public class ApiHandler<T> {
                 consumer.accept(new ApiResponse<>(false, null, response.getError()));
                 return;
             }
-            consumer.accept(new ApiResponse<>(true, response.getData().message, null));
+            consumer.accept(new ApiResponse<>(true, response.getData().getMessage(), null));
         });
     }
 
@@ -1114,7 +1157,7 @@ public class ApiHandler<T> {
                 consumer.accept(new ApiResponse<>(false, null, response.getError()));
                 return;
             }
-            consumer.accept(new ApiResponse<>(true, response.getData().message, null));
+            consumer.accept(new ApiResponse<>(true, response.getData().getMessage(), null));
         });
     }
 
@@ -1185,7 +1228,7 @@ public class ApiHandler<T> {
                 consumer.accept(new ApiResponse<>(false, null, response.getError()));
                 return;
             }
-            consumer.accept(new ApiResponse<>(true, response.getData().message, null));
+            consumer.accept(new ApiResponse<>(true, response.getData().getMessage(), null));
         });
     }
 
@@ -1259,7 +1302,7 @@ public class ApiHandler<T> {
                 consumer.accept(new ApiResponse<>(false, null, response.getError()));
                 return;
             }
-            consumer.accept(new ApiResponse<>(true, response.getData().message, null));
+            consumer.accept(new ApiResponse<>(true, response.getData().getMessage(), null));
         });
     }
 }

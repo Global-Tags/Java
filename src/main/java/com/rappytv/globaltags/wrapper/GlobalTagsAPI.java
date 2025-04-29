@@ -16,6 +16,9 @@ import java.util.UUID;
  */
 public abstract class GlobalTagsAPI<T> {
 
+    /*+
+     * Default urls
+     */
     private final Urls urls = new Urls();
     /**
      * Default cache options
@@ -229,7 +232,8 @@ public abstract class GlobalTagsAPI<T> {
         @NotNull
         public String getCustomIcon(UUID uuid, String hash) {
             return String.format(
-                    "https://api.globaltags.xyz/players/%s/icon/%s",
+                    "%s/players/%s/icon/%s",
+                    this.getApiBase(),
                     uuid,
                     hash
             );

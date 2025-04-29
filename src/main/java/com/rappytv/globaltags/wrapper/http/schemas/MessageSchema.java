@@ -1,6 +1,16 @@
 package com.rappytv.globaltags.wrapper.http.schemas;
 
+import org.jetbrains.annotations.NotNull;
+
 public class MessageSchema {
 
-    public String message;
+    protected final String message;
+
+    public MessageSchema(@NotNull String message) {
+        this.message = message;
+    }
+
+    public String getMessage() {
+        return this.message;
+    }
 }
