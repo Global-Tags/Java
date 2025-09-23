@@ -119,13 +119,46 @@ public class PlayerInfo<T> {
     }
 
     /**
+     * Check if the player has a valid global icon
+     *
+     * @return if the player has a valid global icon
+     */
+    public boolean hasGlobalIcon() {
+        return this.hasCustomGlobalIcon() || this.getGlobalIconType() != GlobalIcon.NONE;
+    }
+
+    /**
+     * Gets the player's selected {@link GlobalIcon}.
+     *
+     * @deprecated Use {@link #getGlobalIconType()} instead
+     * @return The selected global icon. Defaults to {@link GlobalIcon#NONE} if invalid.
+     */
+    @Deprecated
+    @NotNull
+    public GlobalIcon getGlobalIcon() {
+        return this.icon.type;
+    }
+
+    /**
      * Gets the player's selected {@link GlobalIcon}.
      *
      * @return The selected global icon. Defaults to {@link GlobalIcon#NONE} if invalid.
      */
     @NotNull
-    public GlobalIcon getGlobalIcon() {
+    public GlobalIcon getGlobalIconType() {
         return this.icon.type;
+    }
+
+    /**
+     * Gets the hash of the player's custom global icon, if available.
+     *
+     * @deprecated Use {@link #getCustomIconHash()} instead
+     * @return The custom global icon hash, or {@code null} if none exists.
+     */
+    @Deprecated
+    @Nullable
+    public String getGlobalIconHash() {
+        return this.icon.hash;
     }
 
     /**
@@ -134,7 +167,7 @@ public class PlayerInfo<T> {
      * @return The custom global icon hash, or {@code null} if none exists.
      */
     @Nullable
-    public String getGlobalIconHash() {
+    public String getCustomIconHash() {
         return this.icon.hash;
     }
 
@@ -144,7 +177,7 @@ public class PlayerInfo<T> {
      * @return {@code true} if the player has a custom global icon; otherwise {@code false}.
      */
     public boolean hasCustomGlobalIcon() {
-        return this.getGlobalIcon() == GlobalIcon.CUSTOM && this.icon.hash != null;
+        return this.getGlobalIconType() == GlobalIcon.CUSTOM && this.icon.hash != null;
     }
 
     /**
@@ -154,7 +187,7 @@ public class PlayerInfo<T> {
      */
     @Nullable
     public String getIconUrl() {
-        GlobalIcon icon = this.getGlobalIcon();
+        GlobalIcon icon = this.getGlobalIconType();
         if (this.hasCustomGlobalIcon()) return this.urls.getCustomIcon(this.uuid, this.icon.hash);
         else if(icon == GlobalIcon.CUSTOM || icon == GlobalIcon.NONE) {
             return null;
@@ -286,8 +319,8 @@ public class PlayerInfo<T> {
                 ", tag=" + this.tag +
                 ", plainTag='" + this.plainTag + '\'' +
                 ", position=" + this.getPosition() +
-                ", icon=PlayerIcon{type=" + this.getGlobalIcon() +
-                ", hash=" + this.getGlobalIconHash() + '}' +
+                ", icon=PlayerIcon{type=" + this.getGlobalIconType() +
+                ", hash=" + this.getCustomIconHash() + '}' +
                 ", referralInfo=" + this.referralInfo +
                 ", roleIcon='" + this.roleIcon + '\'' +
                 ", roles=" + this.roles +
