@@ -5,9 +5,14 @@ package com.rappytv.globaltags.wrapper.enums;
  */
 public enum AuthProvider {
     /**
+     * @deprecated Use {@link #API_KEY} instead
+     */
+    @Deprecated
+    BEARER("Bearer"),
+    /**
      * The Bearer auth provider is used to authenticate with GlobalTag's own Bearer tokens. At the moment the only way to receive one is by contacting the Database admin. See <a href="https://github.com/Global-Tags/API/blob/master/src/auth/providers/ApiKeyProvider.ts">ApiKeyProvider.ts</a>
      */
-    BEARER("Bearer"),
+    API_KEY("Bearer"),
     /**
      * The Yggdrasil auth provider is used to authenticate with Minecraft session tokens. These can be obtained by the Minecraft session provider. See <a href="https://github.com/Global-Tags/API/blob/master/src/auth/providers/YggdrasilProvider.ts">YggdrasilProvider.ts</a>
      */
